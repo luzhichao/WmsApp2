@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>全部菜单</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.1.css" />
+	<style>
+		body {}
+		p {
+			margin-bottom: 15px;
+		}
+
+		#menuList img {
+			width: 50%;
+		}
+
+		#menuList .aui-col-xs-3 {
+			text-align: center;
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+		}
+
+		.aui-grid [class*=aui-col-] {
+			padding: 0.3rem 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="aui-card-list" id="menuList"> </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		getAllMenu();
+	};
+	var fDivId = "";
+
+	function getAllMenu() {
+		var serverUrl = localStorage.getItem('serverUrl');
+		var url = serverUrl + "padController!getAppMenu.m";
+		var un = localStorage.getItem('un');
+		var pw = localStorage.getItem('pw');
+		var serverIp = localStorage.getItem('serverIp');
+		var serverPort = localStorage.getItem('serverPort');
+		var serverProject = localStorage.getItem('serverProject');
+		var url1 = serverIp + ":" + serverPort + "/" + serverProject;
+		var workCenterGid = localStorage.getItem('workCenterGid');
+		if (!workCenterGid) {
+			api.toast({
+				msg: '请选择工作中心',
+				duration: 3000,
+				location: 'top'
+			});
+			api.closeWin();
+			return false;
+		}
+
+		var params = new Object();
+		params.url = url;
+		params.dataType = 'json';
+		params.method = 'post';
+		var data = {
+			values: { ////以表单方式提交参数（JSON对象）
+				un: un,
+				pw: pw,
+				url: url1,
+				workCenterGid: workCenterGid
+			}
+		};
+
+		ajaxForData(params, data, false, function(ret, err) {
+			if (ret) {
+				var myobj = eval(ret.data);
+
+				// console.log('myobj的内容 :' + JSON.stringify(myobj));
+				// console.log('myobj的长度 :' + myobj.length);
+				$("#menuList").children().remove();
+				for (var i = 0; i < myobj.length; i++) {
+					var menuTitle = myobj[i].title;
+					var iconColor = myobj[i].iconColor;
+					var menuItem = myobj[i];
+					var fDivId;
+					var _row;
+					if (myobj[i].menuLevel == "1") {
+						//一级菜单
+						fDivId = "#" + myobj[i].id;
+						//	$("#menuList").append("<div class='aui-col-xs-3' onclick='getMenuByPid(\"" + myobj[i].title + "\",\"" + myobj[i].id + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><div class='aui-grid-label'>"+ myobj[i].title + "</div></div>");
+						$("#menuList").append("<div class='aui-card-list-header'><label class=\"aui-input-addon " + iconColor + " \" >" + menuTitle +
+							"</label></div><div class='aui-card-list-content-padded aui-border-b aui-border-t'><div class='aui-grid' ><div class='aui-row' id='" + myobj[i].id + "'></div></div></div>");
+					} else {
+						//*************后续需要判断un是否勾选
+						//二级菜单
+						//<div class='aui-badge' id='"+myobj[i].id+"'  name='false' style='display:none'>√</div>
+
+						// if (i % 4 == 0) {
+						// 		_row = $('<div class="aui-row"></div>');
+						// 		$(fDivId).append(_row);
+						// }
+						var to_url;
+						to_url = myobj[i].rel + ".html";
+						if (myobj[i].menuFlag == "1") {
+							//to_url = myobj[i].rel + ".html";
+							$(fDivId).append("<div class=\"aui-col-xs-3 \" tapmode onclick='goPage1(\"" +
+								to_url + "\",\"" + myobj[i].title + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>"+ myobj[i].title + "</p></div>");
+						} else if (myobj[i].menuFlag == "11") {
+							//to_url = myobj[i].url;
+							$(fDivId).append("<div class=\"aui-col-xs-3 \" tapmode onclick='goPctPage(\"" +
+								to_url + "\",\"" + myobj[i].title + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>"+ myobj[i].title + "</p></div>");
+						} else if (myobj[i].menuFlag == "12") {
+							//to_url = myobj[i].rel + ".html";
+							_row.append("<div class=\"aui-col-xs-3 \" tapmode onclick='goTvShowPage(\"" +
+								to_url + "\",\"" + myobj[i].title + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p>"+ myobj[i].title + "</p></div>");
+						} else if (myobj[i].menuFlag == "13") {
+							//to_url = myobj[i].rel + ".html";
+							$(fDivId).append("<div class=\"aui-col-xs-3 \" tapmode onclick='goPage2(\"" +
+								to_url + "\",\"" + myobj[i].title + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>"+ myobj[i].title + "</p></div>");
+						} else if (myobj[i].menuFlag == "14") {
+							//to_url = myobj[i].rel + ".html";
+							_row.append("<div class=\"aui-col-xs-3 \" tapmode onclick='goUWMPage(\"" +
+								to_url + "\",\"" + myobj[i].title + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p>"+ myobj[i].title + "</p></div>");
+						} else {
+							$(fDivId).append("<div class=\"aui-col-xs-3 \" tapmode onclick='goPage(\"" +
+								to_url + "\",\"" + myobj[i].title + "\");'><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>"+ myobj[i].title + "</p></div>");
+						}
+					}
+				}
+			} else {}
+		})
+	}
+	function goUWMPage(url, title) {
+		if ("uwmIn01.html" == url ||
+			"uwmIn02.html" == url ||
+			"uwmOut01.html" == url ||
+			"uwmOut02.html" == url) {
+			console.log(url);
+
+			var scanMode = 'Y';
+			var inOutMode = 'I';
+			if ("uwmIn01.html" == url) {
+				scanMode = 'Y';
+				inOutMode = 'I';
+			} else if ("uwmOut01.html" == url) {
+				scanMode = 'Y';
+				inOutMode = 'O';
+			} else if ("uwmIn02.html" == url) {
+				scanMode = 'N';
+				inOutMode = 'I';
+			} else if ("uwmOut02.html" == url) {
+				scanMode = 'N';
+				inOutMode = 'O';
+			}
+
+			api.openWin({
+				name: 'delinstorage_win',
+				url: 'delinstorage_win.html',
+				pageParam: {
+					scanMode: scanMode,
+					inOutMode: inOutMode
+				}
+			});
+		}
+	}
+
+	function goPage(url, title) {
+
+		//alert(title+':'+url)
+		api.openWin({
+			name: 'about',
+			url: '../about.html',
+			pageParam: {
+				url: url,
+				title: title
+			}
+		});
+	}
+
+	function goPage2(url, title) {
+		api.openWin({
+			name: 'about2',
+			url: '../about2.html',
+			pageParam: {
+				url: url,
+				title: title
+			}
+		});
+	}
+
+	function goPage1(url, title) {
+		api.openWin({
+			name: 'about2',
+			url: '../about6.html',
+			pageParam: {
+				url: url,
+				title: title
+			}
+		});
+	}
+
+	function goPctPage(toUrl, title) {
+		api.openWin({
+			name: 'about5',
+			url: 'about5.html',
+			pageParam: {
+				url: 'mesMenu.html',
+				title: title,
+				toUrl: toUrl
+			},
+			reload: true
+		});
+	}
+
+	function goTvShowPage(toUrl, title) {
+		api.openWin({
+			name: title,
+			url: toUrl
+		});
+	}
+
+	function getMenuByPid(title, pid) {
+		api.openWin({
+			name: 'secondMenu_win',
+			url: 'secondMenu_win.html',
+			pageParam: {
+				title: title,
+				pid: pid
+			}
+		});
+	}
+</script>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>工作中心</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+				<a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeFrame();">
+						<span class="aui-iconfont aui-icon-left"></span> </a>
+				<div class="aui-title">工作中心列表</div>
+		</header>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in" id="workCenterlist"></ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="../../script/public.js"></script>
+
+	<script type="text/javascript">
+		apiready = function() {
+			var serverUrl = localStorage.getItem('serverUrl');
+			var url = serverUrl + "padCommController!getWorkcenter.m";
+			var usename = localStorage.getItem('un');
+			var params = new Object();
+			params.url = url;
+			params.method = 'post';
+			params.dataType = 'json';
+			params.returnAll = 'false';
+			params.timeout = 60;
+			var data = {
+				values: {
+					un : usename
+		    }
+			};
+			ajaxForData(params,data,false,function(ret, err){
+				$("#workCenterlist").append("");
+				var myobj = eval("("+ret.data+")");;
+				for (var i = 0; i < myobj.length; i++) {
+					$("#workCenterlist").append("<li class='aui-list-item' onclick=\"saveWC('" + myobj[i].id + "','" + myobj[i].code + "','" + myobj[i].name + "')\"><div class='aui-list-item-inner aui-list-item-arrow'><div class='aui-list-item-title'>[" + myobj[i].code + "]" + myobj[i].name + "</div></div></li>");
+				}
+			});
+		};
+
+		function saveWC(id, code, name) {
+			api.confirm({
+			    title: '提示',
+			    msg: '选择工作中心：'+name,
+			    buttons: ['确定', '取消']
+			}, function(ret, err) {
+			    if(ret.buttonIndex == 1){
+					//判断是否启用多工作中心，已启用则修改缓存的serverUrl
+					if(localStorage.getItem('mWCFlag') != "-1"){
+						var datarole = id;
+						var serverIp = localStorage.getItem('serverIpN');
+						var serverPort = localStorage.getItem('serverPortN');;
+						var serverProject = localStorage.getItem('serverProjectN');
+						var username = localStorage.getItem('un');
+						var pw = localStorage.getItem('pw');
+						serverUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + pw + "&_dr=" + datarole +"&_to=";
+						localStorage.setItem('serverUrl', serverUrl);
+						console.log("启用多工作中心的情况下切换工作中心,serverUrl:"+serverUrl);
+					}
+					localStorage.setItem('workCenterGid', id);
+					localStorage.setItem('workCenterCode', code);
+					localStorage.setItem('workCenterName', name);
+					api.closeWin();
+				}
+			});
+
+		}
+	</script>
+</html>

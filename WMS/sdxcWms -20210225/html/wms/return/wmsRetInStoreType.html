@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>退货入库类型</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+</head>
+
+<body>
+<div class="aui-content aui-margin-b-15">
+    <ul class="aui-list aui-list-in" id="dataList">
+        <li class="aui-list-item" onclick="goToPage('mrl', INSTORE_TYPE.MATERIAL_RETURN);">
+            <div class="aui-list-item-inner aui-list-item-arrow">
+                <div class="aui-list-item-title">领料退货入库</div>
+            </div>
+        </li>
+        <li class="aui-list-item" onclick="goToPage('mrl', INSTORE_TYPE.CONSIGN_MATERIAL_RETURN);">
+            <div class="aui-list-item-inner aui-list-item-arrow">
+                <div class="aui-list-item-title">委外材料退货入库</div>
+            </div>
+        </li>
+        <li class="aui-list-item" onclick="goToPage('prd', INSTORE_TYPE.SALE_RETURN);">
+            <div class="aui-list-item-inner aui-list-item-arrow">
+                <div class="aui-list-item-title">销售退货入库</div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../script/pda.js"></script>
+<script type="text/javascript" src="../../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+</body>
+<script>
+    function goToPage(pageType, retType) {
+        if (pageType == 'mrl')
+        {
+            api.openWin({
+                name: 'wmsRetInStore_Mrl',
+                url: 'wmsRetInStore_Mrl.html',
+                pageParam: {
+                    url: 'wmsRetInStore_Mrl.html',
+                    type: retType
+                }
+            })
+        }else if(pageType == 'prd'){
+            api.openWin({
+                name: 'wmsRetInStore_Prd',
+                url: 'wmsRetInStore_Prd.html',
+                pageParam: {
+                    url: 'wmsRetInStore_Prd.html',
+                    type: retType
+                }
+            })
+        }
+    }
+</script>
+
+</html>

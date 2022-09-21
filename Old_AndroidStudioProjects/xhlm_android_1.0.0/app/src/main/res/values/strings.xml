@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name" translatable="false">学会了么</string>
+
+    <string name="confirm" translatable="false">确认</string>
+    <string name="submit" translatable="false">提交</string>
+
+    <!--登陆页面属性配置-->
+    <string name="bt_login" translatable="false">登陆</string>
+    <string name="et_hintNum" translatable="false">请输入电话号码</string>
+    <string name="et_hintPWD" translatable="false">请输入密码(6-20位数字或英文字符)</string>
+    <string name="bt_newAccount" translatable="false">新老师注册</string>
+    <string name="tv_TipNum" translatable="false">请输入11位的手机号码</string>
+    <string name="banner" translatable="false">banner轮播图</string>
+    <string name="forgetPWD" translatable="false">忘记密码？</string>
+    <string name="icon" translatable="false">icon</string>
+
+    <!--老师注册页面属性配置-->
+    <string name="hint_verNum" translatable="false">请输入验证码</string>
+    <string name="hint_PWD" translatable="false">创建密码(6-20位数字或英文字符)</string>
+    <string name="hint_againPWD" translatable="false">再次输入密码</string>
+    <string name="bt_register" translatable="false">老师注册</string>
+
+    <!--设置新密码页面-->
+    <string name="forget_title" translatable="false">设置新密码</string>
+    <string name="forget_hintNum" translatable="false">请输入登陆手机号</string>
+    <string name="forget_hintVerNum" translatable="false">@string/hint_verNum</string>
+    <string name="forget_hinNewPWD" translatable="false">@string/hint_PWD</string>
+    <string name="forget_hintAgainPWD" translatable="false">@string/hint_againPWD</string>
+
+    <!--电话号码校验规则-->
+    <string name="telRegex" translatable="false">^1[3|5|7|8][0-9]\d{8}$</string>
+    <!--title-->
+    <string name="newAccountTitle" translatable="false">新老师注册</string>
+    <string name="title_activity_register" translatable="false">新老师注册</string>
+    <string name="title_protocol" translatable="false">请阅读平台协议</string>
+    <string name="title_teacher_base_info" translatable="false">完善基本信息</string>
+    <string name="title_about_me" translatable="false">个人资料</string>
+
+    <!-- 实名认证 -->
+    <string name="front_auth" translatable="false">请上传身份证正面照片必须看清证件号码及照片</string>
+    <string name="back_auth" translatable="false">请上传身份证背面照片</string>
+    <string name="hold_auth" translatable="false">请上传身份证手持照片\n必须看清证件信息，并确保您和证件同时出现在照片内</string>
+    <string name="submit_auth" translatable="false">提交认证</string>
+    <string name="noLabelSet">还没有添加任何标签</string>
+
+
+    <!--日历的test-->
+    <string-array name="titles">
+        <item>Android</item>
+        <item>IOS</item>
+        <item>JAVA</item>
+        <item>C++</item>
+        <item>Ruby</item>
+        <item>WEB</item>
+        <item>HTML</item>
+        <item>PERL</item>
+        <item>C</item>
+        <item>SWIFT</item>
+        <item>Python</item>
+        <item>C</item>
+        <item>C#</item>
+        <item>JS</item>
+    </string-array>
+</resources>

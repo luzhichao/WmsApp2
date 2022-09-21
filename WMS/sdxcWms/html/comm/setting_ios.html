@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>系统设置(ios)</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+
+		p {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+		<div class="aui-title">服务IP设置</div>
+	</header>
+
+	<div class="aui-content aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">内网IP</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="IP地址" id="serverIp" value="192.168.1.155" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">内网端口号</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="如8080" id="serverPort" value="8080" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">内网服务名</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="服务器访问名称" id="serverProject" value="qdCIMC-web" />
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">外网IP</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="IP地址" id="serverIpW" value="192.168.1.155" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">外网端口号</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="如8080" id="serverPortW" value="8080" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">外网服务名</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="服务器访问名称" id="serverProjectW" value="qdCIMC-web" />
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">网络选择</div>
+					<div class="aui-list-item-input">
+						<label><input class="aui-radio" type="radio" id="inRadio" name="netRadio" checked value="in" >内网</label>
+						<label><input class="aui-radio" type="radio" id="outRadio" name="netRadio" value="out" >外网</label>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content-padded">
+		<p><div class="aui-btn aui-btn-info aui-btn-block" onclick='doSave()'>保存</div></p>
+	</div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		var serverIpN = localStorage.getItem('serverIpN'),serverPortN = localStorage.getItem('serverPortN'),serverProjectN = localStorage.getItem('serverProjectN');
+		var serverIpW = localStorage.getItem('serverIpW'),serverPortW = localStorage.getItem('serverPortW'),serverProjectW = localStorage.getItem('serverProjectW');
+		var netChoice = localStorage.getItem('netChoice');
+		if (serverIpN != null || serverPortN != null || serverProjectN != null) {
+			$("#serverIp").val(serverIpN);
+			$("#serverPort").val(serverPortN);
+			$("#serverProject").val(serverProjectN);
+		}
+		if (serverIpW != null || serverPortW != null || serverProjectW != null) {
+			$("#serverIpW").val(serverIpW);
+			$("#serverPortW").val(serverPortW);
+			$("#serverProjectW").val(serverProjectW);
+		}
+		if (netChoice != null && netChoice == "inner") {
+			//内网
+			document.getElementById('inRadio').checked = true;
+		} else if (netChoice != null && netChoice == "outer") {
+			//外网
+			document.getElementById('outRadio').checked = true;
+		}
+		var ipChoic = $('input:radio:checked').val();
+		if(ipChoic == "in"){
+			$("#serverIpW").css("disabled","disabled");
+			$("#serverPortW").css("disabled","disabled");
+			$("#serverProjectW").css("disabled","disabled");
+		}else {
+			$("#serverIp").css("disabled","disabled");
+			$("#serverPort").css("disabled","disabled");
+			$("#serverProject").css("disabled","disabled");
+		}
+	};
+
+	$("input:radio").on("click",function(){
+		var ipChoic = $('input:radio:checked').val();
+		if(ipChoic == "in"){
+			$("#serverIpW").attr("disabled","disabled");
+			$("#serverPortW").attr("disabled","disabled");
+			$("#serverProjectW").attr("disabled","disabled");
+			$("#serverIp").removeAttr("disabled");
+			$("#serverPort").removeAttr("disabled");
+			$("#serverProject").removeAttr("disabled");
+		} else {
+			$("#serverIpW").removeAttr("disabled");
+			$("#serverPortW").removeAttr("disabled");
+			$("#serverProjectW").removeAttr("disabled");
+			$("#serverIp").attr("disabled","disabled");
+			$("#serverPort").attr("disabled","disabled");
+			$("#serverProject").attr("disabled","disabled");
+		}
+	});
+
+	function doSave() {
+		var serverIp = "",serverPort = "",serverProject = "";
+		var ipChoic = $('input:radio:checked').val();
+		if(ipChoic == "in") {
+			serverIp = $("#serverIp").val();
+			serverPort = $("#serverPort").val();
+			serverProject = $("#serverProject").val();
+			localStorage.setItem('netChoice', "inner");
+		} else {
+			serverIp = $("#serverIpW").val();
+			serverPort = $("#serverPortW").val();
+			serverProject = $("#serverProjectW").val();
+			localStorage.setItem('netChoice', "outer");
+		}
+		// 移除ip,端口,项目号设置
+		localStorage.removeItem('serverIp');
+		localStorage.removeItem('serverPort');
+		localStorage.removeItem('serverProject');
+		// 移除是否设置过网络的标志
+		localStorage.removeItem('netWork');
+		//设置ip,端口,项目号设置
+		localStorage.setItem('serverIp', serverIp);
+		localStorage.setItem('serverPort', serverPort);
+		localStorage.setItem('serverProject', serverProject);
+		// 设置是否设置过网络的标志
+		localStorage.setItem('netWork', "on");
+		api.rebootApp();
+	}
+
+</script>
+
+</html>

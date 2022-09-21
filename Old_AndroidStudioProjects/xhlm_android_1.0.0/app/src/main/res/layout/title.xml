@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_all_title"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/titleHeight"
+    android:paddingTop="@dimen/statusBarHeight"
+    android:background="@drawable/angel_blue_gradual"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/left_margin"
+        android:paddingRight="@dimen/right_margin"
+        android:orientation="horizontal">
+        <!--返回图标-->
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/icon_small_size"
+            android:layout_height="@dimen/icon_small_size"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back_white"/>
+        <!--主标题-->
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="This is title"
+            android:textSize="@dimen/titleSize" />
+        <!--副标题-->
+        <TextView
+            android:id="@+id/sub_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="This is title"
+            android:visibility="gone"
+            android:textSize="@dimen/subTitleSize" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/title_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/lineColor_unclick"
+        android:visibility="gone"/>
+</LinearLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/title_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/flag"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_width="4px"
+            android:layout_height="30dp"
+            android:background="@color/btn_pressed_green_solid"/>
+        <TextView
+            android:layout_alignLeft="@+id/flag"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/actionbar_title_size"
+            android:text="@string/teaching_experience"/>
+    </LinearLayout>
+    <com.linkingwin.education.studyonline.student.view.ListViewInScrollView
+        android:layout_below="@+id/title_bar"
+        android:id="@+id/lv_teaching_experiences"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </com.linkingwin.education.studyonline.student.view.ListViewInScrollView>
+
+</LinearLayout>

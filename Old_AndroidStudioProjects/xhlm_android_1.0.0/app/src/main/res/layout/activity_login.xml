@@ -1,0 +1,134 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customView="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColorWhite"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <com.youth.banner.Banner
+        android:id="@+id/login_banner"
+        android:contentDescription="@string/banner"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/titleWhite"/>
+    <ImageView
+        android:id="@+id/iv_vertical_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@mipmap/vertical_bar"
+        android:visibility="gone"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widest_line" />
+    <ImageView
+        android:id="@+id/iv_login_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@mipmap/login_pic" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widest_line" />
+
+    <com.linkingwin.elearn.common.widget.SuperEditText
+        android:id="@+id/et_num"
+        android:layout_width="@dimen/inputwidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        customView:leftIconClick="@drawable/user_select"
+        customView:leftIconUnClick="@drawable/user_unselect"
+        customView:IconDelete="@drawable/del_but_bg"
+        customView:left_width="@integer/lefticon"
+        customView:left_height="@integer/lefticon"
+        customView:delete_width="@integer/deleteicon"
+        customView:delete_height="@integer/deleteicon"
+
+        android:hint="@string/et_hintNum"
+        android:textColorHint="@color/hintEditText"
+        android:textSize="@dimen/editTextSize"
+        android:inputType="phone"
+        android:maxLength="11"
+        />
+    <com.linkingwin.elearn.common.widget.SuperEditText
+        android:id="@+id/et_pwd"
+        android:layout_width="@dimen/inputwidth"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/textListMargin"
+        customView:leftIconClick="@drawable/password_click"
+        customView:leftIconUnClick="@drawable/password_unclick"
+        customView:IconDelete="@drawable/del_but_bg"
+        customView:left_width="@integer/lefticon"
+        customView:left_height="@integer/lefticon"
+        customView:delete_width="@integer/deleteicon"
+        customView:delete_height="@integer/deleteicon"
+
+        android:hint="@string/et_hintPWD"
+        android:textColorHint="@color/hintEditText"
+        android:textSize="12sp"
+        android:inputType="textPassword"
+        android:maxLength="20"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_forgetPWD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/textListMargin"
+            android:textSize="14sp"
+            android:text="@string/forgetPWD"
+            android:textColor="@color/blue"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentEnd="true"
+            tools:ignore="RtlHardcoded" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_Tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/warnRed"
+        android:textSize="12sp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widest_line" />
+
+    <Button
+        android:id="@+id/bt_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/btMargin50dp"
+        android:layout_marginRight="@dimen/btMargin50dp"
+        android:background="@drawable/btn_blue_gradual"
+        android:text="@string/bt_login"
+        android:textColor="@color/titleWhite" />
+
+    <Button
+        android:id="@+id/bt_Register"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="@dimen/btMargin50dp"
+        android:layout_marginRight="@dimen/btMargin50dp"
+        android:text="@string/bt_newAccount"
+        android:textColor="@color/blue"
+        android:background="@android:color/transparent"
+        android:textSize="14sp"
+        />
+
+</LinearLayout>

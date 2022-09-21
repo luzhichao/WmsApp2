@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>条码打印</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+    <!-- <div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">成品条码</div>
+    <div class="aui-tab-item">原材料条码</div>
+</div> -->
+    <div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+        <form id="printForm" class="aui-content aui-margin-b-10 aui-margin-t-10">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">容器编号</div>
+                        <div class="aui-list-item-input">
+                            <input id="con" type="text" v-model.trim="formData.con" @keyup.enter="onEnter" placeholder="输入或扫描容器编号">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnter">
+                                查询
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料编码</div>
+                        <div class="aui-list-item-input">
+                            <input id="code" type="text" v-model.trim="formData.code" placeholder="输入物料编码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料名称</div>
+                        <div class="aui-list-item-input">
+                            <input id="name" type="text" v-model.trim="formData.name" placeholder="输入物料名称">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">批次</div>
+                        <div class="aui-list-item-input">
+                            <input id="lot" type="number" v-model.trim="formData.lot" placeholder="输入批次">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">数量</div>
+                        <div class="aui-list-item-input">
+                            <input id="num" type="number" v-model.trim="formData.num" placeholder="输入数量">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+            <button class="aui-btn aui-col-xs-12 aui-btn-success" @click="printBarCode" :disabled="printFlag">条码打印</button>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/print.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+        new Vue({
+            el: '#aui-tab-1',
+            data: {
+                formData: {
+                    code: "", //"TX52010210-01",
+                    name: "", //"连杆",
+                    lot: "", //"202008260001",
+                    num: "", //"120",
+                    con: "", //"S2012010001",
+                },
+                printFlag: false,
+                formValidator: null,
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.formValidator = new Validator('printForm', [
+                        { name: 'code', display: "物料编码必填", rules: 'required' },
+                        { name: 'name', display: "物料名称必填", rules: 'required' },
+                        { name: 'lot', display: "批次号必填", rules: 'required' },
+                        // { name: 'num', display: "数量必填", rules: 'required' },
+                        { name: 'con', display: "容器编码必填", rules: 'required' },
+                    ])
+                },
+                //扫描物料编码查询物料名称
+                onEnter: function() {
+                    var that = this;
+                    var ret = getStockByCodeFn(that.formData.con, 2);
+                    if(ret && ret.length > 0){
+                        var stock = ret[0];
+                        that.formData.code = stock.mrlCode;
+                        that.formData.name = stock.mrlName;
+                        that.formData.lot = stock.lotCode;
+                    }else{
+                        return api.toast({
+                            msg: "该容器为空容器",
+                            location: 'middle'
+                        });
+                    }
+                },
+                printBarCode: function() {
+                    var that = this;
+                    that.printFlag = true;
+                    var valid = that.formValidator.validate();
+                    // console.log("打标签==>"+JSON.stringify(valid))
+                    if (valid.errors && valid.errors.length > 0) {
+                        api.alert({
+                            msg: valid.errors[0].display,
+                            location: 'middle'
+                        });
+                    } else {
+                        printToJiaBo(that.formData.code, that.formData.name, that.formData.lot, that.formData.num, that.formData.con);
+                    }
+                    that.printFlag = false;
+                }
+            }
+        });
+    };
+</script>
+
+</html>

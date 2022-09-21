@@ -1,0 +1,4 @@
+#Thu Sep 17 22:26:06 CST 2020
+base.0=C\:\\Users\\crazy24\\Desktop\\ModulesDevProject_1.1.44\\ModulesDevProject\\ModulesDevProject_Android\\androidstudio\\APICloudModuleSDK\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\43
+path.0=classes.dex
+renamed.0=classes.dex

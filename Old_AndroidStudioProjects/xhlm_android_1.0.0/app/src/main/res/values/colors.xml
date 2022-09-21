@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#008577</color>-->
+    <!--<color name="colorPrimaryDark">#00574B</color>-->
+    <!--<color name="colorAccent">#D81B60</color>-->
+    <color name="colorPrimary">#25b9f9</color>
+    <color name="colorPrimaryDark">@color/blue</color>
+    <color name="colorAccent">#FF4081</color>
+    <!--自定义配色-->
+    <color name="titleWhite">#FFFFFF</color>
+    <color name="titleBlack">#000000</color>
+    <color name="blue">#229DFA</color>
+    <color name="warnRed">#ff0000</color>
+    <color name="hintEditText">#A6AFB6</color>
+    <color name="white">#ffffff</color>
+    <color name="titleBlue">#229DFA</color>
+
+    <color name="alphablue">#e038A9F6</color>
+    <!--EDITTEXT编辑下划线，LineEditText横线默认颜色-->
+    <color name="lineColor_click">#25b9f9</color>
+    <color name="lineColor_unclick">#B2B2B2</color>
+
+    <!--按钮背景色-->
+    <color name="btBackground">#CCC</color>
+
+    <!--背景色-->
+    <color name="backgroundColor">#EFEFEF</color>
+    <color name="backgroundColorWhite">#FFFFFF</color>
+
+    <!--title返回的状态栏下划线的颜色-->
+    <color name="titleLineColor">#EFEFEF</color>
+</resources>

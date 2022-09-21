@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>盘点作业</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+    <div id="inventory">
+        <div class="aui-tab" id="head-tab">
+            <div class="aui-tab-item aui-active">盘点单</div>
+            <div id="aui-tab-item-2" class="aui-tab-item">作业</div>
+        </div>
+        <form class="aui-content" id="form">
+            <div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+                <ul class="aui-list aui-form-list">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">盘点单号</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="formData.taskCode" readonly>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">仓库名称</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="formData.workCenterName" readonly>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">盘点类型</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="formData.taskTypeName" readonly>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">单据日期</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="formData.createDate" readonly>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">任务描述</div>
+                            <div class="aui-list-item-input">
+                                <textarea v-model="formData.taskDsc" readonly></textarea>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+                    <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="querySourceList">源单查询</div>
+                </footer>
+            </div>
+            <div id="aui-tab-2" class="tab-content-item app">
+                <ul class="aui-list aui-form-list">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">库位</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="planData.workCellCode" id="workcellCode" @keyup.enter="onEnterWorkCellCode" placeholder="扫描或手工输入库位编码">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">扫描容器</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="planData.parentContainerCode" id="parentContainerCode" @keyup.enter="onEnterBarCode" placeholder="扫描或手工输入容器编码">
+                            </div>
+                            <div class="aui-list-item-right">
+                                <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnterBarCode">
+                                    查询
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">物料条码</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="planData.mrlCode" id="mrlCode" @keyup.enter="onEnterMrlCode" placeholder="扫描或手工输入物料编码">
+                            </div>
+                            <div class="aui-list-item-right">
+                                <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnterMrlCode">
+                                    查询
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">批次号</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="planData.lotCode" id="lotCode" placeholder="扫描或手工输入待盘批次号">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">库存数量</div>
+                            <div class="aui-list-item-input">
+                                <input type="number" v-model="planData.stockQty" readonly>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">实盘数量</div>
+                            <div class="aui-list-item-input">
+                                <input type="number" v-model="planData.qty" placeholder="请输入实盘数量">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <table id="bootstrap-tab"></table>
+                <footer class="aui-bar aui-bar-tab aui-row" id="footer-2">
+                    <div class="aui-btn aui-col-xs-6 aui-btn-primary" @click="saveInventory">保存</div>
+                    <div class="aui-btn aui-col-xs-6 aui-btn-primary" @click="submit">提交</div>
+                </footer>
+            </div>
+        </form>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+
+
+<script type="text/javascript">
+    apiready = function() {
+        $("#scanCode").focus();
+        var dialog = new auiDialog({});
+        var app1 = new Vue({
+            el: '#inventory',
+            data: {
+                validator: null,
+                formData: {
+                    taskCode: "",
+                    workCenterName: "",
+                    taskType: "",
+                    taskTypeName: "",
+                    createDate: "",
+                    taskDsc: "",
+                    details: []
+                },
+                planData: {
+                    planCode: "", // 盘点单号
+                    workCellCode: "", //库位code
+                    parentContainerCode: "", //容器code
+                    mrlCode: "", // 物料code
+                    mrlName: "",
+                    lotCode: "", //批次
+                    stockQty: 0,
+                    qty: "", //数量
+                },
+                tableField: [{
+                        field: 'rowNum',
+                        title: '行号'
+                    },
+                    {
+                        field: 'planCode',
+                        title: '任务编码'
+                    },
+                    {
+                        field: 'workCellCode',
+                        title: '库位编码'
+                    },
+                    {
+                        field: 'parentContainerCode',
+                        title: '容器编码'
+                    },
+                    {
+                        field: 'mrlCode',
+                        title: '物料编码'
+                    },
+                    {
+                        field: 'lotCode',
+                        title: '批次号'
+                    },
+                    {
+                        field: 'qty',
+                        title: '数量'
+                    },
+                ],
+                tableData: [],
+
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.initTab();
+                    this.initTable();
+                    this.initEvent();
+                    this.validator = new Validator('form', [
+                        { name: 'workCellCode', display: "库位编码必填", rules: 'required' },
+                        { name: 'parentContainerCode', display: "容器编码必填", rules: 'required' },
+                        { name: 'mrlCode', display: "物料编码必填", rules: 'required' },
+                        { name: 'qty', display: "实盘数量必填", rules: 'required' },
+                        { name: 'lotCode', display: "批次号必填", rules: 'required' },
+                    ])
+                },
+                initTab: function() {
+                    var that = this;
+                    //初始化多tab结构
+                    that.auiTab = new auiTab({
+                        element: document.getElementById("head-tab"),
+                        index: 1,
+                        repeatClick: false
+                    }, that.toTab);
+                },
+                toTab: function(param) {
+                    var that = this;
+                    var index = param.index;
+                    $('.tab-content-item').removeClass('tab-content-item-active');
+                    $('#aui-tab-' + index).addClass('tab-content-item-active');
+                    if (param.auto) {
+                        that.auiTab.setActive(index);
+                    }
+                },
+                initTable: function() {
+                    var that = this;
+                    $("#bootstrap-tab").bootstrapTable('destroy');
+                    $("#bootstrap-tab").bootstrapTable({
+                        columns: that.tableField,
+                        data: that.tableData,
+                    });
+                },
+                initEvent: function() {
+                    var that = this;
+                    api.addEventListener({
+                        name: 'boge-inventoryBill'
+                    }, function(ret) {
+                        console.log("==源单带回==>" + JSON.stringify(ret.value.value));
+                        var reslut = ret.value.value;
+                        that.formData.taskCode= reslut.taskCode;
+                        that.formData.workCenterName= reslut.workCenterName;
+                        that.formData.taskType= reslut.taskType;
+                        that.formData.taskTypeName= reslut.taskType == "0" ? "区域盘点" : "物料盘点";
+                        that.formData.createDate= reslut.createDate;
+                        that.formData.taskDsc=reslut.taskDsc;
+                        that.formData.details= reslut.details;
+                        that.planData.planCode = reslut.taskCode;
+                    });
+                },
+                querySourceList: function() {
+                    api.openWin({
+                        name: 'inventoryBill_Prd_Query',
+                        url: '../sdxc_query/inventoryBill_Query.html',
+                        pageParam: {
+                            'event': 'boge-inventoryBill',
+                        }
+                    });
+                },
+                checkExists: function(code) {
+                    var that = this;
+                    var ex = false;
+                    if (that.formData.details) {
+                        that.formData.details.forEach(function(d) {
+                            if (d.code == code) {
+                                ex = true;
+                            }
+                        });
+                    }
+                    console.log("ex===>" + ex);
+                    return ex;
+                },
+                onEnterWorkCellCode: function() {
+                    var that = this;
+                    if (that.formData.taskType == "0" && !that.checkExists(that.planData.workCellCode)) {
+                        console.log("==workCellCode==>"+that.planData.workCellCode)
+                        that.planData.workCellCode = "";
+                        return api.alert({
+                            msg: "该库位不在盘点单内！",
+                            location: 'middle'
+                        });
+                    }
+                },
+                onEnterBarCode: function() {
+                    var that = this;
+                    var ret = getCtInfoForInvFn(that.planData.planCode, that.planData.parentContainerCode);
+                    if(ret.type == "error"){
+                        return api.alert({
+                            msg: ret.data,
+                            location: 'middle'
+                        });
+                    }
+                    if (ret.workCellCode != that.planData.workCellCode) {
+                        dialog.alert({
+                            title: "该容器不在当前库位下，确认继续操作吗？",
+                            buttons: ['取消', '确定']
+                        }, function(ret) {
+                            if (ret.buttonIndex == 2) {
+                                console.log("ret===>"+JSON.stringify(ret))
+                                that.onEnterBarCodeAfter(ret);
+                            }
+                        })
+                    } else {
+                        that.onEnterBarCodeAfter(ret)
+                    }
+                },
+                onEnterBarCodeAfter: function(ret) {
+                    var that = this;
+                    var allMrl = ret.mrlLotQty;
+                    if (allMrl && allMrl.length == 1) {
+                        var mrl = allMrl[0];
+                        if (that.formData.taskType == "1" && !that.checkExists(mrl.mrlCode)) {
+                            that.planData.mrlCode = "";
+                            that.planData.mrlName = "";
+                            that.planData.lotCode = "";
+                            return api.alert({
+                                msg: "该物料不在盘点单内！",
+                                location: 'middle'
+                            });
+                        } else {
+                            that.planData.mrlCode = mrl.mrlCode;
+                            that.planData.mrlName = mrl.mrlName;
+                            that.planData.lotCode = mrl.lotCode;
+                            that.planData.stockQty = mrl.qty;
+                        }
+                    } else if (allMrl && allMrl.length > 1) {
+                        return api.alert({
+                            msg: "该容器内有多个物料或批次，请实盘",
+                            location: 'middle'
+                        });
+                    }
+
+                },
+                onEnterMrlCode: function() {
+                    var that = this;
+                    if (that.formData.taskType == "" && !that.checkExists(that.planData.mrlCode)) {
+                        that.planData.mrlCode = "";
+                        return api.alert({
+                            msg: "该物料不在盘点单内！",
+                            location: 'middle'
+                        });
+                    } else {
+                        var ret = getMrlByMrlCodeFn(that.planData.mrlCode);
+                        if (ret) {
+                            that.formData.name = ret.mrlName;
+                        } else {
+                            return api.toast({
+                                msg: '数据不存在',
+                                location: 'middle'
+                            });
+                        }
+                    }
+
+                },
+                saveInventory: function() {
+                    var that = this;
+                    var valid = that.validator.validate();
+                    if (valid.errors && valid.errors.length > 0) {
+                        api.alert({
+                            msg: valid.errors[0].display,
+                            location: 'middle'
+                        });
+                    } else {
+                        if (!that.planData.planCode) {
+                            return api.alert({
+                                msg: "请先选择要操作的盘点任务",
+                                location: 'middle'
+                            });
+                        }
+                        if (that.tableData && that.tableData.length >= 10) {
+                            return api.alert({
+                                msg: "已操作10个，先提交在操作",
+                                location: 'middle'
+                            });
+                        }
+                        if (that.planData.qty != that.planData.stockQty) {
+                            dialog.alert({
+                                title: "实际数量与库存数量不一致，继续操作吗？",
+                                buttons: ['取消', '确定']
+                            }, function(ret) {
+                                if (ret.buttonIndex == 2) {
+                                    that.planData.rowNum = that.tableData.length + 1;
+                                    that.tableData.push(JSON.parse(JSON.stringify(that.planData)));
+                                    that.planData = {
+                                        workCellCode: "",
+                                        parentContainerCode: "",
+                                        mrlCode: "",
+                                        lotCode: "",
+                                        stockQty: 0,
+                                        qty: 0,
+                                    };
+                                    that.initTable();
+                                }
+                            })
+                        }
+                    }
+                },
+                submit: function() {
+                    var that = this;
+                    if (that.tableData && that.tableData.length == 0) {
+                        return api.alert({
+                            msg: "无提交数据！",
+                            location: 'middle'
+                        });
+                    }
+                    console.log("==submit==>"+ JSON.stringify(that.tableData))
+                    var ret = submitInevtoryFn(JSON.stringify(that.tableData));
+                    if(ret.errCode == 0){
+                        that.tableData = [];
+                        that.initTable();
+                    }
+                },
+            }
+        });
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".teacher.activities.HomePage">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.youth.banner.Banner
+        android:id="@+id/home_banner"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:contentDescription="@string/banner" />
+
+    <LinearLayout
+        android:id="@+id/ll_apply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp25"
+        android:layout_marginTop="@dimen/dp10"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="@dimen/dp60"
+            android:layout_height="@dimen/dp60"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:layout_width="1sp"
+            android:layout_height="@dimen/dp50"
+            android:layout_marginLeft="@dimen/dp25"
+            android:layout_marginTop="@dimen/dp5"
+            android:layout_marginRight="@dimen/dp25"
+            android:layout_marginBottom="@dimen/dp5"
+            android:layout_toRightOf="@id/iv_icon"
+            android:background="@color/backgroundColor" />
+
+        <RelativeLayout
+            android:id="@+id/rl_apply"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp25"
+            android:layout_marginRight="@dimen/dp25"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请完成开课申请"
+                android:textSize="@dimen/sp14" />
+
+
+            <TextView
+                android:id="@+id/tv_apply_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_tip"
+                android:text="继续申请"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/sp14" />
+            <ImageView
+                android:layout_centerInParent="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/arrows_right" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/ll_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:layout_marginTop="@dimen/dp10"
+        android:layout_marginBottom="@dimen/dp10"
+        android:background="@color/backgroundColor" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginLeft="@dimen/dp25"
+        android:layout_marginBottom="@dimen/dp25"
+        android:text="指标中心" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="35dp"
+            android:background="@drawable/cycle_chart"
+            android:gravity="center"
+            android:text="128\n节课" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:background="@drawable/cycle_chart"
+            android:gravity="center"
+            android:text="90%\n好评" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="@dimen/dp25"
+        android:layout_marginBottom="@dimen/dp25"
+        android:background="@color/backgroundColor" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp5"
+        android:gravity="center"
+        android:text="近7天是否接单？\n选择不接单，不会影响生源~" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp5"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_blue_nosolid"
+            android:text="不接单"
+            android:textColor="@color/blue" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp25"
+            android:background="@drawable/btn_blue_gradual"
+            android:text="接单"
+            android:textColor="@color/titleWhite" />
+    </LinearLayout>
+</LinearLayout>
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

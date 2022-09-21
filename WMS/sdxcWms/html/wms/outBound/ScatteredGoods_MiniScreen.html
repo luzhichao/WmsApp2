@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>零拣</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">选择任务</div>
+    <div id="aui-tab-item-2" class="aui-tab-item">绑定容器</div>
+    <div id="aui-tab-item-3" class="aui-tab-item">拣货</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <table id="bootstrap-tab-1"></table>
+    <footer id="footer-1" class="aui-bar aui-bar-tab aui-row" v-show="isShowButton">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="executePick">执行</div>
+    </footer>
+</div>
+<div id="aui-tab-2" class="tab-content-item app">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">小推车</div>
+                    <div class="aui-list-item-input">
+                        <input id="TrolleyId" type="text" @keyup.enter="scanningTrolley('parent')" v-model.trim="pickCarCode" placeholder="请扫描小推车条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">目的地</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="curDest" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">周转箱</div>
+                    <div class="aui-list-item-input">
+                        <input id="PassBoxId"  type="text" @keyup.enter="scanningTrolley('child')" v-model="boxCode" placeholder="扫描周转箱">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">总箱数</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="totalBoxNum" v-model="totalBoxNum" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">绑箱数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="boxNum" v-model="boxNum" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-2" style="table-layout: fixed"></table>
+    <footer id="footer-2" class="aui-bar aui-bar-tab aui-row" v-show="isShowButton">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="executePick">执行</div>
+    </footer>
+</div>
+<div id="aui-tab-3" class="tab-content-item app">
+    <ul class="aui-list aui-form-list">
+        <li class="aui-list-item" style="margin-bottom: 10px;">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">周转箱</div>
+                <div class="aui-list-item-input">
+                    <input  type="text" name="boxCode" v-model="boxCode" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">物料编码</div>
+                <div class="aui-list-item-input">
+                    <input type="text" v-model="currentPickInfo.mrlCode" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">物料名称</div>
+                <div class="aui-list-item-input">
+                    <input type="text" v-model="currentPickInfo.mrlName" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">应拣数量</div>
+                <div class="aui-list-item-input">
+                    <input type="text" v-model="currentPickInfo.qty" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">实拣数量</div>
+                <div class="aui-list-item-input">
+                    <input type="text" v-model="actualQty" readonly="readonly">
+                </div>
+                <div class="aui-list-item-right">
+                    <div class="aui-btn aui-btn-info"
+                         style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right"
+                         @click="changeQty">
+                        修改
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">库位编码</div>
+                <div class="aui-list-item-input">
+                    <input type="text" v-model="currentPickInfo.sourceWorkCellCode" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">扫描库位</div>
+                <div class="aui-list-item-input">
+                    <input id="checkWorkCellCode" type="text" @keyup.enter="checkWorkCellCode" v-model="scanWorkCellCode">
+                </div>
+                <div class="aui-list-item-right">
+                    <div class="aui-btn aui-btn-info"
+                         style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right"
+                         @click="comfirmSacttered">
+                        确认
+                    </div>
+                </div>
+            </div>
+        </li>
+
+    </ul>
+    <div class="aui-margin-b-10 aui-margin-t-10">
+        <table id="bootstrap-tab-3" style="table-layout: fixed"></table>
+    </div>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-3">
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    /**
+     * 操作流程
+     *      1.Tab1选择入库任务
+     *          源单选取 或 扫描箱码解析PO号带出入库任务
+     *      2.Tab2 逐一扫描箱码
+     *      3.Tab3 提交生成采购入库单
+     */
+
+    /**
+     * 页面配置参数
+     */
+
+    var pageConfig = {
+    };
+
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    var tableField1 = [
+        {name: 'rowId', title: '序号', width: 30, formatter: function(value, row, index) {return index + 1;}},
+        {name: 'destination', title: '目的地编码'},
+        {name: 'isReady', title: '操作', formatter: function(value, row, index) {return row.isReady == 0 ? '' : '就绪';}}
+    ];
+    var tableField2 = [
+        {name: 'rowId', title: '序号', width: 30, formatter: function(value, row, index) {return index + 1;}},
+        {name: 'destination', title: '目的地编码'},
+        {name: 'boxCode', title: '周转箱'}
+    ];
+    var tableField3 = [
+        {name: '', title: '序号', width: 60, formatter: function (value, row, index) {return index + 1;}},
+        {name: 'pickTaskId', title: "id", width: 120}, //  visible: false
+        {name: 'destination', title: "目的地", width: 120},
+        {name: 'ctBarCode', title: "周转箱编码", width: 120},
+        {name: "mrlCode", title: "物料编码", width: 120},
+        {name: 'mrlName', title: "物料名称", width: 180},
+        {name: 'qty', title: '订单数量', width: 80},
+        {name: 'actualQty', title: '本次拣货数量', width: 80}
+    ];
+
+    apiready = function () {
+        //1.初始化多tab结构
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+
+        //2.初始化表格
+        initTable(1, tableField1, null, function(row, $element, field) {
+            var title;
+            if (row.isReady == 0) {
+                title = "是否开始该目的地的作业"
+            } else {
+                title = "是否取消该目的地的作业"
+            }
+            dialog.alert({
+                title: title,
+                buttons: ['取消', '确定']
+            }, function(ret) {
+                if (ret.buttonIndex === 2) {
+                    var isReady = row.isReady == 0 ? '1' : '0';
+                    row.isReady = isReady;
+                    if (isReady == 1) {
+                        vueData1.readyTodoNum += 1;
+                    } else {
+                        vueData1.readyTodoNum -= 1;
+                    }
+                    var tableData = $('#bootstrap-tab-1').bootstrapTable('getData');
+                    for (var i = 0; i < tableData.length; i++) {
+                        if (tableData[i].destination == row.destination) {
+                            $("#bootstrap-tab-1").bootstrapTable('updateRow', {
+                                index: i,
+                                row: row
+                            });
+                            break;
+                        }
+                    }
+                }
+            })
+        }, function(row) {
+            var style;
+            if (row.isReady == 1) {
+                style = {
+                    css: {
+                        'background-color': '#03A9F4'
+                    }
+                }; //动态变化的，蓝色
+                return style;
+            }
+            return {
+                css: {
+                    'background-color': 'e3e3e3'
+                }
+            }; //默认样式
+        });
+        initTable(2, tableField2);
+        initTable(3, tableField3);
+
+        //3.设置监听(查询页面数据的回传)
+        setQueryListener(api);
+
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getAlonePickTask.m'),
+            dataType: "json",
+            data: {
+                'workCenterCode': localStorage.getItem('workCenterCode')
+            },
+            async: false,
+            success: function (res) {
+                // console.log(JSON.stringify(res.data));
+                if (res.errCode == 0) {
+                    if (res.data.length != 0) {
+                        vueData1.allPickTaskJSONObject = res.data;
+
+                        for (var i = 0; i < vueData1.allPickTaskJSONObject.length; i++) {
+                            insertDateAtTable(1, 'prepend', [{
+                                destination: vueData1.allPickTaskJSONObject[i].destination,
+                                isReady: 0
+                            }]);
+                        }
+                        api.hideProgress();
+                    }
+                } else {
+                    api.hideProgress();
+                }
+            },
+            error: function (e) {
+                api.hideProgress();
+            }
+        });
+    };
+
+    /*--------------VUE1-BEGIN-------------*/
+    let vueData1 = {
+        allPickTaskJSONObject: [],  //所有待拣的零拣任务
+        readyTodoNum: 0,            //待拣货的任务，以[目的地]为一个操作单位
+        isShowButton: true,         //是否显示 [执行]按钮，点击执行后隐藏该按钮
+    };
+    let app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        methods: {
+            executePick: function () {
+                //Step1.校验是否有选中的任务
+                if (vueData1.readyTodoNum === 0) {
+                    api.toast({msg: '请先选择目的地再操作！', location: 'middle'});
+                    return false;
+                }
+                //执行后不允许修改[目的地],用户确认
+                dialog.alert({
+                    title: "执行后不允许修改[目的地],请确认!",
+                    buttons: ['取消', '确定']
+                }, function (ret) {
+                    if (ret.buttonIndex === 2) {
+                        //隐藏执行按钮; 进入tab2页面
+                        vueData1.isShowButton = false;
+                        $('.tab-content-item').removeClass('tab-content-item-active');
+                        $('#aui-tab-2').addClass('tab-content-item-active');
+                        $('.aui-tab-item').removeClass('aui-active');
+                        $('#aui-tab-item-2').addClass('aui-active');
+
+                        //Step2.为待拣货的pickTaskJSONObject对象赋值
+                        let tab1Data = $('#bootstrap-tab-1').bootstrapTable('getData');
+                        for (let i = 0; i < tab1Data.length; i++) {
+                            if (tab1Data[i].isReady === '1') {
+                                for (let j = 0; j < vueData1.allPickTaskJSONObject.length; j++) {
+                                    if (vueData1.allPickTaskJSONObject[j].destination === tab1Data[i].destination) {
+                                        vueData2.pickTaskJSONObject.push(vueData1.allPickTaskJSONObject[j]);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        vueData2.curDest = vueData1.allPickTaskJSONObject[0].destination;
+                        vueData2.totalBoxNum = vueData1.readyTodoNum;
+                        //console.log(JSON.stringify(vueData2.pickTaskJSONObject));
+                    }
+                })
+            }
+        }
+    });
+    /*--------------VUE1-END-------------*/
+
+
+
+    /*--------------VUE2-BEGIN-------------*/
+    let vueData2 = {
+        pickCarCode: '',              //小推车条码
+        boxCode: '',                 //周转箱
+        pickTaskJSONObject: [],      //待拣货任务JSON对象
+        curDest: '',                 //目的地
+        totalBoxNum: 0,              //总箱数
+        boxNum: 0,                   //绑箱数量
+        isShowButton: true           //是否显示[执行按钮]
+    };
+    let app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        mounted: function () {
+        },
+        methods: {
+            /**
+             * 扫描容器：小推车 或 周转箱
+             */
+            scanningTrolley(value) {
+                //Step1.查询容器，根据类型获取条码
+                let barCode;
+                if (value === "child") {
+                    barCode = vueData2.boxCode;
+                    if (!vueData2.pickCarCode) {
+                        return api.toast({
+                            msg: "请先扫描小推车!",
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                    if (vueData2.pickCarCode === barCode) {
+                        return api.toast({
+                            msg: "小推车条码与周转箱条码一样，请确认!",
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                } else {
+                    barCode = vueData2.pickCarCode;
+                }
+                let retObj = getMrlInfoByBarCode(barCode);
+                if (retObj != null) {
+                    if (value === "child") {
+                        //Step2.校验：1)判断是否有父容器; 2)判断是否已经被扫描
+                        let obj = getParentBarcodeByBarcode(barCode);
+
+                        if (!!obj) {
+                            return api.toast({
+                                msg: "该周转箱已与其他的小推车绑定，请重新扫描其他未绑定周转箱!",
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        } else {
+                            let tab2Data = $('#bootstrap-tab-2').bootstrapTable('getData');
+                            let isRepeat = false;
+                            for (let i = 0; i < tab2Data.length; i++) {
+                                if (vueData2.boxCode === tab2Data[i].boxCode) {
+                                    isRepeat = true;
+                                }
+                            }
+                            if (isRepeat) {
+                                vueData2.boxCode = "";
+                                $('#PassBoxId').focus();
+                                return api.toast({
+                                    msg: "该周转箱已绑定，请重新扫描其他未绑定周转箱!",
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+
+                            //Step3.绑定箱子目的地关系
+                            let nextDest = "";
+                            for (let i = 0; i < vueData2.pickTaskJSONObject.length; i++) {
+                                if (!vueData2.pickTaskJSONObject[i].boxCode) {
+                                    if (vueData2.curDest === vueData2.pickTaskJSONObject[i].destination) {
+                                        vueData2.pickTaskJSONObject[i].boxCode = vueData2.boxCode;
+                                        insertDateAtTable(2, 'prepend', [{
+                                            destination: vueData2.pickTaskJSONObject[i].destination,
+                                            boxCode: vueData2.boxCode,
+                                        }]);
+                                        vueData2.boxNum++;
+                                    }
+                                }
+                            }
+
+                            for (let i = 0; i < vueData2.pickTaskJSONObject.length; i++) {
+                                if (!vueData2.pickTaskJSONObject[i].boxCode) {
+                                    nextDest = vueData2.pickTaskJSONObject[i].destination;
+                                }
+                            }
+
+                            vueData2.curDest = nextDest;
+                            if (nextDest === "") {
+                                vueData2.boxCode = "";
+                                $("#PassBoxId").focus();
+                                //console.log(JSON.stringify(vueData2.pickTaskJSONObject))
+                                return api.toast({
+                                    msg: "周转箱目的地已绑定完毕!",
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        }
+                    }
+                    vueData2.boxCode = "";
+                    $("#PassBoxId").focus();
+                }
+            },
+            executePick: function () {
+                //Step1.校验是否有选中的任务
+                if (vueData2.boxNum != vueData2.totalBoxNum) {
+                    return api.toast({msg: '目的地与周转箱未绑定完,请确认！', location: 'middle'});
+                }
+                //执行后不允许修改[目的地],用户确认
+                dialog.alert({
+                    title: "执行后不允许修改,请确认!",
+                    buttons: ['取消', '确定']
+                }, function (ret) {
+                    if (ret.buttonIndex === 2) {
+                        //隐藏执行按钮; 进入tab2页面
+                        vueData2.isShowButton = false;
+                        $('.tab-content-item').removeClass('tab-content-item-active');
+                        $('#aui-tab-3').addClass('tab-content-item-active');
+                        $('#aui-tab-item-2').removeClass('aui-active');
+                        $('#aui-tab-item-3').addClass('aui-active');
+
+                        //Step2.初始化tab3的数据
+                        vueData3.pickTaskJSONObject = vueData2.pickTaskJSONObject;
+                        for (var i = 0; i < vueData3.pickTaskJSONObject.length; i++) {
+                            vueData3.pickTaskJSONObject[i].isPicking = true;
+                            vueData3.pickTaskJSONObject[i].isPicked = false;
+                        }
+                        vueData3.pickTaskJSONObject[0].mrlInfo[0].isPicking = true;
+                        vueData3.pickTaskJSONObject[0].mrlInfo[0].isPicked = false;
+                        vueData3.currentPickInfo = vueData3.pickTaskJSONObject[0].mrlInfo[0];
+                        vueData3.boxCode = vueData3.pickTaskJSONObject[0].boxCode;
+                    }
+                })
+            }
+        }
+    });
+    /*--------------VUE2-END-------------*/
+
+
+    /*--------------vue3--------------*/
+    let vueData3 = {
+        pickTaskJSONObject: [],      //待拣货任务JSON对象\
+        currentPickInfo: {},         //正在执行的拣货任务
+        boxCode: "",                 //正在执行的周转箱
+        scanWorkCellCode: "",        //扫描的实际库位
+        actualQty: 0,                //实际拣货数量
+    };
+    let app3 = new Vue({
+        el: '#aui-tab-3',
+        data: vueData3,
+        methods: {
+            /**
+             * 确认扫描库位和目标库位一致
+             */
+            checkWorkCellCode: function() {
+                if (vueData3.scanWorkCellCode != vueData3.currentPickInfo.sourceWorkCellCode) {
+                    vueData3.scanWorkCellCode = "";
+                    $('#checkWorkCellCode').focus();
+                    return api.alert({
+                        title: '警告',
+                        msg: '扫描库位与任务中的库位不一致，请检查!'
+                    });
+                }
+                vueData3.actualQty = vueData3.currentPickInfo.qty;
+                toast.success({
+                    title: '扫描成功',
+                    duration: 2000
+                });
+                //console.log(JSON.stringify(vueData3.pickTaskJSONObject))
+            },
+            /**
+             * 点击周转箱确认拣选完成
+             */
+            comfirmSacttered() {
+                //Step1.校验
+                if (vueData3.scanWorkCellCode == "") {
+                    $('#checkWorkCellCode').focus();
+                    return api.alert({
+                        title: '警告',
+                        msg: '请先扫描库位后再确认拣货！'
+                    });
+                }
+                if (vueData3.scanWorkCellCode != vueData3.currentPickInfo.sourceWorkCellCode) {
+                    vueData3.scanWorkCellCode = "";
+                    $('#checkWorkCellCode').focus();
+                    return api.alert({
+                        title: '警告',
+                        msg: '请先扫描库位后再确认拣货！'
+                    });
+                }
+
+                //Step2.弹框确认
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                api.confirm({
+                    title: '请确认',
+                    msg: '是否完成对物料：【' + vueData3.currentPickInfo.mrlName +'】的拣货，数量为：【' + vueData3.actualQty + '】',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        //Step3.根据标记isPacking,找到正在执行的拣货任务
+                        var breakFlag = false;
+                        for (var i = 0; i < vueData3.pickTaskJSONObject.length; i++) {
+                            if (breakFlag) {
+                                break;
+                            }
+                            if (vueData3.pickTaskJSONObject[i].isPicking) {
+                                for (var j = 0; j < vueData3.pickTaskJSONObject[i].mrlInfo.length; j++) {
+                                    var pickingObj = vueData3.pickTaskJSONObject[i].mrlInfo[j];
+                                    if (pickingObj.isPicking) {
+                                        //打上标记，用于跳出循环
+                                        breakFlag = true;
+                                        if (pickingObj.qty < vueData3.actualQty) {
+                                            api.toast({
+                                                msg: "当前零拣物料为可分割物料且超过该周转箱所需数数量，请重新修改数量!",
+                                                duration: 3000,
+                                                location: 'middle'
+                                            });
+                                            return;
+                                        }
+                                        //记录已被拣货完成,正在拣货的标识更改
+                                        vueData3.pickTaskJSONObject[i].isPicking = false;
+                                        vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicked = true;
+                                        vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicking = false;
+                                        //Step4.将记录写入提交tab页面
+                                        if (vueData3.actualQty && vueData3.actualQty > 0) {
+                                            pickingObj.actualQty = vueData3.actualQty
+                                        } else {
+                                            pickingObj.actualQty = pickingObj.qty;
+                                        }
+                                        insertDateAtTable(3, 'prepend', [{
+                                            destination: pickingObj.destination,
+                                            ctBarCode: vueData3.pickTaskJSONObject[i].boxCode,
+                                            mrlCode: pickingObj.mrlCode,
+                                            mrlName: pickingObj.mrlName,
+                                            qty: pickingObj.qty,
+                                            actualQty: pickingObj.actualQty,
+                                            pickTaskId: pickingObj.pickTaskId,
+                                        }]);
+
+                                        //Step5.修改当前下一拣货任务
+                                        // 如果该库位仍有需要拣货的物料则优先推荐，如果没有则推荐该周转箱的其他目标库位
+                                        var sameWorkCellTask = app3.getSameSourceWorkCellTask(pickingObj.sourceWorkCellCode);
+                                        if (sameWorkCellTask != null) {
+                                            //判断上一个周转箱是否已经拣货完毕，改变颜色
+                                            if (app3.isBoxFinished(i)) {
+                                                api.alert({
+                                                    title: '提醒',
+                                                    msg: '周转箱'+ vueData3.pickTaskJSONObject[i].boxCode +'拣货已完成！'
+                                                });
+                                                vueData3.pickTaskJSONObject[i].isPicked = true;
+                                            }
+                                            vueData3.currentPickInfo = sameWorkCellTask;
+                                            vueData3.boxCode = sameWorkCellTask.boxCode;
+                                        } else {
+                                            //判断是否已经全部捡完
+                                            if (app3.isBoxFinished(i)) {
+                                                //若当前周转箱全部拣完则给与提示并修改颜色
+                                                api.alert({
+                                                    title: '提醒',
+                                                    msg: '本周转箱'+ vueData3.pickTaskJSONObject[i].boxCode +'拣货已完成！'
+                                                });
+                                                vueData3.pickTaskJSONObject[i].isPicked = true;
+                                            }
+                                            //判断是否还有下一个周转箱子
+                                            var nextTask = app3.getNextTask();
+                                            if (nextTask != null) {
+                                                vueData3.currentPickInfo = nextTask;
+                                                vueData3.boxCode = nextTask.boxCode;
+                                            }
+                                        }
+                                        vueData3.scanWorkCellCode = "";
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        api.hideProgress();
+                        toast.success({title: '提交成功', duration: 2000});
+                        //console.log(JSON.stringify(vueData3.pickTaskJSONObject))
+                    }else{
+                        api.hideProgress();
+                    }
+                })
+            },
+            /**
+             * 获取同库位下的拣货任务
+             * */
+            getSameSourceWorkCellTask: function(sourceWorkCellCode) {
+                var task = null;
+                var breakFlag =false;
+                for (var i = 0; i < vueData3.pickTaskJSONObject.length; i++) {
+                    if (breakFlag) {
+                        break;
+                    }
+                    for (var j = 0; j < vueData3.pickTaskJSONObject[i].mrlInfo.length; j++) {
+                        if (vueData3.pickTaskJSONObject[i].mrlInfo[j].sourceWorkCellCode == sourceWorkCellCode && vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicked != true) {
+                            vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicking = true;
+                            vueData3.pickTaskJSONObject[i].isPicking = true;
+                            task = vueData3.pickTaskJSONObject[i].mrlInfo[j];
+                            task.boxCode = vueData3.pickTaskJSONObject[i].boxCode;
+                            breakFlag = true;
+                            break;
+                        }
+                    }
+                }
+                return task;
+            },
+            isBoxFinished: function(index){
+                var isFinished = true;
+                for (var i = 0; i < vueData3.pickTaskJSONObject[index].mrlInfo.length; i++) {
+                    if (vueData3.pickTaskJSONObject[index].mrlInfo[i].isPicked == false) {
+                        isFinished = false;
+                    }
+                }
+                return isFinished;
+            },
+            getNextTask: function() {
+                var task = null;
+                var breakFlag =false;
+                for (var i = 0; i < vueData3.pickTaskJSONObject.length; i++) {
+                    if (breakFlag) {
+                        break;
+                    }
+                    for (var j = 0; j < vueData3.pickTaskJSONObject[i].mrlInfo.length; j++) {
+                        if (vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicked == false && vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicking != true) {
+                            vueData3.pickTaskJSONObject[i].mrlInfo[j].isPicking = true;
+                            task = vueData3.pickTaskJSONObject[i].mrlInfo[j];
+                            task.boxCode = vueData3.pickTaskJSONObject[i].boxCode;
+                            breakFlag = true;
+                            break;
+                        }
+                    }
+                }
+                return task;
+            },
+            /**
+             * 修改数量
+             */
+            changeQty: function() {
+                api.confirm({
+                    title: '注意',
+                    msg: '是否手动修改当前周转箱数量？',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        dialog.prompt({
+                            title: "请输入物料数量",
+                            value: vueData3.actualQty,
+                            text: '',
+                            buttons: ['取消', '确定']
+                        }, function(ret) {
+                            if ((ret.text == '' || ret.text == undefined || ret.text == null) && ret.buttonIndex == 2) {
+                                api.toast({
+                                    msg: '请输入数量!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            } else if (!!ret.text && ret.buttonIndex == 2) {
+                                vueData3.actualQty = ret.text;
+                                //app3.comfirmSacttered();
+                            }
+                        });
+                    }
+                })
+            },
+            submit: function () {
+                //校验是否可以提交,所有的isPicked = true
+                var breakFlag =false;
+                for (var i = 0; i < vueData3.pickTaskJSONObject.length; i++) {
+                    if (!vueData3.pickTaskJSONObject[i].isPicked) {
+                        breakFlag = true;
+                    }
+                }
+                if (breakFlag) {
+                    return api.toast({msg: '未全部拣货完毕，请确认!', duration: 3000, location: 'middle'});
+                } else {
+                    var tableData = $('#bootstrap-tab-3').bootstrapTable('getData');
+                    //console.log(JSON.stringify(tableData));
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: getUrl('padWmsController!alonePickCreateRecord.m'),
+                        dataType: "json",
+                        data: {
+                            pickTaskJSONStr: JSON.stringify(tableData),
+                            desBoxRel: JSON.stringify($('#bootstrap-tab-2').bootstrapTable('getData')),
+                        },
+                        async: false,
+                        success: function(res) {
+                            if (res.errCode === 0) {
+                                toast.success({
+                                    title: '提交成功!',
+                                    duration: 2000
+                                });
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 10);
+                            } else {
+                                api.hideProgress();
+                                api.toast({
+                                    msg: res.msg,
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        },
+                        error: function(e) {
+                            api.hideProgress();
+                        }
+
+                    });
+                    return
+                }
+            }
+        }
+    })
+</script>
+
+</html>

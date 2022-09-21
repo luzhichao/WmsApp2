@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>原材料分箱</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">分箱</div>
+    <div class="aui-tab-item">打印</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab-bar-code" @keyup.enter="onEnter" v-model.trim="tabScanCode"
+                               placeholder="扫描原材料箱码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">条码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="barCodeData.barCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <!--<li class="aui-list-item">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">gid</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" v-model="barCodeData.id" readonly="readonly">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="barCodeData.mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料名称</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="barCodeData.mrlName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">供应商编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="barCodeData.supplierCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">原总量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="barCodeData.qty" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次号</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="barCodeData.lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-1"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-4 " @click="refresh">刷新</div>
+        <div class="aui-btn aui-col-xs-4 aui-btn-success" @click="splitBox">分箱</div>
+        <div class="aui-btn aui-col-xs-4 aui-btn-primary" @click="doSubmit">提交</div>
+    </footer>
+</div>
+<div id="aui-tab-2" class="tab-content-item app">
+    <div class="aui-margin-b-10 aui-margin-t-10">
+        <table id="bootstrap-tab-2" style="table-layout: fixed"></table>
+    </div>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-2">
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="printBarCode">条码打印</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    /**
+     * 操作流程
+     *         1.扫描需要合托的箱码
+     *         2.重复1操作
+     *         3.提交保存，后台生成栈板码，维护栈板码与箱码关系
+     */
+
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        maximumBoxNo: 30                //默认一个栈板所能包含的最大箱数
+    };
+
+    var dialog = new auiDialog({});
+    var toast = new auiToast({});
+    var tableField1 = [
+        {
+            name: 'rowNo', title: '', formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name: 'qty', title: '数量'}
+    ];
+    var tableField2 = [
+        {
+            name: 'no', title: '', width: 40, formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {
+            name: 'state', checkbox: 'true'
+        },
+        {name: 'barCode', title: '条码', width: 150, sortable: true, order: 'asc'},
+        {name: 'qty', title: '数量', width: 50}
+    ];
+
+    apiready = function () {
+        //1.初始化多tab结构
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+        //初始化表格
+        initTable(TABLE_INDEX.FIR, tableField1, null,
+            //点击行，允许[删除]操作
+            function (row, $element) {
+                dialog.alert({
+                    title: "确认要从数量为" + (row.qty) + "的箱中继续分箱吗?",
+                    buttons: ['取消', '确定']
+                }, function (ret) {
+                    if (ret.buttonIndex == 2) {
+                        var tempQty = row.qty;
+                        var dialogBox = api.require('dialogBox');
+                        dialogBox.amount({
+                            texts: {
+                                title: '分箱数量',
+                                default: tempQty,
+                                leftBtnTitle: '取消',
+                                rightBtnTitle: '确定'
+                            },
+                            styles: {
+                                bg: '#fff',
+                                corner: 0.5,
+                                w: 300,
+                                h: 200,
+                                title: {
+                                    marginT: 20,
+                                    size: 14,
+                                    color: '#000'
+                                },
+                                input: {
+                                    w: 150,
+                                    h: 44,
+                                    marginT: 15,
+                                    size: 14,
+                                    color: '#000'
+                                },
+                                dividingLine: {
+                                    marginT: 10,
+                                    width: 0.5,
+                                    color: '#696969'
+                                },
+                                left: {
+                                    marginL: 10,
+                                    w: 135,
+                                    h: 55,
+                                    bg: '#d8fffd',
+                                    color: '#003',
+                                    size: 12
+                                },
+                                right: {
+                                    marginR: 10,
+                                    w: 135,
+                                    h: 55,
+                                    bg: '#d8fffd',
+                                    color: '#003',
+                                    size: 12
+                                }
+                            }
+                        }, function (ret) {
+                            if (ret.eventType == 'left') {
+                                dialogBox.close({
+                                    dialogName: 'amount'
+                                });
+                            } else {
+                                var v1 = parseInt(tempQty);
+                                var v2 = parseInt(ret.amount);
+                                if (v1 > v2 && v2 > 0) {
+                                    $('#bootstrap-tab-1').bootstrapTable('updateRow', {
+                                        index: $element.data('index'),
+                                        row: {"qty": v1 - v2}
+                                    });
+                                    insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                        qty: ret.amount
+                                    }]);
+                                    dialogBox.close({
+                                        dialogName: 'amount'
+                                    });
+                                } else {
+                                    alert('数量错误，超出处理范围(过大或过小)');
+                                }
+                            }
+                        });
+                    }
+                })
+            },
+            function (row, index) {
+                var style;
+                if (index == 0) {
+                    style = {css: {'background': '#a3ffeb'}};    //计划数量等于完成数量则变红色
+                    return style;
+                }
+                return {css: {'color': 'e3e3e3'}};      //默认样式
+            }
+        );
+        initTable(2, tableField2, null, null);
+    };
+
+    /*--------------vue1--------------*/
+    var vueData1 = {
+        // isFinishSubmit: false,
+        tabScanCode: '',       //扫描-箱码带出栈码
+        barCodeData: {
+            // id: '',
+            barCode: '',
+            mrlCode: '',
+            mrlName: '',
+            supplierCode: '',      //供应商编码
+            qty: '',        //数量（可修改）
+            lotCode: ''
+        }
+    };
+    new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        methods: {
+            refresh: function () {
+                reloadWin()
+            },
+            onEnter: function () {
+                var barCode = this.tabScanCode;
+                if (!barCode) {
+                    return false
+                }
+                if (vueData1.barCodeData.barCode) {
+                    api.confirm({
+                        title: '提示',
+                        msg: '当前页面存在未提交数据，确认是否加载？',
+                        buttons: ['确定', '取消']
+                    }, function (ret) {
+                        if (ret.buttonIndex === 1) {
+                            var retObj = loadBarCodeInfoByQuery(barCode);
+                            if (JSON.stringify(retObj) == "{}") {
+                                this.tabScanCode = '';
+                                api.toast({msg: '条码： ' + barCode + ' 不存在！', duration: 3000, location: 'middle'});
+                                return false
+                            }
+                            //1.清空bootstrap table
+                            $('#bootstrap-tab-1').bootstrapTable('removeAll');
+                            $('#bootstrap-tab-2').bootstrapTable('removeAll');
+                            //2.加载条码信息
+                            var barCodeObj = vueData1.barCodeData;
+                            for (var key in barCodeObj) {
+                                vueData1.barCodeData[key] = retObj[key];
+                            }
+                            //3.加载一条数据信息
+                            insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                qty: retObj.qty
+                            }]);
+                            $.ajax({
+                                type: "POST",
+                                url: getUrl(OtherUrl.getBarCodesByParentCode),      //判断条码已入库
+                                dataType: "json",
+                                data: {
+                                    barCode: retObj.barCode
+                                },
+                                async: false,
+                                success: function (ret) {
+                                    if (ret.errCode == 0) {
+                                        var childBarCodes = ret.data;
+                                        if (childBarCodes.length > 1) {
+                                            for (var i = 0; i < childBarCodes.length; i++) {
+                                                insertDateAtTable(TABLE_INDEX.SEC, 'prepend', [{
+                                                    barCode: childBarCodes[i].barCode,
+                                                    qty: childBarCodes[i].qty
+                                                }]);
+                                            }
+                                        }
+                                    }
+                                },
+                                error: function (e) {
+                                    console.log(JSON.stringify(e));
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    var retObj = loadBarCodeInfoByQuery(barCode);
+                    if (JSON.stringify(retObj) == "{}") {
+                        this.tabScanCode = '';
+                        api.toast({msg: '条码： ' + barCode + ' 不存在！', duration: 3000, location: 'middle'});
+                        return false
+                    }
+                    var barCodeObj = vueData1.barCodeData;
+                    for (var key in barCodeObj) {
+                        vueData1.barCodeData[key] = retObj[key];
+                    }
+                    insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                        qty: retObj.qty
+                    }]);
+                    $.ajax({
+                        type: "POST",
+                        url: getUrl(OtherUrl.getBarCodesByParentCode),      //判断条码已入库
+                        dataType: "json",
+                        data: {
+                            barCode: vueData1.barCodeData.barCode
+                        },
+                        async: false,
+                        success: function (ret) {
+                            if (ret.errCode == 0) {
+                                var childBarCodes = ret.data;
+                                if (childBarCodes.length > 1) {
+                                    for (var i = 0; i < childBarCodes.length; i++) {
+                                        insertDateAtTable(TABLE_INDEX.SEC, 'prepend', [{
+                                            barCode: childBarCodes[i].barCode,
+                                            qty: childBarCodes[i].qty
+                                        }]);
+                                    }
+                                }
+                            }
+                        },
+                        error: function (e) {
+                            console.log(JSON.stringify(e));
+                        }
+                    });
+                }
+                this.tabScanCode = '';
+            },
+            splitBox: function () {
+                if (!vueData1.barCodeData.barCode) {
+                    api.toast({msg: '没有可供分箱的数据，需要先扫码条码!', duration: 3000, location: 'middle'});
+                    return false
+                }
+                //获取最新的需要拆箱的数据
+                var $table = $('#bootstrap-tab-1');
+                var tableData = $table.bootstrapTable('getData');
+                var tempQty = tableData[0].qty;
+
+                var dialogBox = api.require('dialogBox');
+                dialogBox.amount({
+                    texts: {
+                        title: '分箱数量',
+                        default: tempQty,
+                        leftBtnTitle: '取消',
+                        rightBtnTitle: '确定'
+                    },
+                    styles: {
+                        bg: '#fff',
+                        corner: 0.5,
+                        w: 300,
+                        h: 200,
+                        title: {
+                            marginT: 20,
+                            size: 14,
+                            color: '#000'
+                        },
+                        input: {
+                            w: 150,
+                            h: 44,
+                            marginT: 15,
+                            size: 14,
+                            color: '#000'
+                        },
+                        dividingLine: {
+                            marginT: 10,
+                            width: 0.5,
+                            color: '#696969'
+                        },
+                        left: {
+                            marginL: 10,
+                            w: 135,
+                            h: 55,
+                            bg: '#d8fffd',
+                            color: '#003',
+                            size: 12
+                        },
+                        right: {
+                            marginR: 10,
+                            w: 135,
+                            h: 55,
+                            bg: '#d8fffd',
+                            color: '#003',
+                            size: 12
+                        }
+                    }
+                }, function (ret) {
+                    if (ret.eventType == 'left') {
+                        dialogBox.close({
+                            dialogName: 'amount'
+                        });
+                    } else {
+                        var v1 = parseInt(tempQty);
+                        var v2 = parseInt(ret.amount);
+                        if (v1 > v2 && v2 > 0) {
+                            $table.bootstrapTable('updateRow', {index: 0, row: {"qty": v1 - v2}});
+                            insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                qty: ret.amount
+                            }]);
+                            dialogBox.close({
+                                dialogName: 'amount'
+                            });
+                        } else {
+                            alert('数量错误，超出处理范围(过大或过小)');
+                        }
+                    }
+                });
+            },
+            doSubmit: function () {
+                var tableData = $('#bootstrap-tab-1').bootstrapTable('getData');
+                if (tableData.length <= 1) {
+                    api.toast({msg: "没有分箱的数据可以提交！", duration: 3000, location: 'middle'});
+                    return;
+                }
+                var arr = [];
+                for (var i = 0; i < tableData.length; i++) {
+                    arr.push(tableData[i].qty)
+                }
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                api.ajax({
+                    url: getUrl(OtherUrl.splitBox),
+                    method: 'post',
+                    timeout: 60,
+                    data: {
+                        values: {
+                            barCode: vueData1.barCodeData.barCode,
+                            numbers: arr.join(',')
+                        }
+                    }
+                }, function (ret) {
+                    api.hideProgress();
+                    if (ret && ret.errCode == 0) {
+                        var childBarCodes = ret.data;
+                        if (childBarCodes.length > 1) {
+                            $('#bootstrap-tab-2').bootstrapTable('load', '');
+                            for (var i = 0; i < childBarCodes.length; i++) {
+                                insertDateAtTable(TABLE_INDEX.SEC, 'prepend', [{
+                                    barCode: childBarCodes[i].barCode,
+                                    qty: childBarCodes[i].qty
+                                }]);
+                            }
+                        }
+
+
+                        api.toast({msg: '操作成功！', duration: 3000, location: 'middle'});
+                    } else {
+                        api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                    }
+                });
+            }
+        }
+    });
+
+    var vueData2 = {};
+    var app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        methods: {
+            printBarCode: function () {
+                var tableData2 = $('#bootstrap-tab-2').bootstrapTable('getData');
+                if (tableData2.length < 1) {
+                    api.toast({msg: "没有条码数据可以打印！", duration: 3000, location: 'middle'});
+                    return false;
+                } else {
+                    //将打印的条码合并
+                    var barCodesStr = "";
+                    var tableDate2s = [];
+                    for (var i = 0; i < tableData2.length; i++) {
+                        if (tableData2[i].state && tableData2[i].state == true) {
+                            tableDate2s.push(tableData2[i]);
+                        }
+                    }
+                    for (var i = 0; i < tableDate2s.length; i++) {
+                        if (i < tableDate2s.length - 1 && tableDate2s.length != 1) {
+                            barCodesStr += tableDate2s[i].barCode + ',,,,,';            //后台用',,,,,'来分割获取所有条码
+                        } else {
+                            barCodesStr += tableDate2s[i].barCode;
+                        }
+                    }
+                    if (barCodesStr != "") {
+                        // var siteCode = localStorage.getItem('siteCode');
+                        // var printType = '';
+                        // if (siteCode == '1001') {    //孝感-烽火
+                        //     printType = 'FH';
+                        // } else if (siteCode == '1002') {  //武汉-华为
+                        //     printType = 'HW';
+                        // }
+                        printBarCode(barCodesStr);
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</html>

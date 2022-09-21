@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_marginLeft="@dimen/dp_20"
+        android:id="@+id/tv_timeStartEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2018.07-2018.10"/>
+    <TextView
+        android:layout_marginTop="@dimen/dp10"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_below="@+id/tv_timeStartEnd"
+        android:id="@+id/tv_detailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="***中学一级语文老师"/>
+    <TextView
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_below="@+id/tv_detailTitle"
+        android:id="@+id/tv_detailContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="***学校一线语文教师，多年**重点班教学及班主任工作，所带班级名列前茅，有丰富的教学经验。"/>
+</RelativeLayout>

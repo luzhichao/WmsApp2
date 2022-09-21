@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:id="@+id/title_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/flag"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_width="4px"
+            android:layout_height="30dp"
+            android:background="@color/btn_pressed_green_solid"/>
+        <TextView
+            android:layout_alignLeft="@+id/flag"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/actionbar_title_size"
+            android:text="@string/teaching_characteristics"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/grid_bar"
+        android:layout_below="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <GridView
+            android:id="@+id/gv_schoolTags"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"></GridView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_below="@+id/grid_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:padding="@dimen/dp10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="个人简介：北京林业大学硕士研究生，新东方7年一对一教学经验。
+从内因调动学生学习积极性，注重培养学生独立解决问题和归纳总结的能力，与家长沟通诚恳，上课认真负责，注重考试题型研究，全部以真题授课，深受学生喜欢和家长信任"/>
+    </LinearLayout>
+</RelativeLayout>

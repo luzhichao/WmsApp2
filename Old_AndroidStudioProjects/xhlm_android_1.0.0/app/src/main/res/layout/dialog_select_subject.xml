@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/titleWhite"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/angel_blue_gradual"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp10">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:text="取消"
+            android:textColor="@color/titleWhite"
+            android:textSize="@dimen/titleSize" />
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/titleSize" />
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/right_margin"
+            android:textSize="@dimen/titleSize"
+            android:text="确定"
+            android:textColor="@color/titleWhite" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_dep_Sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp5"
+        android:layout_marginRight="@dimen/dp5">
+            <TextView
+                android:id="@+id/tv_depart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="主讲学部"
+                android:textSize="@dimen/sp16" />
+            <LinearLayout
+                android:id="@+id/ll_depart_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp10"
+                android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/cb_xx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_depart"
+                android:layout_margin="@dimen/dp5"
+                android:background="@drawable/btn_checkbox_selector"
+                android:button="@null"
+                android:padding="@dimen/dp5"
+                android:text="小学"
+                android:textSize="@dimen/sp14" />
+
+            <CheckBox
+                android:id="@+id/cb_cz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_depart"
+                android:layout_margin="@dimen/dp5"
+                android:layout_toRightOf="@id/cb_xx"
+                android:background="@drawable/btn_checkbox_selector"
+                android:button="@null"
+                android:padding="@dimen/dp5"
+                android:text="初中"
+                android:textSize="@dimen/sp14" />
+
+            <CheckBox
+                android:id="@+id/cb_gz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_depart"
+                android:layout_margin="@dimen/dp5"
+                android:layout_toRightOf="@id/cb_cz"
+                android:background="@drawable/btn_checkbox_selector"
+                android:button="@null"
+                android:padding="@dimen/dp5"
+                android:text="高中"
+                android:textSize="@dimen/sp14" />
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="授课科目"
+            android:textSize="@dimen/sp16" />
+        <LinearLayout
+            android:id="@+id/ll_subject_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp10"
+            android:orientation="vertical">
+            <CheckBox
+                android:id="@+id/cb_sx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp5"
+                android:background="@drawable/btn_checkbox_selector"
+                android:button="@null"
+                android:padding="@dimen/dp5"
+                android:text="数学"
+                android:textSize="@dimen/sp14" />
+
+            <CheckBox
+                android:id="@+id/cb_yw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp5"
+                android:background="@drawable/btn_checkbox_selector"
+                android:button="@null"
+                android:padding="@dimen/dp5"
+                android:text="语文"
+                android:textSize="@dimen/sp14" />
+
+            <CheckBox
+                android:id="@+id/cb_yy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp5"
+                android:background="@drawable/btn_checkbox_selector"
+                android:button="@null"
+                android:padding="@dimen/dp5"
+                android:text="英语"
+                android:textSize="@dimen/sp14" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp10"
+            android:layout_marginBottom="@dimen/dp15"
+            android:text="请谨慎选择，这会影响到您接受的学生范围"
+            android:textColor="@color/warnRed"
+            android:textSize="@dimen/sp14" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_teaching_age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <com.wx.wheelview.widget.WheelView
+            android:id="@+id/wv_teaching_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

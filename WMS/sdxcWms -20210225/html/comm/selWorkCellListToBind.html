@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>title</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../../css/api.css"/> -->
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+
+		.aui-btn {
+			width: 8em;
+			height: 3em;
+			line-height: 3em;
+			vertical-align: middle;
+		}
+
+		.aui-btn-info {
+			padding: 0em;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav" style="background-color: #03a9f4" id="header">
+		<a class="aui-pull-left aui-btn" onclick="api.closeFrame();">
+			<span class="aui-iconfont aui-icon-left"></span>
+		</a>
+		<div class="aui-title">工位列表</div>
+	</header>
+	<div style="height: 10px;width: 100%;margin-bottom: 30px;"></div>
+	<footer class="aui-bar aui-bar-tab" id="footer">
+		<div class="aui-bar-tab-item aui-active" tapmode>
+			<div class="aui-btn aui-btn-info " onclick="resetBtu();">重置</div>
+		</div>
+		<div class="aui-bar-tab-item" tapmode>
+			<div class="aui-btn aui-btn-info" onclick="doubleTabSaveCellAndCloseMenu();">确定</div>
+		</div>
+	</footer>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		 getAllWorkCenterAndCell();
+	}
+	function getAllWorkCenterAndCell() {
+		var serverUrl = "http://" + localStorage.getItem("serverIp") + ":" + localStorage.getItem("serverPort") + "/" + localStorage.getItem("serverProject") + "/";
+		var url = getUrl("padCommController!getAllWorkCenterAndCell.m");
+		var un = localStorage.getItem('un');
+		var params = new Object();
+		params.url = url;
+		params.method = 'post';
+		params.dataType = 'json';
+		var data = {
+			values: {
+				un: un
+			}
+		};
+		ajaxForData(params, data, true, function(ret, err) {
+			var mydata = eval("(" + ret.data + ")");
+			var footer = $api.byId('footer');
+			var header = $api.byId('header');
+			var footerPos = $api.offset(footer);
+			var headerPos = $api.offset(header);
+			var moduleMenuView = api.require('moduleMenuView');
+			var param = {
+				x: 0, //left
+				y: headerPos.h, //top
+				w: api.frameWidth, //width
+				h: api.winHeight - footerPos.h - headerPos.h, //height
+				choseMore: true, //是否可以多选
+				selColor: '#FF0000', //选中的颜色
+				fixedOn: api.frameName,
+				rows: mydata
+			};
+			moduleMenuView.open(param);
+		});
+	}
+
+	function doubleTabSaveCellAndCloseMenu() {
+		var cellIds = localStorage.getItem("bindCellId") == null ? [] : localStorage.getItem("bindCellId").split(",");
+		var cellCodes = localStorage.getItem("bindCellCode") == null ? [] : localStorage.getItem("bindCellCode").split(",");
+		var cellNames = localStorage.getItem("bindCellName") == null ? [] : localStorage.getItem("bindCellName").split(",");
+		var moduleMenuView = api.require('moduleMenuView');
+		var result = moduleMenuView.getSelectContent();
+		var msg = "本次绑定工位：";
+		//校验是否要添加工位  0为添加 1为不添加
+		var flag = 0;
+		for (var i = 0; i < result.cell.length; i++) {
+			flag = 0;
+			for (var j = 0; j < cellIds.length; j++) {
+				if (result.cell[i].id == cellIds[j]) {
+					flag = 1;
+				}
+			}
+			if (flag == 0) {
+				cellIds.push(result.cell[i].id);
+				cellCodes.push(result.cell[i].code);
+				cellNames.push(result.cell[i].name);
+			}
+		}
+		var workCellList = new Array();
+
+		function WorkCellObj(cellId, cellCode, cellName) {
+			this.cellId = cellId;
+			this.cellCode = cellCode;
+			this.cellName = cellName;
+		}
+		for (var i = 0; i < cellIds.length; i++) {
+			workCellList.push(new WorkCellObj(cellIds[i], cellCodes[i], cellNames[i]));
+		}
+		workCellList.sort(function(a, b) {
+			var numA = a.cellName.substring(a.cellName.indexOf('[') + 3, a.cellName.indexOf(']'));
+			var numB = b.cellName.substring(b.cellName.indexOf('[') + 3, b.cellName.indexOf(']'));
+			return numA - numB;
+		});
+		cellIds.length = 0;
+		cellCodes.length = 0;
+		cellNames.length = 0;
+		for (var i = 0; i < workCellList.length; i++) {
+			cellIds.push(workCellList[i].cellId);
+			cellCodes.push(workCellList[i].cellCode);
+			cellNames.push(workCellList[i].cellName);
+		}
+		msg += cellNames.join(",");
+		api.confirm({
+			title: '绑定工位',
+			msg: msg,
+			buttons: ['确定', '取消']
+		}, function(ret, err) {
+			var index = ret.buttonIndex;
+			if (index == 1) {
+				//将选中的工位信息存放在本地缓存
+				localStorage.setItem('bindCellId', cellIds);
+				localStorage.setItem('bindCellCode', cellCodes);
+				localStorage.setItem('bindCellName', cellNames);
+			}
+		});
+	}
+
+	function closeMenu() {
+		var moduleMenuView = api.require('moduleMenuView');
+		var result = moduleMenuView.getSelectContent();
+		console.log(JSON.stringify(result));
+		if (result.cell.length > 0) {
+			var centerId = result.id;
+			var centerCode = result.code;
+			var centerName = result.name;
+			var cellId = result.cell[0].id;
+			var cellCode = result.cell[0].code;
+			var cellName = result.cell[0].name;
+			var msg = "绑定工位：" + cellName;
+			api.confirm({
+				title: '绑定工位',
+				msg: msg,
+				buttons: ['确定', '取消']
+			}, function(ret, err) {
+				var index = ret.buttonIndex;
+				if (index == 1) {
+					//将选中的工位信息存放在本地缓存
+					localStorage.setItem('bindCellId', cellId);
+					localStorage.setItem('bindCellCode', cellCode);
+					localStorage.setItem('bindCellName', cellName);
+					moduleMenuView.close();
+					api.closeFrame();
+				} else {
+					return;
+				}
+			});
+
+		} else {
+			alert("请选择工位");
+		}
+	}
+
+	function resetBtu() {
+		localStorage.removeItem('bindCellId');
+		localStorage.removeItem('bindCellCode');
+		localStorage.removeItem('bindCellName');
+		api.toast({
+			msg: '工位已解绑，请重新绑定工位！',
+			duration: 3000,
+			location: 'middle'
+		});
+		getAllWorkCenterAndCell();
+	}
+</script>
+
+</html>

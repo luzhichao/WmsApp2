@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<script src="../script/api.js"></script>
+<style>
+    
+</style>
+</head>
+<body>
+    <header id='header' class="aui-bar aui-bar-nav" style="background-color: #03a9f4">
+	    <a class="aui-pull-left aui-btn" onclick="api.closeWin();">
+	        <span class="aui-iconfont aui-icon-left"></span>
+	    </a>
+	    <div class="aui-title" id="middle">
+	    	<!--<img src='../image/logo-smaller.png'/>-->
+	    </div>
+	</header>
+</body>
+<script>
+
+apiready = function() {
+    var pageUrl = api.pageParam.url;
+    
+    var title = api.pageParam.title;
+    var div = document.getElementById('middle');
+   	div.innerHTML = "<strong id='title'>"+title+"</strong>";
+    
+    var modelStr = "";
+    var exceptionType = "";
+    if("exUemInit.html" == pageUrl)
+	{
+		modelStr = "UEM";
+		exceptionType = "SB_EXCEPTION";
+	}
+	if("exUmmInit.html" == pageUrl)
+	{
+		modelStr = "UMM";
+		exceptionType = "WL_EXCEPTION";
+	}
+	if("exUqcInit.html" == pageUrl)
+	{
+		modelStr = "UQC";
+		exceptionType = "ZL_EXCEPTION";
+	}
+    
+	openExInitFrame(exceptionType);
+}
+	
+	function doBack()
+	{
+		localStorage.removeItem("picNames");
+		api.openWin({
+		    name: 'main',
+		    url: 'main.html'
+		});
+		api.openWin({
+		    name: 'main',
+		    url: 'mainJS.html'
+		});
+		api.closeWin({
+		    name: 'about2'
+		});
+		api.closeWin({
+		    name: 'about3'
+		});
+		api.closeWin({
+		    name: 'about4'
+		});
+	}
+
+	function getExType(modelName)
+	{
+		var exTypeId = "";
+		var exTypeCode = "";
+		var exTypeName = "";
+		var header = $api.byId('header');
+	    $api.fixIos7Bar(header);
+	    var pageUrl = api.pageParam.url;
+	    
+	    var flag = api.pageParam.flag;
+	    var workCellCode = api.pageParam.workCellCode;
+	    
+	    //alert(flag + ":" + workCellCode);
+	    
+	    var headerPos = $api.offset(header);//获取元素在页面中的位置与宽高
+	    
+	    var title = api.pageParam.title;
+	
+		var serverUrl = localStorage.getItem('serverUrl');
+		var url = serverUrl + "padController!getUsmType.m";
+		var un = localStorage.getItem('un');
+		var pw = localStorage.getItem('pw');
+		var serverIp = localStorage.getItem('serverIp');
+		var serverPort = localStorage.getItem('serverPort');
+		var serverProject = localStorage.getItem('serverProject');
+		var url1 = serverIp+":"+serverPort+"/"+serverProject;
+		
+		api.ajax({
+		    url: url,
+		    method: 'post',
+		    dataType: 'json',
+		    returnAll: 'false',//是否需要返回所有response信息，为true时，返回的头信息获取方法(ret.headers)，消息体信息获取方法(ret.body)，状态码获取方法(ret.statusCode)
+		    timeout: 60,
+		    data: {
+		        values: { 
+		            un: un,
+		            pw: pw,
+		            url: url1
+		        }
+		    }
+		},function(ret, err){
+			
+			if(ret.type == 'success'){
+				var myobj=eval(ret.data); 
+				
+		        for (var i = 0; i < myobj.length; i++) {
+		        	if(myobj[i].usmTypeModelCode == modelName)
+					{
+						exTypeId = myobj[i].usmTypeId;
+						exTypeCode = myobj[i].usmTypeCode;
+						exTypeName = myobj[i].usmTypeName;
+						break;
+					}
+				}
+				
+				//alert(exTypeId);
+				//alert(exTypeCode);
+				//alert(exTypeName);
+				
+				var div = document.getElementById('middle');
+			   	div.innerHTML = "<span id='title' style='font-size: 20px'>"+title+"</span>";
+			   	
+			   	var rightDiv = document.getElementById('right');
+			   	rightDiv.innerHTML = "<span class='logo-right clearfix'><img class='aui-img-object' src='../image/logo-smaller.png'/></span>";
+			   	var frameH = api.winHeight - headerPos.h;
+			    api.openFrame({
+			        name: 'about-con',
+			        url: pageUrl,
+			        rect:{
+			            x:0,
+			            y:headerPos.h,
+			            w:'auto',
+			            h:frameH
+			        },
+			        pageParam: {
+						exTypeId : exTypeId,
+						exTypeCode : exTypeCode,
+						exTypeName : exTypeName,
+						flag : flag,
+						workCellCode : workCellCode
+			    	},
+			        bgColor: '#FFFFFF',
+			        showProgress: true,
+			        bounces: false
+			    });
+				
+			}else{
+				alert(JSON.stringify(err));
+			}
+		    
+		});
+	}
+
+	function openExInitFrame(exceptionType)
+	{
+		var header = $api.byId('header');
+	    //$api.fixIos7Bar(header);
+	    var pageUrl = api.pageParam.url;
+	    
+	    var flag = api.pageParam.flag;
+	    var workCellCode = api.pageParam.workCellCode;
+	    var equipCode = api.pageParam.equipCode;//设备编码
+	    var headerPos = $api.offset(header);//获取元素在页面中的位置与宽高
+	    
+	    var frameH = api.winHeight - headerPos.h;
+	    api.openFrame({
+	        name: 'about-con',
+	        url: pageUrl,
+	        rect:{
+	            x:0,
+	            y:headerPos.h,
+	            w:'auto',
+	            h:frameH
+	        },
+	        pageParam: {
+				exceptionType : exceptionType,
+				flag : flag,
+				workCellCode : workCellCode,
+				equipCode:equipCode
+	    	},
+	        bgColor: '#FFFFFF',
+	        showProgress: true,
+	        bounces: false
+	    });
+	} 
+</script>
+</html>

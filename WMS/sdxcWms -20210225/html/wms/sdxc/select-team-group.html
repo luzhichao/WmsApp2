@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>选择报工班组人员</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/LCalendar.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="select-team">
+        <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">班组</div>
+                        <div class="aui-list-item-input">
+                            <select id="teamGroup" @change="slectTeams($event)">
+                                <option value="" key="" readonly>--请选择--
+                                </option>
+                                <option v-for="(item,index) in teamGroups" :value="item.id" :key="item.id">{{item.groupName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <table id="bootstrap-tab"></table>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+            <div class="aui-btn aui-col-xs-6 aui-btn-success" @click="cancel">取消</div>
+            <div class="aui-btn aui-col-xs-6 aui-btn-success" @click="submit">确定</div>
+        </footer>
+    </div>
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript">
+    var tableField = [{
+            field: 'check',
+            title: '',
+            checkbox: true
+        },
+        {
+            field: 'groupCode',
+            title: '班组编号'
+        },
+        {
+            field: 'name',
+            title: '人员名称'
+        },
+        {
+            field: 'code',
+            title: '人员编码'
+        },
+    ];
+    apiready = function() {
+        var app = new Vue({
+            el: '#select-team',
+            data: {
+                teamGroups: [],
+                selectedTeamGroup: "",
+                users: [],//{ "groupCode": 123, "name": "张三", "code": "abc", "check": true }
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.initTable();
+                    this.initTeamGroup();
+                },
+                initTable: function() {
+                    var that = this;
+                    $("#bootstrap-tab").bootstrapTable('destroy');
+                    $("#bootstrap-tab").bootstrapTable({
+                        columns: tableField,
+                        data: that.users,
+                        onClickRow: that.onClickRowFunction
+                    });
+                },
+                initTeamGroup: function() {
+                    this.teamGroups = api.pageParam.teams;
+                },
+                onClickRowFunction: function(row, $element, field) {
+                    var that = this;
+                    that.users.forEach(function(u) {
+                        if (u.code == row.code) {
+                            u.check = !u.check;
+                        }
+                    })
+                    that.initTable();
+                },
+                slectTeams: function(event) {
+                    var that = this;
+                    that.selectedTeamGroup = event.target.value;
+                    //TODO
+                    var rets = findUsersByTeamGroupFn(that.selectedTeamGroup);
+                    if(rets && rets.length > 0){
+                        rets.forEach(function(r){
+                            r.check = true;
+                        });
+                        that.users = rets;
+                    }
+                    that.initTable();
+                },
+                cancel: function() {
+                    api.closeFrame({name:"selectTeamGroup"});
+                },
+                submit: function() {
+                    var that = this;
+                    var selected = $("#bootstrap-tab").bootstrapTable("getSelections");
+                    console.log(JSON.stringify(selected))
+                    api.sendEvent({
+                        name: api.pageParam.event,
+                        extra: {
+                            teamGroup: that.selectedTeamGroup,
+                            users: selected
+                        }
+                    });
+                    api.closeFrame({name:"selectTeamGroup"});
+                },
+            }
+        });
+    }
+</script>
+
+</html>

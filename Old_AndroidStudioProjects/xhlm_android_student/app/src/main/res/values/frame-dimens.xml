@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- ********************************************* common 公用尺寸值_start ****************************************** -->
+
+    <dimen name="global_padding">5.0dip</dimen>
+
+    <dimen name="actionbar_title_size">20sp</dimen>
+    <dimen name="actionbar_text_size">20sp</dimen>
+    <dimen name="actionbar_height">45sp</dimen>
+
+    <!-- 列表 小字体 蓝色  -->
+    <dimen name="detail_blue_smaller">12sp</dimen>
+    <!-- 列表 小字体 灰色 -->
+    <dimen name="detail_gray_smaller">12sp</dimen>
+
+
+    <!--  选择 大字体   -->
+    <dimen name="choice_ware_bigger">16sp</dimen>
+
+
+    <!-- 列表 大字体 蓝色  -->
+    <dimen name="detail_blue_bigger">18sp</dimen>
+    <!-- 列表 大字体 灰色 -->
+    <dimen name="detail_gray_bigger">14sp</dimen>
+    <!-- 列表 标题  -->
+    <dimen name="detail_title">17sp</dimen>
+
+
+    <!-- 列表 表头高度  -->
+    <dimen name="detail_title_head_h">50sp</dimen>
+
+    <!-- 列表 表头高度  -->
+    <dimen name="choice_contrance_name_h">33sp</dimen>
+
+    <!-- 按钮字体大小 -->
+    <dimen name="btn_text_size">15sp</dimen>
+    <dimen name="notice_text_size">23sp</dimen>
+
+    <!-- 侧滑列表item高度 -->
+    <dimen name="drawer_list_item_high">60dp</dimen>
+
+
+
+
+
+    <!-- ******************************************** common 公用尺寸值_end ****************************************** -->
+
+</resources>

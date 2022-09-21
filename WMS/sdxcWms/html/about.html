@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<script src="../script/api.js"></script>
+	<style>
+
+	</style>
+</head>
+
+<body>
+	<header id='header' class="aui-bar aui-bar-nav" style="background-color: #03a9f4">
+		<a class="aui-pull-left aui-btn" onclick="api.closeWin();">
+			<span class="aui-iconfont aui-icon-left"></span>
+		</a>
+		<div class="aui-title" id="middle">
+			<!--<img src='../image/logo-smaller.png'/>-->
+		</div>
+	</header>
+</body>
+<script>
+	apiready = function() {
+
+		// api.setScreenOrientation({
+		// 	orientation : 'landscape_left'
+		// });
+		api.setFullScreen({
+			fullScreen: true
+		});
+
+		var header = $api.byId('header');
+		//$api.fixIos7Bar(header);
+
+		var headerPos = $api.offset(header); //获取元素在页面中的位置与宽高
+		//var pageUrl = "http://" + api.pageParam.url;
+		var pageUrl = api.pageParam.url;
+
+		var title = api.pageParam.title;
+		var div = document.getElementById('middle');
+		div.innerHTML = "<strong id='title'>" + title + "</strong>";
+
+		var frameH = api.winHeight - headerPos.h;
+		console.log('pageUrl :'+pageUrl)
+		api.openFrame({
+			name: 'about-con',
+			url: pageUrl,
+			rect: {
+				x: 0,
+				y: headerPos.h,
+				w: 'auto',
+				h: frameH
+			},
+			bgColor: '#FFFFFF',
+			showProgress: true,
+			bounces: false
+		});
+
+	}
+</script>
+
+</html>

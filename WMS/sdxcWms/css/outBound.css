@@ -1,0 +1,346 @@
+/*
+拣货出库样式
+*/
+.shipment-easyLayout{
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	box-sizing: border-box;
+	padding: .75rem .75rem;
+  display: none;
+}
+
+.shipment-easyLayout.shipment-easyLayout-active{
+  display: block;
+}
+
+.shipment-easyLayout-item{
+	width:100%;
+	height: 6rem;
+	background-color: rgb(255,239,213);
+	box-sizing: border-box;
+	border: 1px solid black;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 10px 0 0 10px;
+}
+
+.shipment-easyLayout-item>*{
+	width: 50%;
+	height:auto;
+	display: inline-block;
+	color: rgb(30,144,255);
+}
+
+.shipment-easyLayout-item-margin{
+	margin-bottom: 5px;
+}
+
+/*选择工位作业*/
+.selectLocation-left{
+  width: 60%;
+  height: 100%;
+}
+
+.selectLocation-left-top,.selectLocation-right-top{
+  width: 100%;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.selectLocation-left-top *{
+  font-size: 18px;
+  font-weight: bolder;
+  color: black;
+}
+
+.selectLocation-left-top-left{
+  box-sizing: border-box;
+  margin-right: .5rem;
+}
+
+.selectLocation-left-top-right{
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.selectLocation-left-top-right p{
+  width: 1rem;
+  white-space: nowrap;
+  margin-right: 2rem;
+}
+
+.selectLocation-left-bottom{
+  width: 100%;
+  max-height: 16rem;
+}
+
+/*
+分割线
+*/
+.selectLocation-divider{
+  width: 1px;
+  height: 16rem;
+  margin-top: 2rem;
+  background-color: black;
+  box-sizing: border-box;
+  margin-left: calc(5% - 0.5px);
+  margin-right: calc(5% - 0.5px);
+}
+
+.selectLocation-right{
+  width: 30%;
+  height: 100%;
+}
+
+.selectLocation-right-table{
+  width: 100%;
+  max-height: 16rem;
+}
+
+
+/*绑箱操作*/
+.tiedBox-left{
+  width: 47.5%;
+  height: 20rem;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tiedBox-left-img , .operation-left-img{
+  z-index: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+	opacity: 0.3;
+}
+
+.tiedBox-divider  , .operation-divider{
+  width: 1px;
+  height: 20rem;
+  background-color: black;
+  box-sizing: border-box;
+  margin-left: calc(5% - 0.5px);
+  margin-right: calc(5% - 0.5px);
+}
+
+.tiedBox-left-box , .operation-left-box{
+  z-index: 999;
+  box-sizing: border-box;
+  border: 1px solid black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.operation-left-box {
+	width: 3rem;
+	height:3rem;
+}
+
+.color-default {
+	background-color: white;
+}
+
+.color-1{
+	background-color: red;
+}
+
+.color-2{
+	background-color: green;
+}
+
+.color-3{
+	background-color: rgb(141,238,238);
+}
+
+.passBoxNum{
+  width: 6rem;
+  height: 6rem;
+	justify-content: center;
+}
+
+.passBoxNum-0{
+  width: 4rem;
+  height: 4rem;
+	justify-content: space-between;
+}
+
+.passBoxNum-1{
+  width: 4rem;
+  height: 4rem;
+	justify-content: center;
+}
+
+.passBoxNum-2{
+  width: 3rem;
+  height: 3rem;
+	justify-content: space-between;
+}
+
+.passBoxNum-3{
+  width: 2rem;
+  height: 2rem;
+	justify-content: space-between;
+}
+
+
+/*拣货作业*/
+.operation-left{
+  width: 35%;
+  height: 20rem;
+}
+
+.operation-left-title{
+  width: 100%;
+  height: 12rem;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.operation-left-content{
+  width: 100%;
+  height: 8rem;
+  display: flex;
+}
+
+.operation-left-content-left,.operation-left-content-right{
+  width: 50%;
+  font-size: 12px;
+  color: black;
+}
+
+.operation-right{
+  width: 55%;
+  height: 20rem;
+  box-sizing: border-box;
+  padding: .5rem;
+  padding-right: 0;
+}
+
+.operation-right-title{
+  height: 2rem;
+  line-height: 2rem;
+}
+
+.operation-right-content{
+  width: 100%;
+  height:8rem;
+  display: flex;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.operation-right-content-left{
+  width: 50%;
+  height: 100%;
+  border-right: 1px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.endStack-operation-right-content-left{
+	width: 60%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.endStack-operation-right-content-right{
+	width: 60%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.operation-right-content p.operation-p-40{
+  width: 30%;
+  word-break: break-word;
+}
+
+.operation-right-content p.operation-p-60{
+  width: 70%;
+  font-size: 14px;
+  color: black;
+  word-break: break-word;
+}
+
+.operation-right-content-right{
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.operation-right-body{
+  width: 100%;
+  height: 6rem;
+}
+
+.operation-right-body-title{
+  display: flex;
+  flex-wrap: nowrap;
+  height: 2rem;
+  align-items: center;
+}
+
+.operation-right-body-title p{
+  font-size: 16px;
+  color: black;
+}
+
+.operation-right-body-content{
+  width:100%;
+  height: 8rem;
+  display: flex;
+	flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.operation-right-body-content .operation-right-item{
+  width: 70%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.manyBtn{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.manyBtn div{
+	width: 30%;
+	height: 2rem;
+	border-radius: .1rem;
+	border: 1px solid black;
+	color: black;
+	background-color: rgb(40,153,252);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.manyBtn div.marginLeft{
+	margin-left: 5%;
+}

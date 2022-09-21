@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>组托拆托</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+    <div class="aui-tab" id="frame">
+        <div class="aui-tab-item aui-active">组托</div>
+        <div class="aui-tab-item">拆托</div>
+    </div>
+    <div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+        <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">库位</div>
+                        <div class="aui-list-item-input">
+                            <select @change="getSubArea($event)" id="sub-area">
+                                <option v-for="(item,index) in subAreaItems" :value="item.WORKCELLCODE">
+                                    {{item.WORKCELLNAME}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-margin-b-10">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">托盘条码</div>
+                        <div class="aui-list-item-input">
+                            <input id="tab1-scan-barcode1" type="text" @keyup.enter="onEnterPBarCode"
+                                v-model.trim="tab1ScanCode" placeholder="扫描容器条码">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info"
+                                style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right"
+                                @click="createCntrCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">条码</div>
+                        <div class="aui-list-item-input">
+                            <input id="tab1-scan-barcode2" type="text" @keyup.enter="onEnterBarCode"
+                                v-model.trim="tab1ScanCode2" placeholder="扫描或手工输入物料编码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料名称</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model.trim="mrlName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料编码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model.trim="mrlCode" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料类型</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model.trim="mrlTypeName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">规格</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model.trim="specification" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">图号</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model.trim="drawing" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">单位</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="measureName" readOnly="readOnly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" v-if="controlCode == 1 && childCtBarcode == ''">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">批次</div>
+                        <div class="aui-list-item-input">
+                            <select @change="selectLotCode($event)" id="sub-lotCode">
+                                <option v-for="(item,index) in lotCodeList" :value="item.qty">{{item.lotCode}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" v-if="controlCode == 10">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">批次号</div>
+                        <div class="aui-list-item-input">
+                            <input id="tab1-scan-lotCode" type="text" @keyup.enter="onEnterLotCode"
+                                v-model.trim="lotCode" placeholder="扫描或手工输入批次号">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <table id="bootstrap-tab-1"></table>
+        <table id="bootstrap-tab-2" class="aui-table-show"></table>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+            <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="doSubmit">提交</div>
+        </footer>
+    </div>
+    <div id="aui-tab-2" class="tab-content-item app">
+        <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">库位</div>
+                        <div class="aui-list-item-input">
+                            <select @change="getSubArea($event)" id="sub-area">
+                                <option v-for="(item,index) in subAreaItems" :value="item.WORKCELLCODE">
+                                    {{item.WORKCELLNAME}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">容器</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="tab2-scan-barcode" @keyup.enter="scanContainerCode"
+                                v-model.trim="tab2ScanCode" placeholder="扫描原始容器条码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" style="display:none">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">容器</div>
+                        <div class="aui-list-item-input">
+                            <input type="text">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript">
+    /**
+     * TODO:
+     * 操作流程
+     *   *合托*:
+     *         1.扫描任意箱码带出栈板及所属的所有箱码
+     *         2.扫描需要合托的箱码
+     *         3.提交保存
+     *   *拆托*:
+     *
+     */
+
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        isConfirmMaxBoxNo: true, //是否弹框确认栈板包含的最大箱数
+        maximumBoxNo: 30 //默认一个栈板所能包含的最大箱数
+    };
+
+    var dialog = new auiDialog({});
+    var tableField1 = [{
+            name: 'rowId',
+            title: '序号',
+            width: 30
+        },
+        {
+            name: 'mrlCode',
+            title: '条码',
+            width: 100,
+            sortable: true,
+            order: 'asc'
+        },
+        {
+            name: "lotCode",
+            title: '批次',
+            width: 80
+        },
+        {
+            name: 'serialNum',
+            title: "SN"
+        },
+        {
+            name: 'qty',
+            title: '数量',
+            width: 40
+        },
+        {
+            name: "operType",
+            title: "操作类型",
+            visible: false
+        },
+        {
+            name: 'ctBarcode',
+            title: "容器编码",
+            visible: false
+        },
+        {
+            name: 'barCode',
+            title: '完整编码',
+            visible: false
+        },
+        {
+            name: 'workCellCode',
+            title: '库位',
+            visible: false
+        },
+    ];
+    var tableField3 = [{
+            name: 'rowId',
+            title: '序号'
+        },
+        {
+            name: 'childCtBarcode',
+            title: '容器编码'
+        },
+        {
+            name: 'ctBarcode',
+            title: "父容器编码",
+            visible: false
+        },
+        {
+            name: "operType",
+            title: "操作类型",
+            visible: false
+        },
+        {
+            name: "qty",
+            title: "数量",
+            visible: false
+        },
+        {
+            name: 'workCellCode',
+            title: '库位',
+            visible: false
+        }
+    ];
+
+    apiready = function () {
+        //1.初始化多tab结构
+        new auiTab({
+            element: document.getElementById("frame")
+        }, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+        $('#tab1-scan-barcode1').focus();
+        //2.初始化表格
+        initTable(TABLE_INDEX.FIR, tableField1, null,
+            //点击行，允许[删除]操作
+            function (row, $element) {
+                dialog.alert({
+                    title: "确认删除第" + ($element.data('index') + 1) + "行吗?",
+                    buttons: ['取消', '确定']
+                }, function (ret) {
+                    if (ret.buttonIndex == 2) {
+                        if (!!row.lotCode) {
+                            for (var i = 0; i < vueData1.lotCodeList.length; i++) {
+                                if (vueData1.lotCodeList[i].lotCode == row.lotCode) {
+                                    app1.$set(vueData1.lotCodeList[i], 'qty', Number(row.qty) + Number(
+                                        vueData1.lotCodeList[i].qty));
+                                }
+                            }
+                        }
+                        $("#bootstrap-tab-1").bootstrapTable('remove', {
+                            field: 'rowId',
+                            values: [row.rowId]
+                        });
+                    }
+                })
+            }
+            //颜色标识 -- 区分栈板原所属箱码与后面合托进去的箱码
+            // function (row) {
+            //     if (row.flag == '0') {
+            //         return {
+            //             classes: 'text-nowrap',
+            //             css: {background: '#dcfbd9'}
+            //         }
+            //     } else {
+            //         return {
+            //             classes: 'text-nowrap',
+            //             css: {background: 'white'}
+            //         }
+            //     }
+            // }
+        );
+        initTable(TABLE_INDEX.SEC, tableField3, null,
+            function (row, $element) {
+                dialog.alert({
+                    title: "确认删除第" + ($element.data('index') + 1) + "行:吗?",
+                    buttons: ['取消', '确定']
+                }, function (ret) {
+                    if (ret.buttonIndex == 2) {
+                        $("#bootstrap-tab-2").bootstrapTable('remove', {
+                            field: 'rowId',
+                            values: [row.rowId]
+                        });
+                    }
+                })
+            }
+        );
+    };
+
+    /*--------------vue1--------------*/
+    var vueData1 = {
+        tableShow: 0,
+        subAreaItems: [], //库位数组
+        tab1ScanCode: '', //扫描-托盘码
+        containerCode: '', //托盘码
+        tab1ScanCode2: '', //完整物料编码
+        workCellCode: "", //库位ID
+        workCellName: "", //库位名称
+        childType: "0", //0.空,1.容器，2.物料
+        barCode: '', //物料编码
+        lotCode: '', //批次，用于校验
+        mrlCode: '', //物料，用于校验
+        mrlName: "", //物料名称
+        mrlType: "", //物料类型
+        mrlTypeName: "", //物料类型名称
+        specification: "", //规格
+        drawing: "", //图号
+        measureName: '', //单位
+        qty: "", //数量
+        controlCode: 1, //1批次件，2序列件
+        snCode: "", //序列码
+        operType: 0, //类型:组托为0，拆托为1
+        childCtBarcode: "", //子容器编码
+        ctBarcode: "", //父容器码
+        flowRule: '', //组托规则
+        qType: "", //是否样机料
+        lotCodeList: [], //批次合集
+        ctContent: {},
+        hasMrlCode: "", //已存在的物料条码
+        hasLotCode: "", //已存在的物料批次
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        mounted: function () {
+            $.ajax({
+                type: "POST",
+                url: getUrl('padWmsController!getCtPackWorCellList.m'),
+                dataType: "json",
+                data: {},
+                async: false,
+                success: function (res) {
+                    if (res.errCode === 0) {
+                        if (res.data.length != 0) {
+                            vueData1.subAreaItems = res.data;
+                            vueData1.subAreaItems.unshift({
+                                'WORKCELLCODE': '0',
+                                'WORKCELLNAME': '请选择'
+                            });
+                            vueData1.workCellCode = res.data[0].WORKCELLCODE;
+                            vueData1.workCellName = res.data[0].WORKCELLNAME;
+                        }
+                    }
+                }
+            });
+        },
+        methods: {
+            //  下拉框
+            getSubArea: function (event) {
+                // 保存所选库区的值gid name
+                var subAreaGid = event.target.value;
+                var subAreaName = $("#sub-area option:selected").text();
+                vueData1.workCellCode = subAreaGid;
+                vueData1.workCellName = subAreaName;
+            },
+            //扫描托盘条码
+            onEnterPBarCode: function () {
+                if (vueData1.workCellCode == '0' || vueData1.workCellCode == "") {
+                    vueData1.tab1ScanCode = "";
+                    api.toast({
+                        msg: "请勾选来源库位后再次提交",
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+                var barCode = this.tab1ScanCode;
+                //step 1.判断容器是否存在
+                var retObj = getMrlInfoByBarCode(barCode);
+                if (retObj != null) {
+                    //step 2.判断容器是否有上架任务
+                    vueData1.ctContent = getCtUwmInfoByCtBarCode(barCode);
+
+                    //colin 1.判断是否有任务占用 todo 任务校验 暂不做
+                    // 2.判断所处库位与勾选的库位是否一致
+                    if (JSON.stringify(vueData1.ctContent) != {}) {
+
+                        if (vueData1.ctContent.workCellCode != "" && vueData1.ctContent.workCellCode !=
+                            vueData1.workCellCode) {
+                            vueData1.tab1ScanCode = "";
+                            $("#tab1-scan-barcode1").focus();
+                            return api.toast({
+                                msg: "该容器所在库位【" + vueData1.ctContent.workCellCode + "】,与所选库位不一致",
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+
+                        var retObj1 = getNextChildContent(barCode);
+                        console.log(JSON.stringify(retObj1));
+                        if (JSON.stringify(retObj1) != {} && retObj1.length != 0) {
+                            if (!!retObj1[0].childCtBarcode) {
+                                vueData1.childType = 1;
+                            } else {
+                                vueData1.hasMrlCode = retObj1[0].mrlInfo.mrlCode;
+                                if (!!retObj1[0].lotCode) {
+                                    vueData1.hasLotCode = retObj1[0].lotCode;
+                                }
+                                var retObj2 = loadBarCodeInfoByQuery(vueData1.hasMrlCode);
+                                vueData1.flowRule = retObj2.flowRule;
+                                vueData1.qType = retObj2.qType;
+                                vueData1.childType = 2;
+                            }
+                        } else {
+                            vueData1.childType = 0;
+                        }
+                        $('#tab1-scan-barcode2').focus();
+
+                        /*if (vueData1.ctContent.workCellCode == "" || vueData1.ctContent.workCellCode == vueData1.workCellCode) {
+                            //step 3.判断容器内是否有内容
+
+                        } else {
+                            vueData1.tab1ScanCode = "";
+                            $("#tab1-scan-barcode1").focus();
+                            api.toast({msg: "该容器已被分配至库位，请扫描其他容器", duration: 3000, location: 'middle'});
+                        }*/
+                    }
+                }
+            },
+            //扫描需要合托的箱码
+            onEnterBarCode: function () {
+                //step 1.校验：是否有内容输入；是否已扫描托盘码；是否已被扫描
+                if (!vueData1.tab1ScanCode) {
+                    this.tab1ScanCode2 = "";
+                    return api.toast({
+                        msg: "请先扫描托盘条码",
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                }
+                //当组托对象为容器时
+                if (this.tab1ScanCode2.length != 13 && this.tab1ScanCode2.length != 23 && this.tab1ScanCode2
+                    .length != 29) {
+                    //判断父子容器是否相等
+                    if (vueData1.childType == 2) {
+                        this.tab1ScanCode2 = "";
+                        $('#tab1-scan-barcode2').focus();
+                        return api.toast({
+                            msg: "不符合组托规则，请扫描物料!",
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                    $('#bootstrap-tab-2').removeClass('aui-table-show');
+                    $('#bootstrap-tab-1').addClass('aui-table-show');
+                    $('#bootstrap-tab-1').bootstrapTable('removeAll');
+                    if (this.tab1ScanCode2 == this.tab1ScanCode) {
+                        this.tab1ScanCode2 = "";
+                        $('#tab1-scan-barcode2').focus();
+                        return api.toast({
+                            msg: "父容器与子容器编码不能相等，请重新扫描",
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                    //判断子容器是否被扫描过
+                    var tableData = $("#bootstrap-tab-2").bootstrapTable('getData');
+                    for (var i = 0; i < tableData.length; i++) {
+                        if (tableData[i].childCtBarcode == this.tab1ScanCode2) {
+                            this.tab1ScanCode2 = "";
+                            return api.alert({
+                                title: '警告',
+                                msg: '该容器已经扫描进入父容器' + vueData1.tab1ScanCode + '之中，请重新扫描',
+                            });
+                        }
+                    }
+                    var retObj = getMrlInfoByBarCode(vueData1.tab1ScanCode2);
+                    if (retObj != null) {
+                        var retObj1 = getCtUwmInfoByCtBarCode(vueData1.tab1ScanCode2);
+                        if (JSON.stringify(retObj1) != {}) {
+                            if (retObj.workCellCode == "" || retObj.workCellCode == vueData1.workCellCode) {
+                                vueData1.childCtBarcode = vueData1.tab1ScanCode2;
+                                vueData1.ctBarCode = vueData1.tab1ScanCode;
+                                insertDateAtTable(TABLE_INDEX.SEC, 'prepend', [{
+                                    ctBarcode: vueData1.ctBarCode,
+                                    operType: vueData1.operType,
+                                    childCtBarcode: vueData1.childCtBarcode,
+                                    qty: 1,
+                                    workCellCode: vueData1.workCellCode,
+                                    rowId: tableData.length + 1
+                                }]);
+                            } else {
+                                vueData1.tab1ScanCode = "";
+                                $("#tab1-scan-barcode1").focus();
+                                api.toast({
+                                    msg: "该容器已被分配至库位，请扫描其他容器",
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        }
+                    }
+                } else if (vueData1.tab1ScanCode2.length == 13 || vueData1.tab1ScanCode2.length == 23 ||
+                    vueData1.tab1ScanCode2.length == 29) {
+                    if (vueData1.childType == 1) {
+                        vueData1.tab1ScanCode2 = "";
+                        $('#tab1-scan-barcode2').focus();
+                        return api.toast({
+                            msg: "不符合组托规则，请扫描容器!",
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                    var tableData = $("#bootstrap-tab-1").bootstrapTable('getData');
+                    $('#bootstrap-tab-1').removeClass('aui-table-show');
+                    $('#bootstrap-tab-2').addClass('aui-table-show');
+                    $('#bootstrap-tab-2').bootstrapTable('removeAll');
+                    vueData1.mrlCode = vueData1.tab1ScanCode2.substring(0, 13);
+                    vueData1.barCode = vueData1.tab1ScanCode2;
+                    var retObj = loadBarCodeInfoByQuery(vueData1.mrlCode); //ajax后台加载
+                    if (JSON.stringify(retObj) != "{}") {
+                        vueData1.controlCode = retObj.controlCode;
+                        if (tableData.length == 0 && vueData1.childType == 0) {
+                            vueData1.flowRule = retObj.flowRule;
+                            vueData1.qType = retObj.qType;
+                        } else {
+                            if (vueData1.qType != retObj.qType) {
+                                this.tab1ScanCode2 = "";
+                                $("#tab1-scan-barcode2").focus();
+                                console.log("-------My tips 485");
+                                return api.toast({
+                                    msg: '不符合组托规则，请重新扫描',
+                                    location: 'middle'
+                                });
+                            } else if (vueData1.qType == retObj.qType && vueData1.qType != 0) {
+                                if (tableData.length != 0) {
+                                    if (vueData1.mrlCode != tableData[0].mrlCode) {
+                                        this.tab1ScanCode2 = "";
+                                        $("#tab1-scan-barcode2").focus();
+                                        console.log("-------My tips 491");
+                                        return api.toast({
+                                            msg: '不符合组托规则，请重新扫描！',
+                                            location: 'middle'
+                                        });
+                                    }
+                                } else {
+                                    if (vueData1.mrlCode != vueData1.hasMrlCode) {
+                                        this.tab1ScanCode2 = "";
+                                        $("#tab1-scan-barcode2").focus();
+                                        console.log("-------My tips 499");
+                                        return api.toast({
+                                            msg: '不符合组托规则，请重新扫描！',
+                                            location: 'middle'
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        //判断当前物料是序列件还是批次件
+                        if (vueData1.controlCode == 1) {
+                            //批次件
+
+                            vueData1.lotCodeList = getMrlInformationByQuery(vueData1.mrlCode, vueData1
+                                .workCellCode);
+                            vueData1.lotCodeList.unshift({
+                                qty: "999999999999",
+                                lotCode: "请选择"
+                            })
+                            if (vueData1.lotCodeList.length != 0) {
+                                vueData1.mrlName = retObj.mrlName;
+                                vueData1.mrlType = retObj.mrlType;
+                                vueData1.mrlTypeName = retObj.mrlType == 0 ? '原材料' : (retObj.mrlType == 1 ?
+                                    '成品' : '');
+                                vueData1.drawing = retObj.drawing;
+                                vueData1.specification = retObj.specification;
+                                $("#tab1-scan-lotCode").focus();
+                            } else {
+                                this.tab1ScanCode2 = "";
+                                $("#tab1-scan-barcode2").focus();
+                                return api.toast({
+                                    msg: '该物料不在该收货缓存区或未质检，请重新检查后提交',
+                                    location: 'middle'
+                                });
+                            }
+                        } else if (vueData1.controlCode == 2) {
+                            var backObj = getMrlInformationBySN(vueData1.barCode);
+                            if (backObj.workCellCode == vueData1.workCellCode) {
+                                if (tableData.length != 0) {
+                                    var isRepeat = false;
+                                    for (var i = 0; i < tableData.length; i++) {
+                                        if (this.tab1ScanCode2 == tableData[i].serialNum) {
+                                            isRepeat = true;
+                                        }
+                                    }
+                                    if (isRepeat) {
+                                        this.tab1ScanCode2 = "";
+                                        $("#tab1-scan-barcode2").focus();
+                                        return api.toast({
+                                            msg: '该序列件已扫描请重新扫描',
+                                            location: 'middle'
+                                        });
+                                    } else {
+                                        if (vueData1.qType != 0) {
+                                            if (vueData1.flowRule == 0) {
+                                                if (tableData[0].mrlCode != vueData1.mrlCode || tableData[0]
+                                                    .lotCode != backObj.lotCode) {
+                                                    return api.toast({
+                                                        msg: '该物料不符合组托规则，请重新扫描!',
+                                                        duration: 3000,
+                                                        location: 'middle'
+                                                    });
+                                                }
+                                            } else if (vueData1.flowRule == 1 || vueData1.flowRule == 2) {
+                                                if (tableData[0].mrlCode != vueData1.mrlCode) {
+                                                    return api.toast({
+                                                        msg: '该物料不符合组托规则，请重新扫描!',
+                                                        duration: 3000,
+                                                        location: 'middle'
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        vueData1.mrlName = retObj.mrlName;
+                                        vueData1.mrlType = retObj.mrlType;
+                                        vueData1.mrlTypeName = retObj.mrlType == 0 ? '原材料' : (retObj
+                                            .mrlType == 1 ? '成品' : '');
+                                        vueData1.drawing = retObj.drawing;
+                                        vueData1.specification = retObj.specification;
+                                        insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                            mrlCode: vueData1.mrlCode,
+                                            qty: 1,
+                                            lotCode: backObj.lotCode,
+                                            serialNum: vueData1.controlCode == 2 ? vueData1
+                                                .tab1ScanCode2 : '',
+                                            ctBarcode: vueData1.tab1ScanCode,
+                                            operType: vueData1.operType,
+                                            barCode: vueData1.barCode,
+                                            workCellCode: vueData1.workCellCode,
+                                            rowId: tableData.length + 1
+                                        }]);
+                                        api.toast({
+                                            msg: '操作成功！',
+                                            duration: 3000,
+                                            location: 'middle'
+                                        });
+                                    }
+                                } else {
+                                    vueData1.mrlName = retObj.mrlName;
+                                    vueData1.mrlType = retObj.mrlType;
+                                    vueData1.mrlTypeName = retObj.mrlType == 0 ? '原材料' : (retObj.mrlType ==
+                                        1 ? '成品' : '');
+                                    vueData1.drawing = retObj.drawing;
+                                    vueData1.specification = retObj.specification;
+                                    insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                        mrlCode: vueData1.mrlCode,
+                                        qty: 1,
+                                        lotCode: backObj.lotCode,
+                                        serialNum: vueData1.controlCode == 2 ? vueData1
+                                            .tab1ScanCode2 : '',
+                                        ctBarcode: vueData1.tab1ScanCode,
+                                        operType: vueData1.operType,
+                                        barCode: vueData1.barCode,
+                                        workCellCode: vueData1.workCellCode,
+                                        rowId: tableData.length + 1
+                                    }]);
+                                    api.toast({
+                                        msg: '操作成功！',
+                                        duration: 3000,
+                                        location: 'middle'
+                                    });
+                                }
+                            } else {
+                                this.tab1ScanCode2 = "";
+                                $("#tab1-scan-barcode2").focus();
+                                return api.toast({
+                                    msg: '该物料不在该收货缓存区或未质检，请重新检查后提交',
+                                    location: 'middle'
+                                });
+                            }
+                        }
+                        this.tab1ScanCode2 = "";
+                    }
+                }
+
+            },
+            //生产容器编码
+            createCntrCode: function () {
+                var that = this;
+                if (!!that.tab1ScanCode) {
+                    api.toast({
+                        msg: '已有容器码!',
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+
+                var createCode = function (ret) {
+                    api.hideProgress();
+                    console.log(JSON.stringify(ret))
+                    if (ret && ret.type == 'success' && !!ret.data) {
+                        //提交另外需要的数据
+                        that.tab1ScanCode = ret.data; //目标容器编码
+                        // printToJiaBo(ret.data); //打印
+                    } else {
+                        api.toast({
+                            msg: ret.msg,
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                };
+                createPBarCodeFN(createCode, localStorage.getItem('workCenterCode'));
+                // if (!!this.tab1ScanCode) {
+                //     api.toast({msg: '已有容器码!', duration: 3000, location: 'middle'});
+                //     return;
+                // }
+                // api.showProgress({
+                //     style: 'default',
+                //     animationType: 'fade',
+                //     title: '努力加载中...',
+                //     text: '请稍后...',
+                //     modal: true
+                // });
+                // api.ajax({
+                //     url: getUrl(OtherUrl.createCntrCode),
+                //     method: 'post',
+                //     timeout: 60,
+                //     data: {
+                //         values: {
+                //             palletCodeRule: vueData2.barCodeRuleSelected,
+                //             barCode: this.barCode           //条码生成规则中，带有物料编码，需要通过条码查询
+                //         }
+                //     }
+                // }, function (ret) {
+                //     api.hideProgress();
+                //     if (ret && ret.errCode == 0) {
+                //         vueData1.tab1ScanCode = ret.data;
+                //         printToJiaBo(vueData1.tab1ScanCode);
+                //     } else {
+                //         api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                //     }
+                // });
+            },
+            selectLotCode: function (event) {
+                var subAreaGid = event.target.value;
+                var subAreaName = $("#sub-lotCode option:selected").text();
+                if (subAreaName == "请选择") {
+                    return api.toast({
+                        msg: '请选择批次条码!',
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                } else {
+                    vueData1.qty = subAreaGid;
+                    vueData1.lotCode = subAreaName;
+                    app1.onEnterLotCode();
+                }
+            },
+            onEnterLotCode: function () {
+                var tableData = $('#bootstrap-tab-1').bootstrapTable('getData');
+                if (tableData.length != 0 && vueData1.childType == 0) {
+                    console.log("my tips 650");
+                    if (vueData1.qType != 0) {
+                        console.log("my tips 652");
+                        if (vueData1.flowRule == 0) {
+                            if (tableData[0].mrlCode != vueData1.mrlCode || tableData[0].lotCode != vueData1
+                                .lotCode) {
+                                return api.toast({
+                                    msg: '该物料不符合组托规则，请重新扫描!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        } else if (vueData1.flowRule == 1 || vueData1.flowRule == 2) {
+                            if (tableData[0].mrlCode != vueData1.mrlCode) {
+                                return api.toast({
+                                    msg: '该物料不符合组托规则，请重新扫描!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        } else {
+                            console.log("my tips 662");
+                        }
+                    }
+                    dialog.prompt({
+                        title: "请输入物料数量",
+                        value: vueData1.qty,
+                        text: '',
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if ((ret.text == '' || ret.text == undefined || ret.text == null) && ret
+                            .buttonIndex == 2) {
+                            api.toast({
+                                msg: '请输入数量!',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        } else if (!!ret.text && ret.buttonIndex == 2) {
+                            var index = 0;
+                            for (var i = 0; i < vueData1.lotCodeList.length; i++) {
+                                if (vueData1.lotCodeList[i].lotCode == vueData1.lotCode) {
+                                    index = i;
+                                }
+                            }
+                            if (Number(ret.text) > Number(vueData1.lotCodeList[index].qty)) {
+                                vueData1.qty = Number(vueData1.lotCodeList[index].qty);
+                                app1.onEnterLotCode();
+                                return api.toast({
+                                    msg: '组托数量大于可组托数量!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            } else {
+                                app1.$set(vueData1.lotCodeList[index], 'qty', Number(vueData1
+                                    .lotCodeList[index].qty) - Number(ret.text));
+                            }
+                            var index = 0;
+                            var isRepeat = false;
+                            vueData1.qty = ret.text;
+                            for (var i = 0; i < tableData.length; i++) {
+                                if (tableData[i].lotCode == vueData1.lotCode && tableData[i]
+                                    .mrlCode == vueData1.mrlCode) {
+                                    index = i;
+                                    isRepeat = true;
+                                }
+                            }
+                            if (isRepeat) {
+                                tableData[index].qty = Number(vueData1.qty) + Number(tableData[
+                                    index].qty);
+                                $("#bootstrap-tab-1").bootstrapTable('load', tableData);
+                            } else {
+                                insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                    mrlCode: vueData1.mrlCode,
+                                    qty: vueData1.qty,
+                                    lotCode: vueData1.lotCode,
+                                    serialNum: '',
+                                    ctBarcode: vueData1.tab1ScanCode,
+                                    operType: vueData1.operType,
+                                    barCode: vueData1.barCode,
+                                    workCellCode: vueData1.workCellCode,
+                                    rowId: tableData.length + 1
+                                }]);
+                            }
+                            vueData1.qty = "";
+                            vueData1.lotCode = "";
+                            vueData1.lotCodeList = "";
+                            api.toast({
+                                msg: '操作成功！',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    });
+                } else if (tableData.length == 0 && vueData1.childType == 2) {
+                    console.log("my tips 718");
+                    if (vueData1.qType != 0) {
+                        if (vueData1.flowRule == 0) {
+                            if (vueData1.hasMrlCode != vueData1.mrlCode || vueData1.hasLotCode != vueData1
+                                .lotCode) {
+                                return api.toast({
+                                    msg: '该物料不符合组托规则，请重新扫描!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        } else if (vueData1.flowRule == 1 || vueData1.flowRule == 2) {
+                            if (vueData1.hasMrlCode != vueData1.mrlCode) {
+                                return api.toast({
+                                    msg: '该物料不符合组托规则，请重新扫描!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        }
+                    }
+                    dialog.prompt({
+                        title: "请输入物料数量",
+                        value: vueData1.qty,
+                        text: '',
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if ((ret.text == '' || ret.text == undefined || ret.text == null) && ret
+                            .buttonIndex == 2) {
+                            api.toast({
+                                msg: '请输入数量!',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        } else if (!!ret.text && ret.buttonIndex == 2) {
+                            var index = 0;
+                            for (var i = 0; i < vueData1.lotCodeList.length; i++) {
+                                if (vueData1.lotCodeList[i].lotCode == vueData1.lotCode) {
+                                    index = i;
+                                }
+                            }
+                            if (Number(ret.text) > Number(vueData1.lotCodeList[index].qty)) {
+                                vueData1.qty = Number(vueData1.lotCodeList[index].qty);
+                                app1.onEnterLotCode();
+                                return api.toast({
+                                    msg: '组托数量大于可组托数量!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            } else {
+                                app1.$set(vueData1.lotCodeList[index], 'qty', Number(vueData1
+                                    .lotCodeList[index].qty) - Number(ret.text));
+                            }
+                            var index = 0;
+                            var isRepeat = false;
+                            vueData1.qty = ret.text;
+                            for (var i = 0; i < tableData.length; i++) {
+                                if (tableData[i].lotCode == vueData1.lotCode && tableData[i]
+                                    .mrlCode == vueData1.mrlCode) {
+                                    index = i;
+                                    isRepeat = true;
+                                }
+                            }
+                            if (isRepeat) {
+                                tableData[index].qty = Number(vueData1.qty) + Number(tableData[
+                                    index].qty);
+                                $("#bootstrap-tab-1").bootstrapTable('load', tableData);
+                            } else {
+                                insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                    mrlCode: vueData1.mrlCode,
+                                    qty: vueData1.qty,
+                                    lotCode: vueData1.lotCode,
+                                    serialNum: '',
+                                    ctBarcode: vueData1.tab1ScanCode,
+                                    operType: vueData1.operType,
+                                    barCode: vueData1.barCode,
+                                    workCellCode: vueData1.workCellCode,
+                                    rowId: tableData.length + 1
+                                }]);
+                            }
+                            vueData1.qty = "";
+                            vueData1.lotCode = "";
+                            vueData1.lotCodeList = "";
+                            api.toast({
+                                msg: '操作成功！',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    });
+                } else {
+                    dialog.prompt({
+                        title: "请输入物料数量",
+                        value: vueData1.qty,
+                        text: '',
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if ((ret.text == '' || ret.text == undefined || ret.text == null) && ret
+                            .buttonIndex == 2) {
+                            api.toast({
+                                msg: '请输入数量!',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        } else if (!!ret.text && ret.buttonIndex == 2) {
+                            var index = 0;
+                            for (var i = 0; i < vueData1.lotCodeList.length; i++) {
+                                if (vueData1.lotCodeList[i].lotCode == vueData1.lotCode) {
+                                    index = i;
+                                }
+                            }
+                            if (Number(ret.text) > Number(vueData1.lotCodeList[index].qty)) {
+                                vueData1.qty = Number(vueData1.lotCodeList[index].qty);
+                                app1.onEnterLotCode();
+                                return api.toast({
+                                    msg: '组托数量大于可组托数量!',
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            } else {
+                                app1.$set(vueData1.lotCodeList[index], 'qty', Number(vueData1
+                                    .lotCodeList[index].qty) - Number(ret.text));
+                            }
+                            vueData1.qty = ret.text;
+                            insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                                mrlCode: vueData1.mrlCode,
+                                qty: vueData1.qty,
+                                lotCode: vueData1.lotCode,
+                                serialNum: '',
+                                ctBarcode: vueData1.tab1ScanCode,
+                                operType: vueData1.operType,
+                                barCode: vueData1.barCode,
+                                workCellCode: vueData1.workCellCode,
+                                rowId: tableData.length + 1
+                            }]);
+                            vueData1.qty = "";
+                            vueData1.lotCode = "";
+                            vueData1.lotCodeList = "";
+                            api.toast({
+                                msg: '操作成功！',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    });
+                }
+            },
+            //提交
+            doSubmit: function () {
+                var tableData = $('#bootstrap-tab-1').bootstrapTable('getData');
+                var tableData1 = $('#bootstrap-tab-2').bootstrapTable('getData');
+                if (tableData.length === 0 && tableData1.length === 0) {
+                    api.toast({
+                        msg: "没有可以提交的数据！",
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+                for (var i = 0; i < tableData.length; i++) {
+                    for (var variable in tableData[i]) {
+                        if (variable == "barCode") {
+                            delete tableData[i]["barCode"];
+                        }
+                    }
+                }
+                var params = tableData.length != 0 ? tableData : tableData1;
+                console.log(JSON.stringify(params));
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                $.ajax({
+                    type: "POST",
+                    url: getUrl('padWmsController!packCt.m'),
+                    dataType: "json",
+                    data: {
+                        workCenterGid: WCEN_GID,
+                        ctContentBOs: JSON.stringify(params),
+                    },
+                    async: false,
+                    success: function (res) {
+                        if (res.errCode === 0) {
+                            api.toast({
+                                msg: '操作成功！',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                            window.location.reload();
+                        } else {
+                            api.toast({
+                                msg: res.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                        api.hideProgress();
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+            }
+        }
+    });
+
+    /*--------------vue2--------------*/
+    var vueData2 = {
+        tab2ScanCode: '', //扫描-托盘码
+        containerCode: '', //托盘码
+        tab2ScanCode2: '', //完整物料编码
+        tab2ScanCode3: "", //目标容器
+        barCode: '', //物料编码
+        lotCode: '', //批次，用于校验
+        mrlCode: '', //物料，用于校验
+        mrlName: "", //物料名称
+        mrlType: "", //物料类型
+        mrlTypeName: "", //物料类型名称
+        specification: "", //规格
+        drawing: "", //图号
+        measureName: '', //单位
+        qty: "", //数量
+        controlCode: 1, //1批次件，2序列件
+        snCode: "", //序列码
+        operType: 1, //类型:组托为0，拆托为1
+        childCtBarcode: "", //子容器编码
+        ctBarcode: "", //父容器码
+        ctResultList: "", //组托结果
+        lotCodeList: [],
+        tab2ScanCode4: '', //批次码
+        ctContent: {}, //扫描来源容器获取详细信息
+        subAreaItems: [],
+        workCellCode: "",
+        workCellName: ""
+    };
+    var app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        mounted: function () {
+            $.ajax({
+                type: "POST",
+                url: getUrl('padWmsController!getCtPackWorCellList.m'),
+                dataType: "json",
+                data: {},
+                async: false,
+                success: function (res) {
+                    if (res.errCode === 0) {
+                        if (res.data.length != 0) {
+                            vueData2.subAreaItems = res.data;
+                            vueData2.subAreaItems.unshift({
+                                'WORKCELLCODE': '0',
+                                'WORKCELLNAME': '请选择'
+                            });
+                            vueData2.workCellCode = res.data[0].WORKCELLCODE;
+                            vueData2.workCellName = res.data[0].WORKCELLNAME;
+                        }
+                    }
+                }
+            });
+        },
+        methods: {
+            //  下拉框
+            getSubArea: function (event) {
+                // 保存所选库区的值gid name
+                var subAreaGid = event.target.value;
+                var subAreaName = $("#sub-area option:selected").text();
+                vueData2.workCellCode = subAreaGid;
+                vueData2.workCellName = subAreaName;
+            },
+            scanContainerCode: function () {
+                if (vueData2.workCellCode == '0' || vueData2.workCellCode == "") {
+                    vueData2.tab2ScanCode = "";
+                    api.toast({
+                        msg: "请勾选来源库位后再扫描容器",
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+                if (!this.tab2ScanCode) {
+                    return false
+                }
+                //step 2.取值
+                var barCode = this.tab2ScanCode;
+                $.ajax({
+                    type: "POST",
+                    url: getUrl('padWmsController!getMrlInfoByBarCode.m'),
+                    dataType: "json",
+                    data: {
+                        ctBarCode: barCode
+                    },
+                    async: false,
+                    success: function (res) {
+                        if (res.errCode === 0) {
+
+                        } else {
+                            this.tab2ScanCode = "";
+                            $('#tab2-scan-barcode').focus();
+                            api.toast({
+                                msg: res.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    },
+
+                });
+                vueData2.ctContent = getCtUwmInfoByCtBarCode(barCode);
+                if (!!vueData2.ctContent.workCellCode) {
+                    if (vueData2.ctContent.workCellCode != vueData2.workCellCode) {
+                        vueData2.tab2ScanCode = "";
+                        api.toast({
+                            msg: "选择的库位与容器所在库位不符，请重新选择",
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        return;
+                    }
+                }
+                if (!!vueData2.ctContent.task.code && vueData2.ctContent.task.state == 0) {
+                    dialog.alert({
+                        title: "该容器已有分配任务，是否删除任务及分拆该容器所有绑定关系？",
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if (ret.buttonIndex == 2) {
+                            splitCtAndDelTask(barCode);
+                        } else {
+                            this.tab2ScanCode = "";
+                            $('#tab2-scan-barcode').focus();
+                        }
+                    })
+                } else if (vueData2.ctContent.task == "") {
+                    $.ajax({
+                        type: "POST",
+                        url: getUrl('padWmsController!getCtContent.m'),
+                        dataType: "json",
+                        data: {
+                            ctBarCode: barCode
+                        },
+                        async: false,
+                        success: function (res) {
+                            if (res.errCode === 0) {
+                                if (!!res.data) {
+                                    vueData2.ctResultList = res.data;
+                                    if (!!vueData2.ctResultList[0].childCtBarcode) {
+                                        dialog.alert({
+                                            title: "是否解除该容器与其子容器的绑定关系？",
+                                            buttons: ['取消', '确定']
+                                        }, function (ret) {
+                                            if (ret.buttonIndex == 2) {
+                                                splitCtAndDelTask(barCode);
+                                            } else {
+                                                this.tab2ScanCode = "";
+                                                $('#tab2-scan-barcode').focus();
+                                            }
+                                        })
+                                    } else if (!!vueData2.ctResultList[0].mrlCode) {
+                                        dialog.alert({
+                                            title: "是否解除该容器与其容器内的物料的绑定关系？",
+                                            buttons: ['取消', '确定']
+                                        }, function (ret) {
+                                            if (ret.buttonIndex == 2) {
+                                                splitCtAndDelTask(barCode);
+                                            } else {
+                                                this.tab2ScanCode = "";
+                                                $('#tab2-scan-barcode').focus();
+                                            }
+                                        })
+                                    }
+                                } else {
+                                    api.toast({
+                                        msg: "该容器内暂无物料，请重新检查后拆托",
+                                        duration: 3000,
+                                        location: 'middle'
+                                    });
+                                }
+                            } else {
+                                this.tab2ScanCode = "";
+                                $('#tab2-scan-barcode').focus();
+                                api.toast({
+                                    msg: res.msg,
+                                    duration: 3000,
+                                    location: 'middle'
+                                });
+                            }
+                        }
+                    });
+                } else if (!!vueData2.ctContent.task.code && vueData2.ctContent.task.state != 0) {
+                    this.tab2ScanCode = "";
+                    $('#tab2-scan-barcode').focus();
+                    return api.toast({
+                        msg: "该容器已有任务，且任务状态为非新建，请重新扫描",
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                }
+            },
+        }
+    })
+</script>
+
+</html>

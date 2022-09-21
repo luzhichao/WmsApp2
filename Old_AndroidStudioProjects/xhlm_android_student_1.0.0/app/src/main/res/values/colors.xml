@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3DB5F1</color>
+    <color name="colorPrimaryDark">#3DB5F1</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBlue">#1B88EE</color>
+    <color name="colorToolBarPopupBg">#FF999999</color>
+    <color name="gray_text_light">#979797</color>
+    <color name="tab_checked">#229DFA</color>
+    <color name="tab_unchecked">#B6B6B6</color>
+
+    <!-- 全局背景颜色 -->
+    <color name="global_bg_color">#F7F7F7</color>
+    <!-- 表头背景颜色 -->
+    <color name="global_head_bg_color">#F0F0F0</color>
+
+    <!-- 登录下划线颜色 -->
+    <color name="login_under_color">#FFFFFF</color>
+
+    <!--明细详情的分割线颜色 -->
+    <color name="devide_line">#ffe9e9e9</color>
+
+    <!--提示 -->
+    <color name="notice_color">#CDCDCD</color>
+    <!--提示 -->
+    <color name="ware_analysi_color">#c5c5c5</color>
+
+
+    <!-- 加入收货 按钮文字色 -->
+    <color name="btn_bg_color">#5CB85C</color>
+
+    <!--菜单用户信息灰色-->
+    <color name="menu_text_color_gray">#B7B9C6</color>
+    <color name="menu_spinner_text_color_blue">#56BFD4</color>
+
+    <color name="tv_gray_deep">#818181</color>
+    <color name="blue">#2196F3</color>
+
+    <!-- 滑出选择面板 -->
+    <color name="drawer_bg">#F0F0F0</color>
+    <color name="drawer_title_bg">#FFFFFF</color>
+    <color name="drawer_list_bg">#FFFFFF</color>
+
+    <!--  -->
+    <color name="search_btn_bg">#D9D9D9</color>
+
+    <color name="show_window_bg">#B03060</color>
+
+    <color name="show_window_bg_warn">#EE4000</color>
+    <color name="show_window_bg_dcode">#E0EEEE</color>
+    <color name="table_input_bg">#EDEDED</color>
+
+
+    <drawable name="red">#f00</drawable>
+    <drawable name="gray">#ccc</drawable>
+    <color name="show_money">#ff9500</color>
+
+</resources>

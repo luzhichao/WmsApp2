@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp5"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp" >
+    >
+        <TextView
+            android:id="@+id/bill_lable_ddh"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_ddh"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_marginLeft="@dimen/dp5"
+            android:id="@+id/bill_tradeCode"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/bill_lable_ddh"
+            android:layout_centerVertical="true"
+            android:text="12589465126"/>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:singleLine="true"
+            android:layout_alignParentRight="true"  />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/min_wide_line"
+        android:background="@color/global_bg_color" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <com.linkingwin.education.studyonline.common.base.view.CircleImageView
+            android:id="@+id/bill_teacherImg"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/timg"/>
+        <TextView
+            android:id="@+id/bill_subject"
+            android:layout_marginLeft="@dimen/dp5"
+            android:layout_marginTop="@dimen/dp10"
+            android:layout_toRightOf="@+id/bill_teacherImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="数学一年级"/>
+        <TextView
+            android:id="@+id/bill_teacherName"
+            android:layout_marginLeft="@dimen/dp5"
+            android:layout_marginTop="@dimen/dp5"
+            android:layout_toRightOf="@+id/bill_teacherImg"
+            android:layout_below="@+id/bill_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="嘉亮"/>
+        <TextView
+            android:id="@+id/bill_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bill_teacherImg"
+            android:layout_marginTop="@dimen/dp10"
+            android:text="共计26课次，52课时"/>
+        <!-- android:layout_alignParentBottom="true"-->
+        <TextView
+            android:id="@+id/bill_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bill_teacherImg"
+            android:layout_marginTop="@dimen/dp10"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/show_money"
+            android:textStyle="bold"
+            android:text="￥5600"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/bill_price"
+            android:layout_below="@+id/bill_teacherImg"
+            android:layout_marginTop="@dimen/dp10"
+            android:layout_marginRight="@dimen/dp5"
+            android:textStyle="bold"
+            android:text="@string/lable_hj"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/min_wide_line"
+        android:background="@color/global_bg_color" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/lable_xdsj"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lable_xdsj"/>
+        <TextView
+            android:layout_toRightOf="@+id/lable_xdsj"
+            android:layout_marginLeft="@dimen/dp5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2018-11-28 09:42"/>
+        <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+            android:id="@+id/bill_btn_buyAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="再次购买"
+            app:qmui_backgroundColor="@color/qmui_s_link_color"
+            android:textColor="@color/qmui_config_color_75_white"
+            android:paddingLeft="@dimen/dp10"
+            android:paddingRight="@dimen/dp10"
+            app:qmui_radius="8dp"/>
+
+        <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp10"
+            android:layout_toLeftOf="@+id/bill_btn_buyAgain"
+            android:gravity="center"
+            android:text="取消订单"
+            android:paddingLeft="@dimen/dp10"
+            android:paddingRight="@dimen/dp10"
+            app:qmui_radius="8dp"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

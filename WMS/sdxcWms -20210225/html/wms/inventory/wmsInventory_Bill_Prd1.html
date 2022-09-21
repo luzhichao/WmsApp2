@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>盘点作业(成品：箱栈关系)</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+    <a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">
+        <span class="aui-iconfont aui-icon-left"></span> </a>
+    <div class="aui-title" id="middle">成品盘点</div>
+</header>
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">成品盘点1-箱栈关系</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item" v-if="wareHouse == 'HW'">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">外部编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab1-extend-code" @keyup.enter="onEnterExtendCode"
+                               v-model.trim="extendCode"
+                               placeholder="扫描外部编码(手工输入后需要回车)">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab1-scan-barcode" @keyup.enter="onEnter" v-model="tab1ScanCode"
+                               placeholder="扫描箱码带出栈板码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">所属库位</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.workCellCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">栈板码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab1-pallet-code" v-model="formData.palletCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">原总台数</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.sumNumbers" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">原箱数</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.currentBoxNo" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次号</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab1-scan-barcode2" @keyup.enter="onEnter2" v-model="tab1ScanCode2"
+                               placeholder="逐一扫描本栈所有的箱码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">现总台数</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData2.newSumNumbers" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">现箱数</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData2.newCurrentBoxNo" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <!--<li class="aui-list-item" id="li-maxNum">-->
+                <!--<div class="aui-list-item-inner">-->
+                    <!--<div class="aui-list-item-label">上限箱数</div>-->
+                    <!--<div class="aui-list-item-input">-->
+                        <!--<input type="text" style="margin-left: 0.8em;" v-model="formData2.maximumBoxNo"-->
+                               <!--placeholder="栈板允许的上限箱数" readonly="readonly">-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="aui-list-item-right" style="right: 10px;">-->
+                    <!--<div class="aui-btn aui-btn-info"-->
+                         <!--style="height:2.2rem;line-height: 1.6rem;"-->
+                         <!--@click="changeMumNo">-->
+                        <!--修改-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</li>-->
+            </ul>
+        <ul class="aui-list aui-form-list" style="margin-top: 10px">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">新栈码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData2.newPalletCode" readonly="readonly">
+                    </div>
+                    <div class="aui-list-item-right" style="right: 20px;">
+                        <div class="aui-btn aui-btn-info"
+                             style="height:2.2rem;line-height: 1.6rem;"
+                             @click="createNewBarCode">
+                            生成
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-1"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-4" @click="refreshWin">刷新</div>
+        <div class="aui-btn aui-col-xs-4 aui-btn-success" :disabled="isFinishSubmit" @click="printBarCode">条码打印</div>
+        <div class="aui-btn aui-col-xs-4 aui-btn-primary" @click="doSubmit">提交</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    function doSubmitFun(palletCode, arr, arr2) {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        api.ajax({
+            url: getUrl('padWmsController!unpackSaveForInv.m'),
+            method: 'post',
+            timeout: 60,
+            data: {
+                values: {
+                    packageBarCode: palletCode,
+                    barCodes: arr.join(','),
+                    barCodesNotIn: arr2.join(',')
+                }
+            }
+        }, function (ret) {
+            api.hideProgress();
+            if (ret && ret.errCode == 0) {
+                vueData1.isFinishSubmit = true;
+                api.toast({msg: '操作成功！', duration: 3000, location: 'middle'});
+            } else {
+                api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    /**
+     * 功能流程
+     *      1.扫一箱码带出需要盘点的栈板及其下面的所有箱码
+     *      2.在逐一扫描实际的所有箱码
+     *         2.1 逐一扫描时，汇总所有的数量及已扫描的箱
+     *
+     *
+     */
+
+    var pageConfig = {
+        isConfirmMaxBoxNo: true,        //是否弹框确认栈板包含的最大箱数
+        maximumBoxNo: 30                //默认一个栈板所能包含的最大箱数
+    };
+
+    var dialog = new auiDialog({});
+    var tableField1 = [
+        {
+            name: 'rowId', title: '', formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name: 'barCode', title: '条码', sortable: true, order: 'asc'},
+        {name: 'qty', title: '数量'},
+        {name: 'flag', title: '标识，是否是原来栈中的箱', visible:false} // 0:栈板原本的箱码 1:扫描插入的箱码 null:没有扫描到的栈板
+    ];
+    var tableField2 = [
+        {
+            name: 'rowId', title: '', formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name: 'barCode', title: '条码', sortable: true, order: 'asc'},
+        {name: 'qty', title: '数量'}
+    ];
+
+    apiready = function () {
+        //1.初始化多tab结构
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+
+        //2.初始化表格
+        initTable(TABLE_INDEX.FIR, tableField1, null,
+            //点击行，允许[删除]操作
+            function (row, $element) {
+                if (row.flag == '1') {
+                    dialog.alert({
+                        title: "确认删除第" + ($element.data('index') + 1) + "行:" + row.barCode + "吗?",
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if (ret.buttonIndex == 2) {
+                            vueData1.formData2.newCurrentBoxNo--;
+                            vueData1.formData2.newSumNumbers -= row.qty;
+                            deleteDateAtTable(TABLE_INDEX.FIR, row);
+                        }
+                    })
+                }
+            },
+            //颜色标识 -- 区分栈板原所属箱码与后面合托进去的箱码
+            function (row) {
+                if (row.flag == '0') {
+                    return {
+                        classes: 'text-nowrap',
+                        css: {background: '#dcfbd9'}
+                    }
+                } else if (row.flag == '1') {
+                    return {
+                        classes: 'text-nowrap',
+                        css: {background: '#ff9800'}
+                    }
+                } else {
+                    return {
+                        classes: 'text-nowrap',
+                        css: {background: 'white'}
+                    }
+                }
+            }
+        );
+        initTable(TABLE_INDEX.SEC, tableField2, null,
+            //点击行，允许[删除]操作
+            function (row, $element) {
+                if (row.flag == '1') {
+                    dialog.alert({
+                        title: "确认删除第" + ($element.data('index') + 1) + "行:" + row.barCode + "吗?",
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if (ret.buttonIndex == 2) {
+                            deleteDateAtTable(TABLE_INDEX.SEC, row);
+                        }
+                    })
+                }
+            }
+        );
+    };
+
+    /*--------------vue1--------------*/
+    var vueData1 = {
+        wareHouse: '',          //当前仓库,用于是否显示外部编码input
+        mergeType: 2,           //是否允许不同任务令进行合栈   1:允许 2:不允许
+        isDifferent: false,     //批次号是否一样
+        extendCode: '',         //外部编码，用于箱码查询
+        barCode: '',
+        tab1ScanCode: '',       //扫描-箱码带出原栈码
+        tab1ScanCode2: '',      //扫描-箱码(逐一扫描)
+        newPalletCode: '',      //新栈板码
+        lotCode: '',            //用于校验
+        mrlCode: '',            //用于校验
+        isFinishSubmit: false,  //是否提交，用于判断是否能够打印
+        formData: {             //原栈板相关信息
+            workCellCode: '',
+            palletCode: '',     //栈板码
+            sumNumbers: '',     //栈板包含的总单件数量
+            currentBoxNo: '',    //当前箱数
+            extendCode: ''
+        },
+        formData2: {             //现在栈板相关信息
+            newSumNumbers: 0,     //栈板包含的总单件数量
+            newCurrentBoxNo: 0,    //当前箱数
+            newPalletCode: '',
+            // maximumBoxNo: pageConfig.maximumBoxNo    //最大箱数
+        }
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        mounted: function () {
+            if (SITE_CODE == SITE_CODE_VALUE.FH) {         //孝感-烽火
+                vueData1.wareHouse = 'FH';
+            } else if (SITE_CODE == SITE_CODE_VALUE.HW) {  //武汉-华为
+                vueData1.wareHouse = 'HW';
+            }
+        },
+        methods: {
+            onEnterExtendCode: function () {
+                $("#tab1-scan-barcode").focus();
+            },
+            //扫描箱码带出栈板码
+            onEnter: function () {
+                var barCode = $.trim(this.tab1ScanCode);
+                if (!barCode) {
+                    return false;
+                }
+                if (SITE_CODE == SITE_CODE_VALUE.HW && !(this.extendCode)) {
+                    this.tab1ScanCode = '';
+                    api.toast({msg: '请先输入外部编码！', duration: 3000, location: 'middle'});
+                    return false;
+                }
+                // 1.判断当前页面是否有数据，如果有数据，则要提示刷新页面
+                if (vueData1.formData.palletCode) {
+                    this.tab1ScanCode = '';
+                    api.toast({msg: '当前页面存在数据，继续操作请手动刷新页面！', duration: 3000, location: 'middle'});
+                    return false;
+                }
+
+                // 2.获取栈板码
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                api.ajax({
+                    url: getUrl(OtherUrl.getParentCodeByBarCode),
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: {
+                        values: {
+                            barCode: barCode,
+                            extendCode: this.extendCode
+                        }
+                    }
+                }, function (ret) {
+                    if (ret.errCode == 0) {
+                        vueData1.formData['palletCode'] = ret.data.barCode;
+                        vueData1.formData['sumNumbers'] = ret.data.qty;
+                        //3.通过栈板码获取其包含的所有箱码
+                        api.ajax({
+                            url: getUrl(OtherUrl.getBarCodesByParentCode),
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            data: {
+                                values: {
+                                    barCode: vueData1.formData.palletCode
+                                }
+                            }
+                        }, function (ret) {
+                            if (ret.errCode == 0) {
+                                var boxArr = ret.data;
+                                //4.对当前箱数[currentBoxNo]及tab1赋值
+                                vueData1.formData['currentBoxNo'] = boxArr.length;
+                                $('#bootstrap-tab-1').bootstrapTable('removeAll');
+                                var arr = [];
+                                for (var i = 0; i < boxArr.length; i++) {
+                                    if (boxArr[i].storeState == 0) {
+                                        api.toast({
+                                            msg: '条码: 【' + boxArr[i].barCode + '】 未入库，不允许盘点！',
+                                            duration: 3000,
+                                            location: 'middle'
+                                        });
+                                        // $('#bootstrap-tab-1').bootstrapTable('removeAll');
+                                        return false;
+                                    } else if(boxArr[i].storeState == 2){
+                                        api.toast({
+                                            msg: '条码: 【' + boxArr[i].barCode + '】 未出库，不允许盘点！',
+                                            duration: 3000,
+                                            location: 'middle'
+                                        });
+                                        return false;
+                                    }else {
+                                        arr.push({barCode: boxArr[i].barCode, qty: boxArr[i].qty, flag: ''});
+                                    }
+                                }
+                                vueData1.lotCode = boxArr[0].lotCode;
+                                vueData1.mrlCode = boxArr[0].mrlCode;
+                                vueData1.formData.workCellCode = boxArr[0].workCellCode;
+                                insertDateAtTable(TABLE_INDEX.FIR, 'prepend', arr);
+
+                                vueData1.formData.extendCode = vueData1.extendCode;
+                                api.hideProgress();
+                            } else {
+                                api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                            }
+                        });
+                    } else {
+                        api.hideProgress();
+                        api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                    }
+                });
+                api.hideProgress();
+                this.tab1ScanCode = '';
+                $("#tab1-scan-barcode2").focus();
+            },
+            onEnter2: function () {
+                // 1.校验
+                var barCode = $.trim(this.tab1ScanCode2);
+                if (!barCode) {
+                    this.tab1ScanCode2 = '';
+                    return false
+                }
+                if (!vueData1.formData.palletCode) {
+                    this.tab1ScanCode2 = '';
+                    api.toast({msg: '请先扫描箱码带出栈板码', duration: 3000, location: 'middle'});
+                    return false
+                }
+                // if (vueData1.formData2.newCurrentBoxNo == vueData1.formData2.maximumBoxNo) {
+                //     this.tab1ScanCode2 = '';
+                //     api.toast({msg: '超出栈板最大数量!', duration: 3000, location: 'middle'});
+                //     return false
+                // }
+                var tableData = $("#bootstrap-tab-1").bootstrapTable('getData');
+                for (var i = 0; i < tableData.length; i++) {
+                    if (tableData[i].barCode == barCode && tableData[i].flag != '') {
+                        this.tab1ScanCode2 = '';
+                        api.toast({msg: '条码 【' + barCode + '】 已被扫描!', duration: 3000, location: 'middle'});
+                        return false;
+                    }
+                }
+
+                // 2.从条码表获取条码
+                if (vueData1.formData.extendCode) {
+                    barCode = barCode + '---' + vueData1.formData.extendCode;
+                }
+                alert(barCode)
+                var retObj = loadBarCodeInfoByQuery(barCode);   //ajax后台加载
+                if (JSON.stringify(retObj) != "{}") {
+                    // 2.1 校验
+                    if (retObj.storeState != 1) {
+                        api.toast({
+                            msg: '条码: 【' + retObj.barCode + '】 未入库，不允许盘点!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        this.tab1ScanCode2 = '';
+                        return false
+                    }
+                    if (vueData1.mrlCode != retObj.mrlCode) {
+                        api.toast({
+                            msg: '原栈板的物料: 【' + vueData1.mrlCode + '】与待待盘点的物料: 【' + retObj.mrlCode + '】 不一样,请检查相关数据!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        this.tab1ScanCode2 = '';
+                        return false
+                    }
+                    if (vueData1.lotCode != retObj.lotCode && SITE_CODE == SITE_CODE_VALUE.HW) {
+                        vueData1.isDifferent = true;
+                        api.toast({
+                            msg: '原栈板的任务令: 【' + vueData1.lotCode + '】与待盘点的任务令: 【' + retObj.lotCode + '】 不一样,请检查相关数据!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        this.tab1ScanCode2 = '';
+                        return false
+                    }
+
+                    //3.赋值，对当前箱数和总台数进行汇总; 更新表
+                    this.formData2.newCurrentBoxNo++;
+                    this.formData2.newSumNumbers += Number(retObj.qty);
+
+                    var flag = '';
+                    for (var j = 0; j < tableData.length; j++) {
+                        if (tableData[j].barCode == retObj.barCode) {
+                            flag = '0';     //存在于当前栈板
+                            tableData[j].flag = flag;
+                            $("#bootstrap-tab-1").bootstrapTable('updateRow', {index: j, row: tableData[j]});
+                            break;
+                        }
+                    }
+                    if (flag == '') {
+                        flag = '1';     //不存在于当前栈板
+                        insertDateAtTable(TABLE_INDEX.FIR, 'prepend', [{
+                            barCode: retObj.barCode,
+                            qty: retObj.qty,
+                            flag: flag
+                        }]);
+                    }
+                }
+                this.barCode = this.tab1ScanCode2;
+                this.tab1ScanCode2 = '';
+            },
+            //修改栈板支持的最大箱数
+            // changeMumNo: function () {
+            //     dialog.prompt({
+            //         title: "栈板包含的最大箱数",
+            //         value: vueData1.formData2.maximumBoxNo,
+            //         text: '',
+            //         buttons: ['取消', '确定']
+            //     }, function (ret) {
+            //         if (ret.text == '' || ret.text == undefined || ret.text == null) {
+            //             api.toast({msg: '请输入数量!', duration: 3000, location: 'middle'});
+            //         }
+            //         if (ret.text < vueData1.formData2.newCurrentBoxNo) {
+            //             api.toast({msg: '不能小于当前数量!', duration: 3000, location: 'middle'});
+            //         } else {
+            //             vueData1.formData2.maximumBoxNo = ret.text;
+            //         }
+            //     });
+            // },
+            createNewBarCode: function() {
+                if (!vueData1.formData.palletCode) {
+                    return false;
+                }
+
+                api.alert({msg:'请确保已扫描完所有的箱码!'});
+
+                var isChanged = false;
+                var tableData = $("#bootstrap-tab-1").bootstrapTable('getData');
+                for (var i = 0; i < tableData.length; i++) {
+                    if (tableData[i].flag != '0') {
+                        isChanged = true;
+                        break;
+                    }
+                }
+
+                if (isChanged) {
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+                    api.ajax({
+                        url: getUrl(OtherUrl.createBarCode),
+                        method: 'post',
+                        timeout: 60,
+                        data: {
+                            values: {
+                                ruleCode: 'NEW_PRD_BC',    //条码规则
+                                barCode: vueData1.formData.palletCode         //赋值条码数据
+                            }
+                        }
+                    }, function (ret) {
+                        api.hideProgress();
+                        if (ret && ret.errCode == 0) {
+                            vueData1.formData2.newPalletCode = ret.data;
+                            printBarCode(ret.data);
+                        } else {
+                            api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                        }
+                    });
+                } else {
+                    api.toast({msg: '箱栈关系未发生变化，不需要生成新栈板码！', duration: 3000, location: 'middle'});
+                }
+            },
+            //打印条码
+            printBarCode: function () {
+                // if (vueData1.isFinishSubmit) {
+                var barCode = '';
+                if (vueData1.formData2.newPalletCode) {
+                    barCode = vueData1.formData2.newPalletCode;
+                } else {
+                    barCode = vueData1.formData.palletCode;
+                }
+                printBarCode(barCode, printType);
+                // } else {
+                //     api.toast({msg: '请先提交后再打印栈板标签！', location: 'middle'});
+                //     return false
+                // }
+            },
+            refreshWin: function () {
+                reloadWin();
+            },
+            //提交
+            doSubmit: function () {
+                var tableData = $('#bootstrap-tab-1').bootstrapTable('getData');
+                var palletCode = '';
+                if (vueData1.formData2.newPalletCode) {
+                    palletCode = vueData1.formData2.newPalletCode;
+                } else {
+                    palletCode = vueData1.formData.palletCode;
+                }
+
+                if (tableData.length == 0) {
+                    api.toast({msg: "没有可以提交的数据！", duration: 3000, location: 'middle'});
+                    return;
+                }
+                var arr = [];   //关联的箱码
+                var arr2 = [];  //未关联的箱码
+                var isNoChange = true;
+                for (var i = 0; i < tableData.length; i++) {
+                    if (tableData[i].flag == '1') {     // 0:栈板原本的箱码 1:扫描插入的箱码 null:没有扫描到的栈板
+                        isNoChange = false;
+                        if (vueData1.formData.extendCode) {
+                            arr.push(tableData[i].barCode + '---' + vueData1.formData.extendCode);
+                            arr2.push(tableData[i].barCode + '---' + vueData1.formData.extendCode);
+                        } else {
+                            arr.push(tableData[i].barCode);
+                            arr2.push(tableData[i].barCode)
+                        }
+                    } else if (tableData[i].flag == '0' ){
+                        isNoChange = false;
+                        if (vueData1.formData.extendCode) {
+                            arr.push(tableData[i].barCode + '---' + vueData1.formData.extendCode)
+                        } else {
+                            arr.push(tableData[i].barCode)
+                        }
+                    } /*else {
+                        if (vueData1.formData.extendCode) {
+                            arr.push(tableData[i].barCode + '---' + vueData1.formData.extendCode)
+                        } else {
+                            arr.push(tableData[i].barCode)
+                        }
+                    }*/
+                }
+                if (isNoChange) {
+                    api.alert({
+                        title: '',
+                        msg: '栈板实物与账存一致，不需要提交!'
+                    });
+                    return false;
+                }
+                api.confirm({
+                    title: '提示',
+                    msg: '请确认所有箱码扫描完后提交，是否提交？',
+                    buttons: ['确定', '取消']
+                }, function (ret) {
+                    if (ret.buttonIndex === 1) {
+                        if (vueData1.isDifferent) {
+                            api.confirm({
+                                title: '提示',
+                                msg: '合栈的栈板任务令不一样，是否确认合栈？',
+                                buttons: ['确定', '取消']
+                            }, function (ret) {
+                                if (ret.buttonIndex === 1) {
+                                    doSubmitFun(palletCode, arr, arr2);
+                                } else {
+                                    return false;
+                                }
+                            })
+                        } else {
+                            doSubmitFun(palletCode, arr, arr2);
+                        }
+                    } else {
+                        return false;
+                    }
+                })
+            }
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--适用于按钮的边框圆角的弧度-->
+    <dimen name="bt_big_radius">22dip</dimen>
+    <dimen name="bt_small_radius">10dip</dimen>
+    <!--左右上下预留边距-->
+    <dimen name="left_margin">10dp</dimen>
+    <dimen name="right_margin">10dp</dimen>
+    <dimen name="top_margin">12dp</dimen>
+    <dimen name="bottom_margin">12dp</dimen>
+    <dimen name="top_steep_margin">32dp</dimen>
+    
+    <!--适合上下控件之间的线宽直线、宽线-->
+    <dimen name="hair_line">1sp</dimen>
+    <dimen name="hairer_line">3sp</dimen>
+    <dimen name="wide_line">6dp</dimen>
+    <dimen name="wider_line">12dp</dimen>
+    <dimen name="widest_line">20dp</dimen>
+
+    <!--可选择控件左右侧的图标大小，单位dp-->
+    <dimen name="icon_left_size">20dp</dimen>
+    <dimen name="icon_right_size">20dp</dimen>
+
+    <!--定义图像缩率图的大小-->
+    <dimen name="icon_smallest_size">18dp</dimen>
+    <dimen name="icon_smaller_size">20dp</dimen>
+    <dimen name="icon_small_size">22dp</dimen>
+    <dimen name="icon_thumb_size">30dp</dimen>
+    <dimen name="icon_big_thumb_size">40dp</dimen>
+    <dimen name="icon_biger_thumb_size">100dp</dimen>
+
+    <!--适合控件左侧和删除的图标定义宽和高，单位pix-->
+    <integer name="lefticon">80</integer>
+    <integer name="deleteicon">50</integer>
+
+    <!--适用于单行按钮登陆、提交等-->
+    <dimen name="btMargin50dp">45dp</dimen>
+    <dimen name="btMarginBig">45dp</dimen>
+    <dimen name="btMarginBiggest">110dp</dimen>
+    <dimen name="btMarginSmall">20dp</dimen>
+
+    <!--多行文本字体大小-->
+    <dimen name="linesEditTextSize">14sp</dimen>
+
+
+    <!--comm大小-->
+    <dimen name="dp15">15dp</dimen>
+    <dimen name="dp25">25dp</dimen>
+        <dimen name="dp50">50dp</dimen>
+
+    <!--title相关-->
+    <dimen name="titleSize">18sp</dimen>
+    <dimen name="subTitleSize">16sp</dimen>
+    <dimen name="statusBarHeight">30dp</dimen>
+    <dimen name="titleHeight">70dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="editTextSize">14sp</dimen>
+    <dimen name="bannerHeight">150dp</dimen>
+
+    <!--适用于文本列表的行间距-->
+    <dimen name="textListMargin">12dp</dimen>
+
+
+
+    <!--适用于界面当行输入控件布局的宽度-->
+    <dimen name="inputwidth">300dp</dimen>
+    <dimen name="btTextSize">14sp</dimen>
+    <dimen name="sp14">14sp</dimen>
+    <dimen name="sp12">12sp</dimen>
+    <dimen name="dp10">10dp</dimen>
+    <dimen name="dp5">5dp</dimen>
+    <dimen name="sp16">16sp</dimen>
+    <dimen name="dp60">60dp</dimen>
+    <dimen name="dp20">20dp</dimen>
+    <dimen name="dp100">100dp</dimen>
+    <dimen name="dp30">30dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+</resources>

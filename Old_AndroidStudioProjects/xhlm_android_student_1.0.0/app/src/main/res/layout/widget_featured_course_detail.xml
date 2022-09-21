@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/dp_10"
+    android:layout_width="@dimen/dp_150"
+    android:layout_height="@dimen/dp_150">
+    <TextView
+        android:layout_marginTop="@dimen/dp_15"
+        android:id="@+id/tv_course_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/dp5"
+        android:text="小初高级词语，阅读建议课时：20小时"/>
+    <TextView
+        android:id="@+id/tv_course_price"
+        android:layout_above="@+id/login_btn_sendcaptcha"
+        android:layout_marginTop="@dimen/dp5"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:textColor="@color/live_red_press"
+        android:text="￥ 4300起"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:id="@+id/login_btn_sendcaptcha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/panic_buying"
+        android:layout_centerVertical="true"
+        app:qmui_borderColor="@color/live_red_press"
+        android:paddingRight="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_20"
+        android:textColor="@color/live_red_press"
+        app:qmui_radius="@dimen/dp5"/>
+</RelativeLayout>

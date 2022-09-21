@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>下架任务查询</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <style>
+        body {
+        }
+
+        .aui-searchbar {
+            top: 52px;
+            z-index: 999;
+        }
+
+        button, .aui-btn {
+            font-size: 0.8rem;
+            width: 100%;
+            height: 3rem;
+            line-height: 2.5rem;
+        }
+
+        .aui-list .aui-list-item-label,
+        .aui-list .aui-list-item-label-icon {
+            font-size: 0.8em;
+        }
+
+        .aui-list-item-input input {
+            font-size: 0.8em;
+        }
+
+        tbody input[type="text"],
+        select,
+        textarea {
+            font-size: 0.7rem;
+        }
+
+        #Ul-li {
+            top: 100px;
+            position: absolute;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+    <a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">
+        <span class="aui-iconfont aui-icon-left"></span> </a>
+    <div class="aui-title" id="middle">下架任务查询</div>
+</header>
+
+<section class="aui-content" style="overflow: auto;">
+    <div class="aui-searchbar" id="search">
+        <div class="aui-searchbar-input aui-border-radius" tapmode onclick="doSearch()">
+            <i class="aui-iconfont aui-icon-search"></i>
+            <div class="aui-searchbar-input">
+                <form>
+                    <input type="search" placeholder="请输入任务单号搜索" id="search-input" onkeyup="filterList(this.value);">
+                </form>
+            </div>
+            <i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="clearInput()"></i>
+        </div>
+        <div class="aui-searchbar-cancel aui-text-info" tapmod onclick="cancelSearch()">取消</div>
+    </div>
+</section>
+
+<section class="aui-content" id="Ul-li">
+    <div class="aui-content aui-margin-b-15">
+        <ul class="aui-list aui-list-in" id="dataList"></ul>
+        <div>
+</section>
+<script id="showData" type="text/x-dot-template">
+    {{~ it:value:index}}
+    <li class="aui-list-item" onclick="setSourceListBack('{{= value.code }}', 'downTask');">
+        <div class="aui-list-item-inner">
+            <div class="aui-list-item-title">{{= value.workOrderCode }}</div>
+            <div class="aui-list-item-right">
+                <ul style="text-align:right;">
+                    {{=value.code||''}}
+                </ul>
+                <ul style="text-align:right;">
+                    {{=value.taskDate||''}}
+                </ul>
+                <ul style="text-align:right;">
+                    {{=value.originBillCode||''}}
+                </ul>
+            </div>
+            <!--显示内容自扩展-->
+        </div>
+    </li>
+    {{~}}
+</script>
+
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript">
+
+    var searchType="workOrderCode";//可配置搜索条件
+    var toast = new auiToast({});
+	var listData = [];
+    apiready = function () {
+        api.parseTapmode();
+        // 查询参数
+        var params = {
+            "id":"$filter=state ne 10 and state ne 0",
+            "workCenterGid": WCEN_GID,
+            "businessType": api.pageParam.businessType,  //任务类型 (下架任务的任务类型与状态与出库任务都一样)
+            // "state": OUTSTORE_STATUS.CLOSED          //任务状态
+        };
+        doQuery(params);
+    };
+
+    // 查询
+    function doQuery(params) {
+        toast.loading({title: "加载中", duration: 10000});
+        api.ajax({
+            url: getUrl(SearchUrl.downTask),
+            method: 'post',
+            data: {
+                values: {
+                    data: JSON.stringify(params)
+                }
+            }
+        }, function (ret, err) {
+            toast.hide();
+            listData=ret;
+            if (ret && ret.errCode == 0) {
+	            listData.data = listData.data.sort(function (a, b) {
+	    			return new Date(b.taskDate.replace(/-/g, '/')).getTime() - new Date(a.taskDate.replace(/-/g, '/')).getTime()
+	    		 });
+	    		updateList(listData.data)
+            } else {
+                api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                return;
+            }
+        });
+    }
+
+    var searchBar = document.querySelector(".aui-searchbar-input");
+    if (searchBar) {
+        searchBar.onclick = function () {
+            document.querySelector(".aui-searchbar-cancel").style.marginRight = 0;
+        }
+    }
+
+    document.querySelector(".aui-searchbar-cancel").onclick = function () {
+        this.style.marginRight = "-" + this.offsetWidth + "px";
+        document.getElementById("search-input").value = '';
+        document.getElementById("search-input").blur();
+    }
+
+    function doSearch() {
+        $api.addCls($api.dom(".aui-searchbar"), "focus");
+        $api.dom('.aui-searchbar-input input').focus();
+    }
+
+    function cancelSearch() {
+        $api.removeCls($api.dom(".aui-searchbar.focus"), "focus");
+        $api.val($api.byId("search-input"), '');
+        $api.dom('.aui-searchbar-input input').blur();
+    }
+
+    function clearInput() {
+        $api.val($api.byId("search-input"), '');
+    }
+    
+    
+    //前台搜索
+   	function filterList(value){
+		if(!$.trim(value)){
+			updateList(listData.data)
+		}else{
+			var _listData = $.grep(listData.data,function(item){
+				//可配置搜索条件
+                if(searchType=='workOrderCode'){
+                    if(item.workOrderCode == null || item.workOrderCode == ''){
+                        return true
+                    }else {
+                        return (item.workOrderCode.indexOf(value) != -1)
+                    }
+                }
+			});
+			updateList(_listData)
+		}
+	}
+	
+	function updateList(list){
+		var listDataIn100 = list.slice(0,100)
+		$("#dataList").children().remove();
+		var evaluation = doT.template($api.dom('#showData').innerHTML);
+		$api.dom('#dataList').innerHTML = evaluation(listDataIn100);
+	}
+   
+</script>
+
+</html>

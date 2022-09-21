@@ -1,0 +1,67 @@
+<resources>
+
+    <!-- Base application theme.
+    <style realName="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar"> </style>-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!--<item realName="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item realName="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item realName="colorAccent">@color/colorAccent</item>-->
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="NoBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <!--自定义dialog-->
+    <style name="dialog" parent="Theme.AppCompat.Dialog">
+        <!-- Customize your theme here. -->
+        <!--<item realName="android:windowFrame" >@null</item>-->
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <!-- 点击外部是否允许取消 -->
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <!--设置半透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <!--去掉标题-->
+        <item name="android:windowNoTitle">true</item>
+        <!--背景颜色，如果windows背景颜色设置白色，则动画显示的背景面板会是白色，建议设置为透明-->
+        <item name="android:background">@android:color/transparent</item>
+        <!--设置dialog_window的背景颜色-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--背后的阴影-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--背后阴影的透明度-->
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+    <!--这里定义选择城市Activity的样式-->
+    <style name="CityCustomTheme" parent="DefaultCityPickerTheme">
+        <item name="cpCancelTextColor">@color/blue</item>
+        <item name="cpSearchCursorDrawable">@color/blue</item>
+        <item name="cpIndexBarNormalTextColor">@color/blue</item>
+        <item name="cpIndexBarSelectedTextColor">@color/blue</item>
+        <item name="cpSectionHeight">@dimen/dp25</item>
+        <item name="cpOverlayBackground">@color/blue</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!--  -->
+    <declare-styleable name="ImageViewPlay">
+        <attr name="ivp_play_btn_res" format="reference"/>
+    </declare-styleable>
+    <!--  -->
+
+    <!--设置日历的样式-->
+    <style name="weekIndicatorStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
+</resources>

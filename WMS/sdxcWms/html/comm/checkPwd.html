@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>登录</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+
+		p {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header class="aui-bar aui-bar-nav" style="background-color: #03a9f4">
+		<a class="aui-pull-left aui-btn" onclick="closeWin()">
+			<span class="aui-iconfont aui-icon-left"></span>
+		</a>
+		<div class="aui-title">验证密码</div>
+	</header>
+
+	<div class="aui-content aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item" style="background-color: #cccccc">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon">
+						<i class="aui-iconfont aui-icon-my"></i>
+					</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="username" id="username" value="" disabled="true" />
+					</div>
+					<div class="aui-list-item-label-icon" id="clearUn" style="display: none" onclick="clearUnInput()">
+						<i class="aui-iconfont aui-icon-close"></i>
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon">
+						<i class="aui-iconfont aui-icon-lock"></i>
+					</div>
+					<div class="aui-list-item-input">
+						<input type="password" placeholder="password" id="password" value="" />
+					</div>
+					<div class="aui-list-item-label-icon" id="pwdChange" onclick="changePwdCls()">
+						<i class="aui-iconfont aui-icon-hide" id="pwdIcon"></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content-padded">
+		<p>
+			<div class="aui-btn aui-btn-info aui-btn-block" onclick='login()'>确定</div>
+		</p>
+	</div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+	var pwdClsFlag = 0;
+	var oldUn = "";
+	var unInput = document.querySelector("#username");
+	var unClear = document.querySelector("#clearUn");
+	var pwdInput = document.querySelector("#password");
+	unInput.oninput = function() {
+		if (this.value.length) {
+			unClear.style.display = 'block';
+		} else {
+			unClear.style.display = 'none';
+		}
+	}
+
+	unInput.onclick = function() {
+		if (this.value.length) {
+			unClear.style.display = 'block';
+		} else {
+			unClear.style.display = 'none';
+		}
+	}
+
+	pwdInput.onfocus = function() {
+		unClear.style.display = 'none';
+	}
+
+	function changePwdCls() {
+		if (pwdClsFlag == 0) {
+			//显示出密码
+			pwdClsFlag = 1;
+			document.getElementById("password").type = "text";
+			document.getElementById('pwdIcon').setAttribute("class", "aui-iconfont aui-icon-display");
+		} else {
+			//隐藏密码
+			pwdClsFlag = 0;
+			document.getElementById("password").type = "password";
+			document.getElementById('pwdIcon').setAttribute("class", "aui-iconfont aui-icon-hide");
+		}
+		unClear.style.display = 'none';
+	}
+
+	apiready = function() {
+		api.setScreenOrientation({
+			orientation: 'auto'
+		});
+		api.addEventListener({
+			name: 'keyback'
+		}, function(ret, err) {
+			if (ret.type == 'success') {
+				api.closeWin();
+				api.setScreenOrientation({
+					orientation: 'portrait_up'
+				});
+			} else {
+				api.toast({
+					msg: ret.data,
+					duration: 3000
+				});
+			}
+		});
+
+		oldUn = localStorage.getItem('un');
+		if (oldUn != null) {
+			$("#username").attr("value", oldUn);
+		}
+	};
+
+	function clearUnInput() {
+		//清空输入框内容
+		$("#username").val('');
+		//隐藏清空按钮
+		unClear.style.display = 'none';
+		$("#username").focus();
+	}
+
+
+	function closeWin() {
+		api.closeWin();
+	}
+
+	function login() {
+		var username = $("#username").val();
+		var password = $("#password").val();
+		var url = "http://" + localStorage.getItem('serverIp') + ":" + localStorage.getItem('serverPort')+ "/" + localStorage.getItem('serverProject') + "/padCommController!login.m";
+		console.log(url);
+		var params = new Object();
+		params.url = url;
+		params.dataType = 'json';
+		params.method = 'post';
+		var data = {
+			values: { ////以表单方式提交参数（JSON对象）
+				_u: username,
+				_p: password
+			}
+		};
+
+		ajaxForData(params, data, true, function(ret, err) {
+			if (ret) {
+				var retData = ret.data.split(",");
+				if (retData[0] == "success") {
+					//登陆成功，进入手势密码设置
+					api.openFrame({
+						name: 'screenpersonsetlockNew1_win',
+						url: 'screenpersonsetlockNew1_win.html',
+						animation: {
+							type: "fade",
+							subType: "from_bottom",
+							duration: 100
+						}
+					});
+				} else {
+					//登录失败
+					api.toast({
+						msg: '密码验证失败',
+						duration: 2000,
+						location: 'bottom'
+					});
+				}
+			}
+		});
+
+	}
+</script>
+
+</html>

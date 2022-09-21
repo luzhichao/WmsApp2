@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>库存录入</title>
+	<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/icons.css" />
+</head>
+
+<body>
+    <div class="aui-tab" id="tab">
+        <div class="aui-tab-item aui-active" id="a">序列号扫描</div>
+        <div class="aui-tab-item" id="b">条码扫描</div>
+    </div>
+
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/aui-tab.js" ></script>
+<script src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+
+	var currentPageParams = {};
+	apiready = function() {
+        api.openFrameGroup({
+            name : 'fram',
+            scrollEnabled : false,
+            rect : {
+                    x : 0,
+                    y : 90,
+                    w : 'auto',
+                    h : 'auto'
+            },
+            frames : [{
+                    name : 'fram1',
+                    url : 'wmsStockDataImport_fram1.html',
+                    bgColor : '#fff'
+            }, {
+                    name : 'fram2',
+                    url : 'wmsStockDataImport_fram2.html',
+                    bgColor : '#fff'
+            }]
+        }, function(ret, err) {
+            var index = ret.index;
+            $api.removeCls($api.byId('a'), 'aui-active');
+            $api.removeCls($api.byId('b'), 'aui-active');
+            if (index == 0) {
+                $api.addCls($api.byId('a'), 'aui-active');
+            } else if (index == 1) {
+                $api.addCls($api.byId('b'), 'aui-active');
+            }
+        });
+	};
+
+	var tab = new auiTab({
+        element : document.getElementById("tab"),
+    }, function(ret) {
+        api.setFrameGroupIndex({
+            name : 'fram',
+            index : ret.index - 1
+        });
+    });
+
+
+</script>
+
+</html>

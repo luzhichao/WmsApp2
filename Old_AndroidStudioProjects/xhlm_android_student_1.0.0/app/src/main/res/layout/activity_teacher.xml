@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".student.activity.TeacherActivity">
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/toolbar" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/layout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_teacher_banner"
+                    layout="@layout/layout_teacher_banner" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_subject_list"
+                    layout="@layout/layout_teacher_baseinfo" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_online_courses"
+                    layout="@layout/layout_online_courses" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_student_evaluation"
+                    layout="@layout/layout_student_evaluation" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_teaching_characteristics"
+                    layout="@layout/layout_teaching_characteristics" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_teaching_experience"
+                    layout="@layout/layout_teaching_experience" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/layout_success_case"
+                    layout="@layout/layout_success_case" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+                android:id="@+id/btn_collect"
+                android:layout_width="0px"
+                android:layout_height="@dimen/dp25"
+                android:layout_weight="1"
+                android:text="收藏"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                app:qmui_radius="@dimen/dp_2"/>
+                <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+                    android:id="@+id/btn_consultation"
+                    android:layout_width="0px"
+                    android:layout_height="@dimen/dp25"
+                    android:layout_weight="1"
+                    android:text="更多咨询"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    app:qmui_radius="@dimen/dp_2"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

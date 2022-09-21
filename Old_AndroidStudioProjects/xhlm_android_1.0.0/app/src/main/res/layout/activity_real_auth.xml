@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.RealAuth">
+
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_real_auth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--title-->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 真实姓名 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/sp16"
+                    android:text="真实姓名" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <EditText
+                        android:id="@+id/et_real_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:background="@null"
+                        android:textSize="@dimen/sp16"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:hint="请填写真实姓名" />
+                </RelativeLayout>
+            </LinearLayout>
+            <!-- 真实姓名 -->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/wide_line"
+                android:background="@color/backgroundColor" />
+
+            <!-- 证件类型 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/sp16"
+                    android:text="证件类型" />
+                <RelativeLayout
+                    android:id="@+id/rl_auth_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:background="@null"
+                        android:textSize="@dimen/sp16"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:text="身份证"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <!-- 证件类型 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!-- 证件号码-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/sp16"
+                    android:text="证件号码" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <EditText
+                        android:id="@+id/et_auth_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:background="@null"
+                        android:textSize="@dimen/sp16"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:inputType="number"
+                        android:hint="请输入证件号码"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <!-- 证件号码-->
+            <!-- 图片上传 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/blue">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1">
+                    <RelativeLayout
+                        android:id="@+id/front_auth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/left_margin"
+                        android:layout_marginRight="@dimen/left_margin"
+                        android:layout_marginTop="@dimen/left_margin"
+                        android:layout_marginBottom="@dimen/left_margin"
+                        android:layout_weight="1.5">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:background="@drawable/btn_white_solid"
+                            android:layout_centerInParent="true"/>
+                        <ImageView
+                            android:id="@+id/iv_front_auth"
+                            android:layout_width="@dimen/dp100"
+                            android:layout_height="@dimen/dp100"
+                            android:layout_centerInParent="true"
+                            android:src="@null"/>
+                        <ImageView
+                            android:layout_width="@dimen/dp50"
+                            android:layout_height="@dimen/dp50"
+                            android:layout_centerInParent="true"
+                            android:alpha="0.5"
+                            android:src="@drawable/photo_icon"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="@string/front_auth"
+                        android:textColor="@color/titleWhite"
+                        android:textSize="@dimen/sp14" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1">
+                    <RelativeLayout
+                        android:id="@+id/back_auth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/left_margin"
+                        android:layout_marginRight="@dimen/left_margin"
+                        android:layout_marginTop="@dimen/left_margin"
+                        android:layout_marginBottom="@dimen/left_margin"
+                        android:background="@drawable/btn_blue_solid"
+                        android:layout_weight="1.5">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:background="@drawable/btn_white_solid"
+                            android:layout_centerInParent="true"/>
+                        <ImageView
+                            android:id="@+id/iv_back_auth"
+                            android:layout_width="@dimen/dp100"
+                            android:layout_height="@dimen/dp100"
+                            android:layout_centerInParent="true"
+                            android:src="@null"/>
+                        <ImageView
+                            android:layout_width="@dimen/dp50"
+                            android:layout_height="@dimen/dp50"
+                            android:layout_centerInParent="true"
+                            android:alpha="0.5"
+                            android:src="@drawable/photo_icon"/>
+                    </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp14"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_weight="1"
+                        android:textColor="@color/titleWhite"
+                        android:hint="@string/back_auth"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1">
+                    <RelativeLayout
+                        android:id="@+id/hold_auth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/left_margin"
+                        android:layout_marginRight="@dimen/left_margin"
+                        android:layout_marginTop="@dimen/left_margin"
+                        android:layout_marginBottom="@dimen/left_margin"
+                        android:layout_weight="1.5">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:background="@drawable/btn_white_solid"
+                            android:layout_centerInParent="true"/>
+                        <ImageView
+                            android:id="@+id/iv_hold_auth"
+                            android:layout_width="@dimen/dp100"
+                            android:layout_height="@dimen/dp100"
+                            android:layout_centerInParent="true"
+                            android:src="@null"/>
+                        <ImageView
+                            android:layout_width="@dimen/dp50"
+                            android:layout_height="@dimen/dp50"
+                            android:layout_centerInParent="true"
+                            android:alpha="0.5"
+                            android:src="@drawable/photo_icon"/>
+                    </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp14"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_weight="1"
+                        android:textColor="@color/titleWhite"
+                        android:hint="@string/hold_auth"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            <!-- 图片上传 -->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/wide_line"
+                android:background="@color/backgroundColor" />
+
+            <Button
+                android:id="@+id/submit_auth"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/btMarginBig"
+                android:layout_marginRight="@dimen/btMarginBig"
+                android:textColor="@color/titleWhite"
+                android:background="@drawable/btn_blue_solid"
+                android:text="@string/submit_auth" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

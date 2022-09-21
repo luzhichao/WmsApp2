@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="600dp"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <EditText
+            android:id="@+id/mac"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="MAC地址"
+            android:inputType="text"
+            android:text="DC:0D:30:A2:E3:4B"></EditText>
+
+        <EditText
+            android:id="@+id/code"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="物料编码"
+            android:inputType="text"
+            android:text="TX52010210-01"></EditText>
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="物料名称"
+            android:inputType="text"
+            android:text="1001682  2919010-DY020一汽青岛前下反作用杆带橡胶接头总成"></EditText>
+
+        <EditText
+            android:id="@+id/lot"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="批次号"
+            android:inputType="text"
+            android:text="202008260001"></EditText>
+
+        <EditText
+            android:id="@+id/num"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="数量"
+            android:inputType="text"
+            android:text="120"></EditText>
+
+        <EditText
+            android:id="@+id/con"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="容器编码"
+            android:inputType="text"
+            android:text="S2012010001"></EditText>
+
+        <Button
+            android:id="@+id/btnPrintTest"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="打印测试" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

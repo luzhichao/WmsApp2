@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>登录</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+
+		p {
+			margin-bottom: 15px;
+		}
+		@media screen and (min-width: 800px){
+			img{
+				max-height: 10rem !important;
+				max-width: 50% !important;
+				margin-left: 25%;
+			}
+		}
+
+	</style>
+</head>
+
+<body>
+	<header id="login" class="aui-bar aui-bar-nav" style="background-color: #03a9f4">
+		<a class="aui-pull-left aui-btn"></a>
+		<div class="aui-title">登录</div>
+		<a class="aui-pull-right aui-btn " onclick="setting()">
+			<span class="aui-iconfont aui-icon-gear"></span>
+		</a>
+	</header>
+	<div class="aui-content aui-margin-b-15">
+		<ul class="aui-list aui-media-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-row aui-row-padded">
+						<div class="aui-col-xs-4"></div>
+						<div class="aui-col-xs-4">
+							<img src="../../image/right.png" />
+						</div>
+						<div class="aui-col-xs-4"></div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon"><i class="aui-iconfont aui-icon-my"></i></div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="账号" id="username" value="" />
+					</div>
+					<div class="aui-list-item-label-icon" id="clearUn" style="display: none" onclick="clearUnInput()">
+						<i class="aui-iconfont aui-icon-close"></i>
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label-icon"><i class="aui-iconfont aui-icon-lock"></i></div>
+					<div class="aui-list-item-input">
+						<input type="password" placeholder="密码" id="password" value="123456" />
+					</div>
+					<div class="aui-list-item-label-icon" id="pwdChange" onclick="changePwdCls()">
+						<i class="aui-iconfont aui-icon-hide" id="pwdIcon"></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content-padded">
+		<p><div class="aui-btn aui-btn-info aui-btn-block" onclick='login()'>登录</div></p>
+	</div>
+
+	<!-- <footer class="aui-bar aui-bar-tab" id="aui-footer">
+		<div class="aui-bar-tab-item" tapmode>
+			<ul class="aui-list aui-media-list">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-row aui-row-padded">
+							<div class="aui-col-xs-4"></div>
+							<div class="aui-col-xs-4"><img src="../../image/logo-right.png" /></div>
+							<div class="aui-col-xs-4"></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</footer> -->
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+	var pwdClsFlag = 0,oldUn = "",unInput = document.querySelector("#username");
+	var unClear = document.querySelector("#clearUn"),pwdInput = document.querySelector("#password");
+
+	unInput.oninput = function() {
+		if (this.value.length) {
+			unClear.style.display = 'block';
+		} else {
+			unClear.style.display = 'none';
+		}
+	}
+
+	unInput.onclick = function() {
+		if (this.value.length) {
+			unClear.style.display = 'block';
+		} else {
+			unClear.style.display = 'none';
+		}
+	}
+
+	pwdInput.onfocus = function() {
+		unClear.style.display = 'none';
+	}
+
+	function changePwdCls() {
+		if (pwdClsFlag == 0) {
+			//显示出密码
+			pwdClsFlag = 1;
+			document.getElementById("password").type = "text";
+			document.getElementById('pwdIcon').setAttribute("class", "aui-iconfont aui-icon-display");
+		} else {
+			//隐藏密码
+			pwdClsFlag = 0;
+			document.getElementById("password").type = "password";
+			document.getElementById('pwdIcon').setAttribute("class", "aui-iconfont aui-icon-hide");
+		}
+		unClear.style.display = 'none';
+	}
+
+	apiready = function() {
+		$api.fixStatusBar(document.querySelector('#login'));
+		api.setScreenOrientation({
+			orientation: 'auto'
+		});
+		var autoLoginFlag = localStorage.getItem('autoLoginFlag');
+		if (autoLoginFlag != null && autoLoginFlag == "Y") {
+			//自动登陆
+			doAutoLogin();
+		}
+		api.addEventListener({
+			name: 'keyback'
+		}, function(ret, err) {
+			if (ret) {
+				api.closeWin();
+				api.setScreenOrientation({
+					orientation: 'portrait_up'
+				});
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+		oldUn = localStorage.getItem('un');
+		if (oldUn != null) {
+			$("#username").attr("value", oldUn);
+		};
+		var appVersion = api.appVersion;
+		var searchAppVersion = localStorage.getItem("searchAppVersion");
+		if(!searchAppVersion || appVersion != searchAppVersion){
+			api.alert({
+					title: '版本日志',
+					msg: "1.测试"
+			});
+			localStorage.setItem("searchAppVersion",appVersion);
+		}
+	};
+
+	function clearUnInput() {
+		//清空输入框内容
+		$("#username").val('');
+		//隐藏清空按钮
+		unClear.style.display = 'none';
+		$("#username").focus();
+	}
+
+	function setting() {
+		api.openWin({
+			name: "settingsNew",
+			url: "settingsNew.html"
+		});
+	};
+
+	function login() {
+		var systemType = api.systemType;
+		api.showProgress({
+			title: '登陆中...'
+		});
+		var username = $("#username").val(),password = $("#password").val();
+		//先获取localStorage中的配置的内外网IP检测网络是否畅通（内网优先）
+		var serverIp = "",serverPort = "",serverProject = "";
+		var serverIpN = localStorage.getItem('serverIpN');
+		if(systemType == 'android'){
+			var modulePing = api.require('modulePing');
+			modulePing.pingtest({
+				ip: serverIpN
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret) {
+					if (ret.okNum > 0) {
+						//内网OK
+						serverIp = localStorage.getItem('serverIpN');
+						serverPort = localStorage.getItem('serverPortN');;
+						serverProject = localStorage.getItem('serverProjectN');
+						doLogin(serverIp, serverPort, serverProject, username, password);
+					} else {
+						var serverIpW = localStorage.getItem('serverIpW');
+						modulePing.pingtest({
+							ip: serverIpW
+						}, function(ret, err) {
+							api.hideProgress();
+							if (ret) {
+								if (ret.okNum > 0) {
+									serverIp = localStorage.getItem('serverIpW');
+									serverPort = localStorage.getItem('serverPortW');;
+									serverProject = localStorage.getItem('serverProjectW');
+									doLogin(serverIp, serverPort, serverProject, username, password);
+								} else {
+									api.toast({
+										msg: '网络不通'
+									});
+								}
+							} else {
+								alert(JSON.stringify(err));
+							}
+						});
+					}
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		}
+	}
+
+	function doLogin(serverIp, serverPort, serverProject, username, password) {
+		var url = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + password + "&_pt=min" + "&_to=padCommController!login.m";
+		var params = new Object();
+		params.url = url;
+		params.dataType = 'json';
+		params.method = 'post';
+		var data = {
+			values: {
+				_u: username,
+				_p: password
+			}
+		};
+		ajaxForData(params, data, true, function(ret, err) {
+			if (ret) {
+				var retData = ret.data.split(",");
+				if (retData[0] == "success") {
+					//切换用户清空工作中心缓存
+					if (username != localStorage.getItem('un')) {
+						localStorage.removeItem('siteGid');
+						localStorage.removeItem('siteCode');
+						localStorage.removeItem('siteName');
+						localStorage.removeItem('workCenterGid');
+						localStorage.removeItem('workCenterCode');
+						localStorage.removeItem('workCenterName');
+					}
+					localStorage.setItem('un', username);
+					localStorage.setItem('pw', retData[1]);
+					localStorage.setItem('mWCFlag', retData[2]);
+					localStorage.setItem('projectName', retData[3]);
+					localStorage.setItem('serverIp', serverIp);
+					localStorage.setItem('serverPort', serverPort);
+					localStorage.setItem('serverProject', serverProject);
+					var serverUrl = "";
+					if (retData[2] != "-1") {
+						//启用多工作中心，使用autologin带上dr
+						var datarole = localStorage.getItem('workCenterGid');
+						serverUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + retData[1] + "&_dr=" + datarole +"&_to=";
+						localStorage.setItem('serverUrl', serverUrl);
+					} else {
+						//不启用多工作中心
+						serverUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + retData[1] +"&_to=";
+						localStorage.setItem('serverUrl', serverUrl);
+					}
+					api.openWin({
+						name: "main_win",
+						url: "main_win.html",
+						reload: true
+					});
+				} else {
+					api.toast({
+						msg: '登录失败'
+					});
+				}
+			}
+		});
+	}
+
+	function doAutoLogin() {
+		api.showProgress({
+			title: '登陆中...'
+		});
+		var username = localStorage.getItem('un');
+		var timeStr = Date.parse(new Date());
+		//先获取localStorage中的配置的内外网IP检测网络是否畅通（内网优先）
+		var serverIp = "",serverPort = "",serverProject = "";
+		var serverIpN = localStorage.getItem('serverIpN');
+		var modulePing = api.require('modulePing');
+		modulePing.pingtest({
+			ip: serverIpN
+		}, function(ret, err) {
+			api.hideProgress();
+			if (ret) {
+				if (ret.okNum > 0) {
+					//内网OK
+					serverIp = localStorage.getItem('serverIpN');
+					serverPort = localStorage.getItem('serverPortN');
+					serverProject = localStorage.getItem('serverProjectN');
+					doNoPwdLogin(serverIp, serverPort, serverProject, username, timeStr);
+				} else {
+					var serverIpW = localStorage.getItem('serverIpW');
+					modulePing.pingtest({
+						ip: serverIpW
+					}, function(ret, err) {
+						api.hideProgress();
+						if (ret) {
+							if (ret.okNum > 0) {
+								serverIp = localStorage.getItem('serverIpW');
+								serverPort = localStorage.getItem('serverPortW');;
+								serverProject = localStorage.getItem('serverProjectW');
+								doNoPwdLogin(serverIp, serverPort, serverProject, username, timeStr);
+							} else {
+								api.toast({
+									msg: '网络不通'
+								});
+							}
+						} else {
+							alert(JSON.stringify(err));
+						}
+					});
+				}
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	function doNoPwdLogin(serverIp, serverPort, serverProject, username, timeStr) {
+		var pwd = localStorage.getItem("pw");
+		var url = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_t=" + timeStr + "&_to=padCommController!login.m";
+		var params = new Object();
+		params.url = url;
+		params.method = 'post';
+		params.dataType = 'json';
+		var data = {
+			values: {
+				_u: username,
+				_t: timeStr
+			}
+		};
+		ajaxForData(params, data, true, function(ret, err) {
+			var retData = ret.data.split(",");
+			if (retData[0] == "success") {
+				localStorage.setItem('un', username);
+				localStorage.setItem('pw', pwd);
+				localStorage.setItem('mWCFlag', retData[2]);
+				localStorage.setItem('projectName', retData[3]);
+				localStorage.setItem('serverIp', serverIp);
+				localStorage.setItem('serverPort', serverPort);
+				localStorage.setItem('serverProject', serverProject);
+				var serverUrl = "";
+				if (retData[2] == "true") {
+					//启用多工作中心，使用autologin带上dr
+					var datarole = localStorage.getItem('workCenterGid');
+					serverUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + pwd + "&_dr=" + datarole + "&_to=";
+					localStorage.setItem('serverUrl', serverUrl);
+				} else {
+					//不启用多工作中心
+					serverUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + pwd + "&_to=";
+					localStorage.setItem('serverUrl', serverUrl);
+				}
+				api.openWin({
+					name: "main_win",
+					url: "main_win.html"
+				});
+			} else {
+				api.toast({
+					msg: '登录失败'
+				});
+			}
+		});
+	}
+
+
+function ajaxForData(params, data, isshow, callback) {
+    var url = params.url;
+    if (url == '') {
+        api.toast({
+            msg: '请求url为空！'
+        });
+        return;
+    }
+
+    var method = params.method;
+    if (method == '') {
+        api.toast({
+            msg: '请求method为空！'
+        });
+        return;
+    }
+
+    var dataType = params.dataType;
+    if (dataType == '') {
+        api.toast({
+            msg: '请求dataType为空！'
+        });
+        return;
+    }
+
+    var encode = params.encode;
+    if (encode == '') {
+        encode = true;
+    }
+
+    var tag = params.tag;
+    if (tag == '') {
+        tag = 'normal';
+    }
+
+    var timeout = params.timeout;
+    if (timeout == '') {
+        timeout = 30;
+    }
+
+    var cache = params.cache;
+    if (cache == '') {
+        cache = false;
+    }
+
+    var charset = params.charset;
+    if (charset == '') {
+        charset = 'utf-8';
+    }
+
+    var report = params.report;
+    if (report == '') {
+        report = false;
+    }
+
+    var returnAll = params.returnAll;
+    if (returnAll == '') {
+        returnAll = false;
+    }
+
+    if (isshow) {
+        api.showProgress();
+    }
+    api.ajax({
+        url: url,
+        encode: encode,
+        tag: tag,
+        method: method,
+        cache: cache,
+        timeout: timeout,
+        dataType: dataType,
+        charset: charset,
+        report: report,
+        returnAll: returnAll,
+        data: data
+    }, function(ret, err) {
+        if (isshow) {
+            api.hideProgress();
+        }
+        //console.log(JSON.stringify(ret));
+        if (ret == '') {
+            var params = new Object();
+            params.url = localStorage.getItem('serverIpN');
+            pingNetWork(params);
+            return;
+        }
+        var retObj = ret;
+        var rettype = typeof(ret);
+        if (rettype == 'string') {
+            retObj = eval("(" + ret + ")");
+        }
+
+        if (retObj.type == 'success') {
+            if (callback) {
+                callback(retObj, err);
+            }
+        } else {
+            api.toast({
+                msg: ret.data,
+                duration: 3000
+            });
+        }
+    });
+}
+</script>
+</html>

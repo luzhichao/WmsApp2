@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>客供料收货</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+    <div id="receiv-goods-finish" class="tab-content-item app tab-content-item-active">
+        <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="form">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">扫码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="scanCode" @keyup.enter="onScanCodeEnter" v-model="scanCode" placeholder="扫描客供料条码或物料编码">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onScanCodeEnter">
+                                查询
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料编码</div>
+                        <div class="aui-list-item-input">
+                            <input id="mrlCode" type="text" v-model="goodsData.mrlCode" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料名称</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="goodsData.mrlName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">计量单位</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="goodsData.measureName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">生产日期</div>
+                        <div class="aui-list-item-input">
+                            <input type="date" v-model="goodsData.uda1" />
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">收货数量</div>
+                        <div class="aui-list-item-input">
+                            <input id="qty" type="number" v-model="goodsData.qty">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">收货库区</div>
+                        <select @change="slectWorkCellCode($event)">
+                            <option value="" key="" readonly>--请选择--
+                            </option>
+                            <option v-for="code in WorkCellCodes" :value="code" :key="code">{{code}}
+                            </option>
+                        </select>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">容器编码</div>
+                        <div class="aui-list-item-input">
+                            <input id="ctBarcodeCode" type="text" v-model="goodsData.ctBarcodeCode"  @keyup.enter="onEnterBarCode">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createBarCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">批次号</div>
+                        <div class="aui-list-item-input">
+                            <input id="lotCode" type="number" v-model="goodsData.lotCode" readonly>
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createLotCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <footer class="aui-bar aui-bar-tab aui-row">
+            <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<!-- <script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script> -->
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/print.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript" src="../../../script/LZCDate.min.js"></script>
+<script type="text/javascript" src="../../../script/public/supplierCode-manage.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // $api.fixStatusBar(document.querySelector('#form'));
+        $("#scanCode").focus();
+        new Vue({
+            el: '#receiv-goods-finish',
+            data: {
+                scanCode: "",
+                goodsData: {
+                    mrlName: "",
+                    mrlCode: "",
+                    // uda2: "", //保质期
+                    qty: "", //收货数量
+                    // allQty: "",
+                    qualifiedQty: "",
+                    unQualifiedQty: "0",
+                    measureCode: "", //计量单位
+                    measureName: "", //计量单位
+                    uda1: "", //生产日期
+                    ctBarcodeCode: "", //容器编码
+                    lotCode: "", //批次
+                    businessType: "10",
+                    inTaskBusinessType: "10", //客供料入库业务类型
+                    uda2: "836580021",
+                    inTaskSubTypeCode: "836580021", //客供料入库二级业务类型
+                    subBusinessTypeCode: "836580021",
+                    workCellCode: "",
+                },
+                validator: null,
+                WorkCellCodes: [],
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.validator = new Validator('form', [
+                        { name: 'mrlCode', display: "物料编码必填", rules: 'required' },
+                        { name: 'uda1', display: "生产日期必填", rules: 'required' },
+                        { name: 'qty', display: "收货数量必填", rules: 'required' },
+                        { name: 'ctBarcodeCode', display: "容器编码必填", rules: 'required' },
+                        { name: 'lotCode', display: "批次号必填且最大长度为10的数字", regexp_num: /^[0-9]+$/, rules: 'required|max_length(10)|regexp_num' },
+                    ]);
+                    this.WorkCellCodes = getWorkCellCodesFn();
+                },
+                onScanCodeEnter: function() {
+                    var that = this;
+                    var mrlCode = "";
+                    if (that.scanCode.indexOf("_") > -1) {
+                        var ret = supplierCodeSplit(that.scanCode);
+                        mrlCode = ret.mrlCode;
+                    } else {
+                        mrlCode = that.scanCode;
+                    }
+                    console.log("===mrlCode===" + mrlCode);
+                    if (that.scanCode) {
+                        that.queryInTaskByCode(mrlCode);
+                    } else {
+                        api.toast({
+                            msg: '请输入正确的数据',
+                            location: 'middle'
+                        });
+                    }
+                    this.scanCode = '';
+                },
+                queryInTaskByCode: function(code) {
+                    var that = this;
+                    var ret = getMrlByMrlCodeFn(code);
+                    console.log("===ret===" + JSON.stringify(ret));
+                    that.goodsData.mrlCode = ret.mrlCode;
+                    that.goodsData.mrlName = ret.mrlName;
+                    that.goodsData.measureName = ret.measureName;
+                    that.goodsData.measureCode = ret.measureCode;
+                    that.goodsData.uda1 = moment().format("YYYY-MM-DD");
+                },
+                //生成容器编码
+                createBarCode: function() {
+                    var that = this;
+                    if (!!that.goodsData.ctBarcodeCode) {
+                        api.toast({
+                            msg: '已有容器码!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        return;
+                    }
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+
+                    var createCode = function(ret) {
+                        api.hideProgress();
+                        console.log(JSON.stringify(ret))
+                        if (ret && ret.type == 'success' && !!ret.data) {
+                            //提交另外需要的数据
+                            that.goodsData.ctBarcodeCode = ret.data; //目标容器编码
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    };
+                    createPBarCodeFN(createCode, localStorage.getItem('workCenterCode'));
+                },
+                slectWorkCellCode: function(event) {
+                    var that = this;
+                    var value = event.target.value;
+                    that.goodsData.workCellCode = value;
+                },
+                //生成批次号
+                createLotCode: function() {
+                    var that = this;
+                    if (!!that.goodsData.lotCode) {
+                        api.toast({
+                            msg: '已有批次号!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        return;
+                    }
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+
+                    var createCode = function(ret) {
+                        api.hideProgress();
+                        console.log(JSON.stringify(ret))
+                        if (ret && ret.type == 'success' && !!ret.data) {
+                            //提交另外需要的数据
+                            that.goodsData.lotCode = ret.data; //容器编码
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    };
+                    getLotCodeFn(createCode);
+                },
+                //扫描容器码
+                onEnterBarCode: function() {
+                    var that = this;
+                    var result = getStockByCodeFn(that.goodsData.ctBarcodeCode, "2");
+                    console.log("===>"+JSON.stringify(result))
+                    if (result != undefined && result.length > 0) {
+                        var mrlCode = result[0].mrlCode;
+                        if(mrlCode == that.detailData.mrlCode){
+                            that.detailData.lotCode = result[0].lotCode;
+                        } else {
+                            api.toast({
+                                msg: '容器中是不同类型物料',
+                                location: 'middle'
+                            });
+                            that.detailData.lotCode = "";
+                        }
+                    }else{
+                        api.toast({
+                            msg: '容器库存为空',
+                            location: 'middle'
+                        });
+                        that.detailData.lotCode = "";
+                    }
+
+                },
+                submit: function() {
+                    var that = this;
+                    // that.goodsData.allQty = that.goodsData.qty;
+                    // console.log("===>"+JSON.stringify(that.goodsData))
+                    that.goodsData.qualifiedQty = that.goodsData.qty;//客供料收货是否需要将合格数量直接等于收货数量
+                    // console.log("that.goodsData===>" + JSON.stringify(that.goodsData))
+                    var valid = that.validator.validate();
+                    console.log("校验结果" + JSON.stringify(valid))
+                    if (valid.errors && valid.errors.length > 0) {
+                        api.alert({
+                            msg: valid.errors[0].display,
+                            location: 'middle'
+                        });
+                    } else {
+                        if(that.goodsData.workCellCode == ""){
+                            return api.alert({
+                            msg: "收货库区必填",
+                            location: 'middle'
+                        });
+                        }
+                        var result = createReceiptBillFn(that.goodsData);
+                        api.toast({
+                            msg: result.data,
+                            location: 'middle'
+                        });
+                        printToJiaBo(that.goodsData.mrlCode, that.goodsData.mrlName, that.goodsData.lotCode, that.goodsData.qty, that.goodsData.ctBarcodeCode); //打印
+                        that.goodsData.uda1=""; 
+                        that.goodsData.ctBarcodeCode="";
+                        that.goodsData.lotCode="";
+                        that.goodsData.qty="";
+                    }
+
+                }
+            }
+        });
+    }
+</script>
+
+</html>

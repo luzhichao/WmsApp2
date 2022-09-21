@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.SuccessCaseEdit">
+    <!--title-->
+
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/hair_line"
+        android:background="@color/titleWhite">
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/right_margin"
+            android:background="@color/backgroundColor"
+            android:hint="请输入教学经历简述，20字以内"
+            android:padding="@dimen/wide_line"
+            android:textSize="@dimen/editTextSize" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_describe"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="@dimen/wide_line"
+        android:background="@color/titleWhite"
+        android:gravity="top"
+        android:hint="描述您曾任职的学校、机构和岗位\n具体的教学内容，及研究成果等~\n200字以内"
+        android:padding="@dimen/wide_line"
+        android:textSize="@dimen/editTextSize" />
+
+    <Button
+        android:id="@+id/bt_del_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:background="@drawable/btn_blue_solid"
+        android:text="删除此条记录"
+        android:textColor="@color/titleWhite" />
+</LinearLayout>

@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>采购收货</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/LCalendar.css">
+    <style media="screen">
+
+    </style>
+</head>
+
+<body>
+    <div class="aui-tab" id="frame">
+        <div class="aui-tab-item aui-active">入库任务</div>
+        <div class="aui-tab-item">物料扫描</div>
+        <div class="aui-tab-item">收货明细</div>
+    </div>
+    <div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+        <form id="form" class="aui-content aui-margin-b-10 aui-margin-t-10">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">扫码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="tab1-scan-barcode1" @keyup.enter="onEnter" v-model="tab1ScanCode" placeholder="扫描入库任务条码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">入库任务号</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.code" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">任务状态</div>
+                        <select disabled="disabled">
+                            <option v-for="item in stateItems" :value="item.key">{{item.value}}</option>
+                        </select>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">供应商</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.supplierName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">计划日期</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.taskDate" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <table id="bootstrap-tab-1"></table>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+            <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="querySourceList">源单查询</div>
+        </footer>
+    </div>
+    <div id="aui-tab-2" class="tab-content-item app">
+        <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">扫码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" @keyup.enter="onEnterBarCode" id="tab1-scan-barcode2" v-model.trim="tab2ScanBarcode" placeholder="扫描货品条码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料名称</div>
+                        <div class="aui-list-item-input">
+                            <input id="mrlName" type="text" v-model="formData.mrlName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <!-- <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物流名称</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="workCellCode" readonly="readonly">
+                    </div>
+                </div>
+            </li> -->
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料编码</div>
+                        <div class="aui-list-item-input">
+                            <input id="mrlCode" type="text" v-model="formData.mrlCode" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <!-- <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">规格</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.specification" readonly="readonly">
+                        </div>
+                    </div>
+                </li> -->
+                <li class="aui-list-item" v-if="isSNCode == 1">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">批次</div>
+                        <div class="aui-list-item-input">
+                            <input id="lotCode" type="text" v-model="formData.lotCode" readonly="readonly">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createLotCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">图号</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.drawing" readonly="readonly">
+                        </div>
+                    </div>
+                </li> -->
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">生产日期</div>
+                        <div class="aui-list-item-input">
+                            <!-- <input id="date" type="text" readonly="" v-model="formData.createCntrCode" placeholder="请选择日期" data-lcalendar="1900-01-01,2099-12-31" @change="dateChange"/> -->
+                            <input id="date" type="date" v-model="formData.createCntrCode" />
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">保质期</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.uda2" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">托盘码</div>
+                        <div class="aui-list-item-input">
+                            <input style="padding-right:1rem" id="containerCode" type="text" @keyup.enter="onEnterPBarCode" v-model.trim="formData.pBarCode">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createPBarCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">订单数量</div>
+                        <div class="aui-list-item-input">
+                            <input type="number" v-model="formData.allQty">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">可收数量</div>
+                        <div class="aui-list-item-input">
+                            <input type="number" v-model="formData.remainQty">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">计量单位</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" v-model="formData.measureName" readonly="readonly">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">收货数量</div>
+                        <div class="aui-list-item-input">
+                            <input id="qty" type="number" v-model="formData.qty" :readOnly="isSNCode == '2'">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <table id="bootstrap-tab-2" style="display:none"></table>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-2" v-if="isSNCode == 1">
+            <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="saveData">保存</div>
+        </footer>
+    </div>
+    <div id="aui-tab-3" class="tab-content-item app">
+        <div class="aui-margin-b-10 aui-margin-t-10">
+            <table id="bootstrap-tab-3" style="table-layout: fixed;"></table>
+        </div>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-3">
+            <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/print.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript" src="../../../script/public/supplierCode-manage.js"></script>
+<script type="text/javascript" src="../../../script/Lcalendar.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript">
+    /**
+     * 操作流程概述：
+     *      1.Tab1中录入采购入库任务。 支持 源单选取和扫码带出两种操作方式；
+     *      2.Tab2扫描库位条码带出库位；
+     *      3.Tab2扫描物料，扫描供应商贴的条码 带出物料信息；
+     *              （规则：采购合同号+供应商代码+物料代码+生产日期+生产批次+本箱数量+供货日期+6位流水号）
+     *              PO-ZNZD-20181679-BOB, 0.B.F0.120, 30.B.01.0080-6, 2019-01-07, 20190107, 114, 2019-02-07, 000001
+     *      4.重复第3步，逐一扫码；
+     *      5.提交生成收货单。
+     *
+     */
+
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        sourceBusinessType: TYPE.IN_TASK, //来源 - 单据类型 - 入库任务
+        targetBusinessType: TYPE.ARR_Bill, //目标 - 单据类型 - 收货单
+        isSplitBarCode: false, //条码带的信息是解析还是从后台获取
+        isDialogToConfirmQty: true //是否弹框输入数量
+    };
+    var audioModule; //语音播报
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    var tableField1 = [{
+            name: 'id',
+            title: 'inTaskDetailGid',
+            visible: false
+        }, //inTaskDetailGid,用于提交的时候
+        {
+            name: 'mrlCode',
+            title: '物料编码'
+        },
+        {
+            name: 'mrlName',
+            title: '物料名称'
+        },
+        {
+            name: 'originDetailGid',
+            title: '原始单据明细Gid',
+            visible: false
+        },
+        {
+            name: 'qty',
+            title: '计划数量'
+        },
+        {
+            name: 'arrivalQty',
+            title: '已收货数量',
+            visible: false
+        },
+        {
+            name: 'remainQty',
+            title: '剩余数量'
+        }, //由(qty - arrivalQty)计算得到
+        {
+            name: 'completeQty',
+            title: '已扫描数量',
+            formatter: function(value, row, index) {
+                if (value) {
+                    return value
+                } else {
+                    return 0;
+                }
+            }
+        }
+    ];
+    var tableField2 = [{
+            name: 'rowId',
+            title: 'rowId',
+            visible: false
+        }, //用于前台逻辑关联
+        {
+            name: 'mrlCode',
+            title: '物料编码'
+        },
+        {
+            name: 'lotCode',
+            title: '批次'
+        },
+        //{name: 'lotCode2', visible: false},     //存在外部批次和内部批次
+        // {name: 'areaGid', title: '区域', visible: false},
+        // {name: 'areaName', title: '区域'},
+        // {name: 'subAreaGid', title: '库区', visible: false},
+        // {name: 'subAreaName', title: '库区'},
+        // {name: 'workCellCode', title: '库位'},
+        {
+            name: 'qty',
+            title: '数量'
+        },
+        // {name: 'uda2', title: '生产时间', visible: false}
+    ];
+    var tableField3 = [{
+            name: 'no',
+            title: '序号',
+            width: 60,
+            formatter: function(value, row, index) {
+                return index + 1;
+            }
+        },
+        {
+            name: 'rowPid',
+            title: '父主键',
+            visible: false
+        },
+        {
+            name: 'barCode',
+            title: '条码',
+            width: 150,
+            sortable: true,
+            order: 'asc'
+        },
+        {
+            name: 'mrlCode',
+            title: '物料编码',
+            width: 80
+        },
+        {
+            name: 'mrlName',
+            title: '物料名称',
+            width: 80
+        },
+        {
+            name: 'measureName',
+            title: '单位',
+            width: 50
+        },
+        {
+            name: 'createCntrCode',
+            title: '生产日期',
+            width: 80,
+            visible: false
+        },
+        {
+            name: 'uda2',
+            title: '保质期',
+            visible: false,
+            visible: false
+        },
+        //{name:'danwei',title:'单位',visible:false}
+        {
+            name: 'allQty',
+            title: '订单数量',
+            width: 80,
+            visible: false
+        },
+        {
+            name: 'remainQty',
+            title: '可收货数量',
+            width: 100,
+            visible: false
+        },
+        //{name: 'workCellCode', title: '库位', width: 80},
+        {
+            name: 'qty',
+            title: '数量',
+            width: 50
+        },
+        {
+            name: 'realCode',
+            title: "完整编码",
+            visible: false
+        },
+        {
+            name: 'isSNCode',
+            title: '是否是SN',
+            visible: false
+        }
+        // {name: 'areaName', title: '区域', width: 80b},
+        // {name: 'subAreaName', title: '库区', width: 80},
+        // {name: 'uda2', title: '生产时间', width: 80}
+    ];
+
+    apiready = function() {
+        audioModule = api.require('OtherOffLineSpeakModule');
+        $api.fixStatusBar(document.querySelector('#frame'));
+        $("#tab1-scan-barcode1").focus();
+        // var calendar = new LCalendar();
+        // calendar.init({
+        //   'trigger' : '#date', //标签ID
+        // 	'type' : 'date', //date 调出日期选择
+        // 	'minDate' : (new Date().getFullYear() - 5) + '-' + 1 + '-' + 1, //最小日期
+        // 	'maxDate' : (new Date().getFullYear() + 5) + '-' + 12 + '-' + 31 //最大日期
+        // });
+        // audioModule.speak({
+        //     text: 'here is 语音播报文字内容.'
+        // }, function(ret, err) {
+        //     if (err) {
+        //         console.log(JSON.stringify(err));
+        //     }
+        // });
+
+        //1.初始化多tab结构
+        new auiTab({
+            element: document.getElementById("frame")
+        }, function(params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+
+        //2.初始化表格
+        initTable(1, tableField1, null, null, function(row) {
+            var style;
+            if (row.remainQty == 0 || row.remainQty == row.completeQty) {
+                style = {
+                    css: {
+                        'color': 'red'
+                    }
+                }; //计划数量等于完成数量则变红色
+                return style;
+            }
+            if (row.isUpdate) {
+                style = {
+                    css: {
+                        'color': '#03A9F4'
+                    }
+                }; //动态变化的，蓝色
+                return style;
+            }
+            return {
+                css: {
+                    'color': 'e3e3e3'
+                }
+            }; //默认样式
+        });
+        initTable(2, tableField2, null, null);
+        initTable(3, tableField3, null, function(row, $element, field) {
+            if (btnController) {
+                return false;
+            }
+            btnController = true;
+            dialog.alert({
+                title: "是否删除物料名称为: " + row.mrlName + "的物料信息吗?",
+                buttons: ['取消', '确定']
+            }, function(ret) {
+                if (ret.buttonIndex === 2) {
+                    updateTableByDelete(row, $element.data('index'), $element);
+
+                }
+            })
+            btnController = false;
+        });
+
+        //3.设置监听(查询页面数据的回传)
+        setQueryListener(api)
+    };
+
+    /*--------------Vue1-Tab1-------------*/
+    var btnController = false;
+    var vueData1 = {
+        tab1ScanCode: '', //入库任务扫码
+        stateItems: INSTORE_STATUS_2,
+        formData: { //表头数据
+            id: '',
+            code: '', //入库任务编码
+            state: '',
+            businessType: INSTORE_TYPE.PURCHASE,
+            workCenterGid: WCEN_GID,
+            supplierName: '', //供应商名称
+            supplierCode: '', //供应商编码
+            taskDate: '' //计划日期
+        }
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        methods: {
+            //TODO 只扫入库任务号
+            onEnter: function() {
+                var params = {
+                    "code": this.tab1ScanCode,
+                    "workCenterGid": WCEN_GID,
+                    "businessType": INSTORE_TYPE.PURCHASE
+                    //"state": INSTORE_STATUS.NEW
+                };
+                if (this.tab1ScanCode) {
+                    loadTaskOrBillByCode(params, pageConfig.sourceBusinessType, app1.$data.formData);
+                }
+                this.tab1ScanCode = '';
+            },
+            querySourceList: function() {
+                querySourceList(pageConfig.sourceBusinessType, INSTORE_TYPE.PURCHASE);
+            }
+        }
+    });
+
+
+    /*--------------vue2--------------*/
+    var vueData2 = {
+        tab2ScanWorkCell: '', //扫描货位
+        workCellCode: '', //库位
+        tab2ScanBarcode: '',
+        isSplitBarCode: pageConfig.isSplitBarCode, //是否解析条码
+        isDialog: pageConfig.isDialogToConfirmQty, //是否弹框输入数量
+        // areaItems: [],          // 区域数组，用于select元素加载
+        // subAreaItems: [],       // 库区数组
+        locationData: {
+            workCellGid: '', //库位
+            workCellCode: ''
+            // areaGid: '',        //库区
+            // areaName: '',
+            // subAreaGid: '',     //区域
+            // subAreaName: ''
+        },
+        isSNCode: 1,
+        formData: {
+            barCode: "", //截取物料编码前13位
+            mrlCode: '', //物料编码
+            lot: '', //批次
+            supplierCode: '', //供应商编码
+            qty: '', //实收数量
+            mrlName: '', //物料名称
+            mrlType: '', //物料类型
+            mrlTypeName: '', //物料类型名称
+            drawing: '', //图号
+            specification: '', //规格,
+            allQty: "", //收货数量
+            arrivalQty: "", //已收货数量
+            remainQty: "", //可收货数量,
+            qty: "", //收货数量
+            createCntrCode: '', //生产日期
+            uda2: '', //保质期
+            realCode: "",
+            isSNCode: 1,
+            lotCode: "", //批次
+            date: "", //扫描时间
+            pBarCode: "", //临时容器编码
+        },
+        lotCode: "", //隐藏批次
+        formValidator: null,
+    };
+    var app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        mounted: function() {
+            //挂载时获取区域
+            // vueData2.areaItems = getWCByPid(WCEN_GID);
+            this.init();
+        },
+        methods: {
+            init: function() {
+                this.formValidator = new Validator('form', [
+                    { name: 'mrlCode', display: "物料编码必填", rules: 'required' },
+                    { name: 'mrlName', display: "物料名称必填", rules: 'required' },
+                    { name: 'lotCode', display: "批次号必填", rules: 'required' },
+                    { name: 'containerCode', display: "容器编码必填", rules: 'required' },
+                    { name: 'qty', display: "收货数量必填", rules: 'required' },
+                ])
+            },
+            onEnterWorkCell: function() {
+                //1校验入库任务是否输入-2查询库位并赋值-3光标焦点聚焦到扫描条码的Input
+                if (!vueData1.formData.code) {
+                    api.toast({
+                        msg: '请先选择采购入库任务！',
+                        location: 'middle'
+                    });
+                    this.tab2ScanWorkCell = '';
+                    return false
+                }
+                var retObj = getAreaAndSubAreaByWorkCell(this.tab2ScanWorkCell);
+                if (JSON.stringify(retObj) !== '{}') {
+                    this.locationData.workCellGid = retObj.workCellGid;
+                    this.locationData.workCellCode = this.tab2ScanWorkCell;
+                    // this.locationData.areaGid = retObj.areaGid;
+                    // this.locationData.areaName = retObj.areaName;
+                    // this.locationData.subAreaGid = retObj.subAreaGid;
+                    // this.locationData.subAreaName = retObj.subAreaName;
+                    //赋值
+                    // vueData2.subAreaItems = getWCByPid(retObj.areaGid);
+                    // $('select option[value="' + retObj.areaGid + '"]').attr('selected', 'selected');
+                    //必须延时加载，不然vue还没渲染出来
+                    // setTimeout(function f() {
+                    //     $('select option[value=\"' + retObj.subAreaGid + '\"]').attr('selected', 'selected');
+                    // }, 10);
+
+                    this.workCellCode = this.tab2ScanWorkCell;
+                    $('#tab2-scan-bar-code').focus();
+                }
+                this.tab2ScanWorkCell = '';
+            },
+            //TODO LZC　质检收货中物料扫码
+            onEnterBarCode: function() {
+                if (vueData1.formData.code == "") {
+                    this.tab2ScanBarcode = "";
+                    return api.alert({
+                        title: '警告',
+                        msg: '请选择任务单号后，再扫描物品条码'
+                    });
+                }
+                //step 1.校验：是否有内容输入； 是否已经扫描库位； 是否已经被扫描； 是否已收货
+                if (!this.tab2ScanBarcode || this.tab2ScanBarcode.length != 23) {
+                    this.tab2ScanBarcode = "";
+                    return api.alert({
+                        title: '警告',
+                        msg: '请输入位数为23的原材料编码'
+                    });
+                }
+                // if (!this.locationData.workCellGid) {
+                //     api.toast({msg: '请先扫描库位！', location: 'middle'});
+                //     this.tab2ScanBarcode = '';
+                //     return false
+                // }
+
+                // this.tab2ScanBarcode = formatBarCode(this.tab2ScanBarcode);
+                if (isExistInTab3(this.tab2ScanBarcode)) {
+                    this.tab2ScanBarcode = '';
+                    return false
+                }
+                var retMsg = isAlreadyArrivalStore(this.tab2ScanBarcode); //判断条码是否已经收货
+                if (retMsg == null || retMsg) {
+                    this.tab2ScanBarcode = '';
+                    return false
+                }
+                //step 2.加载物料信息
+                var retObj = supplierCodeSplit(this.tab2ScanBarcode); //解析条码
+
+                // this.formData.mrlCode = this.tab2ScanBarcode.substring(0, 13);
+                // if (this.isSplitBarCode) { //this.isSplitBarCode初始为false
+                //     retObj = loadBarCodeInfoBySplit(this.formData.mrlCode); //解析加载
+                // } else {
+                //     retObj = loadBarCodeInfoByQuery(this.formData.mrlCode); //ajax后台加载
+                // }
+
+                //step 3.验证物料是否与任务明细吻合； 确认数量； 3个tab同步数据
+                console.log("----->522 " + JSON.stringify(retObj.controlCode));
+                if (JSON.stringify(retObj) != "{}") {
+                    this.formData.mrlCode = retObj.mrlCode;
+                    this.formData.createCntrCode = retObj.createCntrCode;
+                    this.formData.allQty = retObj.allQty;
+
+
+
+
+
+                    //     this.isSNCode = retObj.controlCode;
+                    //     this.formData.isSNCode = retObj.controlCode;
+                    //     if (this.isSNCode != 1 && this.isSNCode != 2) {
+                    //         return api.toast({
+                    //             msg: '请先维护物料的基础属性',
+                    //             location: 'middle'
+                    //         });
+                    //     }
+                    //     //  解析条码
+                    //     var year = "";
+                    //     var month = "";
+                    //     var obj = new Date();
+                    //     for (var i = 0; i < Car_VIM_YEAR_ARR.length; i++) {
+                    //         if (this.tab2ScanBarcode.substring(16, 17) == Car_VIM_YEAR_ARR[i].key) {
+                    //             year = Car_VIM_YEAR_ARR[i].value
+                    //         }
+                    //     }
+                    //     for (var i = 0; i < Car_VIM_MONTH_ARR.length; i++) {
+                    //         if (this.tab2ScanBarcode.substring(17, 18) == Car_VIM_MONTH_ARR[i].key) {
+                    //             month = Car_VIM_MONTH_ARR[i].value
+                    //         }
+                    //     }
+                    //     this.formData.lot = this.tab2ScanBarcode.substring(19, 22);
+                    //     this.formData.createCntrCode = year + '-' + month + '-01';
+                    //     var lotDay = parseInt(obj.getDate()) < 10 ? ('0' + obj.getDate()) : obj.getDate();
+                    //     var lotMonth = parseInt(obj.getMonth() + 1) < 10 ? ('0' + (obj.getMonth() + 1)) : (obj
+                    //         .getMonth() + 1)
+                    //     this.lotCode = year + month + '01' + obj.getFullYear() + lotMonth + lotDay;
+                    //     //数据展示
+                    //     this.formData.realCode = this.tab2ScanBarcode;
+                    //     this.formData.barCode = this.tab2ScanBarcode;
+                    //     this.formData.mrlName = retObj.mrlName;
+                    //     this.formData.mrlType = retObj.mrlType;
+                    //     this.formData.mrlTypeName = retObj.mrlType == 0 ? '原材料' : (retObj.mrlType == 1 ? '成品' :
+                    //         '');
+                    //     this.formData.specification = retObj.specification;
+                    //     this.formData.drawing = retObj.drawing;
+                    //     this.formData.uda2 = retObj.uda2;
+                    //     this.formData.measureName = retObj.measureName;
+                    //     this.formData.lotCode = vueData2.lotCode;
+                    //     this.$set(this.formData, 'lotCode', vueData2.lotCode);
+                    //     var tableData1 = $('#bootstrap-tab-1').bootstrapTable('getData');
+
+                    //     if (!isInTableData(retObj, tableData1)) {
+                    //         this.tab2ScanBarcode = '';
+                    //         return false
+                    //     }
+                    //     for (var i = 0; i < tableData1.length; i++) {
+                    //         if (this.formData.mrlCode == tableData1[i].mrlCode) {
+                    //             this.formData.allQty = tableData1[i].qty;
+                    //             this.formData.arrivalQty = tableData1[i].arrivalQty;
+                    //             if (!!tableData1[i].completeQty) {
+                    //                 this.formData.remainQty = Number(tableData1[i].remainQty) - Number(
+                    //                     tableData1[i].completeQty);
+                    //             } else {
+                    //                 this.formData.remainQty = tableData1[i].remainQty;
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                    // if (this.isSNCode == 2) {
+                    //     this.formData.qty = 1;
+                    //     this.saveData();
+                    // } else if (this.isSNCode == 1) {
+                    //     printToJiaBo(this.formData.lotCode)
+                }
+                // this.tab2ScanBarcode = '';
+            },
+            //生成批次号
+            createLotCode() {
+                var that = this;
+                if (!!that.formData.lotCode) {
+                    api.toast({
+                        msg: '已有批次号!',
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+
+                var createCode = function(ret) {
+                    api.hideProgress();
+                    console.log(JSON.stringify(ret))
+                    if (ret && ret.type == 'success' && !!ret.data) {
+                        //提交另外需要的数据
+                        that.formData.lotCode = ret.data; //目标容器编码
+                        // printToJiaBo(ret.data); //打印
+                    } else {
+                        api.toast({
+                            msg: ret.msg,
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                };
+                getLotCodeFn(createCode);
+            },
+            saveData: function() {
+                var tableData1 = $("#bootstrap-tab-1").bootstrapTable('getData');
+                if (this.formData.mrlCode == "") {
+                    return api.alert({
+                        title: '警告',
+                        msg: '请先扫描或输入物料条码！'
+                    });
+                }
+                //校验
+                var valid = this.formValidator.validate();
+                if (valid.errors && valid.errors.length > 0) {
+                    return api.alert({
+                        msg: valid.errors[0].display,
+                        location: 'middle'
+                    });
+                }
+                // var reg=/^[1-9]+[0-9]*]*$/;
+                // if(!reg.test(this.formData.qty)){
+                //   return api.alert({
+                //       title: '警告',
+                //       msg: '请输入正确的数字!'
+                //   });
+                // }
+                // if(!!this.formData.uda2 && this.formData.createCntrCode == ''){
+                //   return api.alert({
+                //       title: '警告',
+                //       msg: '请填写该物料的生产日期'
+                //   });
+                // }
+                if (!!this.formData.uda2 && !!this.formData.createCntrCode) {
+                    var date = new Date(this.formData.createCntrCode);
+                    var time1 = date.getTime();
+                    var time2 = parseInt(this.formData.uda2) * 24 * 3600 * 1000;
+                    var time3 = Date.parse(new Date());
+                    if ((time1 + time2) < time3) {
+                        dialog.alert({
+                            title: "该物料超过保质期，是否继续收货？",
+                            buttons: ['取消', '确定']
+                        }, function(ret) {
+                            if (ret.buttonIndex === 2) {
+                                if (vueData2.formData.qty == '' || Number(vueData2.formData.qty) <= 0) {
+                                    return api.alert({
+                                        title: '警告',
+                                        msg: '请填写正确的收货数量'
+                                    });
+                                }
+                                if (Number(vueData2.formData.qty) > Number(vueData2.formData.remainQty)) {
+                                    vueData2.formData.qty = "";
+                                    return api.alert({
+                                        title: '警告',
+                                        msg: '收货数量不能大于可收货数量,请重新填写数量'
+                                    });
+                                }
+                                for (var i = 0; i < tableData1.length; i++) {
+                                    if (tableData1[i].mrlCode == vueData2.formData.mrlCode) {
+                                        var allQty = Number(tableData1[i].completeQty) + Number(vueData2.formData.qty);
+                                        if (allQty > tableData1[i].remainQty) {
+                                            vueData2.formData.qty = "";
+                                            return api.alert({
+                                                title: '警告',
+                                                msg: '收货数量不能大于可收货数量，请重新填写数量'
+                                            });
+                                        }
+                                    }
+                                }
+                                var newDate = {};
+                                newDate.barCode = vueData2.formData.barCode;
+                                newDate.lotCode = vueData2.formData.lotCode;
+                                for (var name in vueData2.formData) {
+                                    newDate[name] = vueData2.formData[name];
+                                }
+                                for (var name in vueData2.locationData) {
+                                    newDate[name] = vueData2.locationData[name];
+                                }
+                                if (vueData2.isSNCode == 2) {
+                                    newDate.lotCode = vueData2.lotCode;
+                                }
+                                updateTableByInsert(newDate, tableField2, tableField3);
+                                vueData2.tab2ScanBarcode = '';
+                                for (var name in vueData2.formData) {
+                                    vueData2.formData[name] = "";
+                                }
+                                $("#tab1-scan-barcode2").focus();
+                            } else {
+                                vueData2.formData.qty == '';
+                                return false;
+                            }
+                        });
+                    } else {
+                        if (vueData2.formData.qty == '' || Number(vueData2.formData.qty) <= 0) {
+                            return api.alert({
+                                title: '警告',
+                                msg: '请填写正确的收获数量'
+                            });
+                        }
+                        if (Number(vueData2.formData.qty) > Number(vueData2.formData.remainQty)) {
+                            vueData2.formData.qty = "";
+                            return api.alert({
+                                title: '警告',
+                                msg: '收货数量不能大于可收货数量,请重新填写数量'
+                            });
+                        }
+                        for (var i = 0; i < tableData1.length; i++) {
+                            if (tableData1[i].mrlCode == vueData2.formData.mrlCode) {
+                                var allQty = Number(tableData1[i].completeQty) + Number(vueData2.formData.qty);
+                                if (allQty > tableData1[i].remainQty) {
+                                    vueData2.formData.qty = "";
+                                    return api.alert({
+                                        title: '警告',
+                                        msg: '收货数量不能大于可收货数量，请重新填写数量'
+                                    });
+                                }
+                            }
+                        }
+                        var newDate = {};
+                        newDate.barCode = vueData2.formData.barCode;
+                        newDate.lotCode = vueData2.formData.lotCode;
+                        for (var name in vueData2.formData) {
+                            newDate[name] = vueData2.formData[name];
+                        }
+                        for (var name in vueData2.locationData) {
+                            newDate[name] = vueData2.locationData[name];
+                        }
+                        if (vueData2.isSNCode == 2) {
+                            newDate.lotCode = vueData2.lotCode;
+                        }
+                        updateTableByInsert(newDate, tableField2, tableField3);
+                        vueData2.tab2ScanBarcode = '';
+                        for (var name in vueData2.formData) {
+                            vueData2.formData[name] = "";
+                        }
+                        $("#tab1-scan-barcode2").focus();
+                    }
+                } else {
+                    if (vueData2.formData.qty == '' || Number(vueData2.formData.qty) <= 0) {
+                        return api.alert({
+                            title: '警告',
+                            msg: '请填写正确的收货数量'
+                        });;
+                    }
+                    if (Number(vueData2.formData.qty) > Number(vueData2.formData.remainQty)) {
+                        vueData2.formData.qty = "";
+                        return api.alert({
+                            title: '警告',
+                            msg: '收货数量不能大于可收货数量,请重新填写数量'
+                        });
+                    }
+                    for (var i = 0; i < tableData1.length; i++) {
+                        if (tableData1[i].mrlCode == vueData2.formData.mrlCode) {
+                            var allQty = Number(tableData1[i].completeQty) + Number(vueData2.formData.qty);
+                            if (allQty > tableData1[i].remainQty) {
+                                vueData2.formData.qty = "";
+                                return api.alert({
+                                    title: '警告',
+                                    msg: '收货数量不能大于可收货数量，请重新填写数量'
+                                });
+                            }
+                        }
+                    }
+                    var newDate = {};
+                    newDate.barCode = vueData2.formData.barCode;
+                    newDate.lotCode = vueData2.formData.lotCode;
+                    for (var name in vueData2.formData) {
+                        newDate[name] = vueData2.formData[name];
+                    }
+                    for (var name in vueData2.locationData) {
+                        newDate[name] = vueData2.locationData[name];
+                    }
+                    if (vueData2.isSNCode == 2) {
+                        newDate.lotCode = vueData2.lotCode;
+                    }
+                    updateTableByInsert(newDate, tableField2, tableField3);
+                    vueData2.tab2ScanBarcode = '';
+                    for (var name in vueData2.formData) {
+                        vueData2.formData[name] = "";
+                    }
+                    $("#tab1-scan-barcode2").focus();
+                }
+                var params = {
+                    code: vueData2.formData.mrlCode, //"TX52010210-01",
+                    name: vueData2.formData.mrlName, //"连杆",
+                    lot: vueData2.formData.lotCode, //"202008260001",
+                    num: vueData2.formData.qty, //"120",
+                    con: vueData2.formData.pBarCode, //"S2012010001",
+                };
+                // printToJiaBo(params); //收货保存时打印内部标签
+            },
+            //输入容器码回车
+            onEnterPBarCode: function() {
+                var barCode = this.formData.pBarCode;
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true,
+                });
+                $.ajax({
+                    type: "post",
+                    url: getUrl('padWmsController!getMrlInfoByBarCode.m'),
+                    data: {
+                        ctBarCode: barCode
+                    },
+                    async: false,
+                    dataType: 'json',
+                    success: function(ret2) {
+                        if (ret2.errCode === 0) {
+                            pBarCodeDataList = ret2.data.maxNum;
+                            mrlInfoList = ret2.data.mrlInfo;
+                            vueData2.pBarCode = vueData2.formData.pBarCode;
+                            $('#finishCode').focus();
+                        } else {
+                            api.hideProgress();
+                            api.toast({
+                                msg: ret2.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    },
+                    error: function(e) {
+                        api.hideProgress();
+                    }
+
+                });
+                api.hideProgress();
+            },
+            //生成容器编码
+            createPBarCode: function() {
+                var that = this;
+                if (!!that.formData.pBarCode) {
+                    api.toast({
+                        msg: '已有容器码!',
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    return;
+                }
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+
+                var createCode = function(ret) {
+                    api.hideProgress();
+                    console.log(JSON.stringify(ret))
+                    if (ret && ret.type == 'success' && !!ret.data) {
+                        //提交另外需要的数据
+                        that.formData.pBarCode = ret.data; //目标容器编码
+                        // printToJiaBo(ret.data); //打印
+                    } else {
+                        api.toast({
+                            msg: ret.msg,
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                    }
+                };
+                createPBarCodeFN(createCode, localStorage.getItem('workCenterCode'));
+                // if (!!this.formData.pBarCode) {
+                //     api.toast({
+                //         msg: '已有容器码!',
+                //         duration: 3000,
+                //         location: 'middle'
+                //     });
+                //     return;
+                // }
+                // api.showProgress({
+                //     style: 'default',
+                //     animationType: 'fade',
+                //     title: '努力加载中...',
+                //     text: '请稍后...',
+                //     modal: true
+                // });
+                // alert("查看生成容器码参数===》vueData2.barCodeRuleSelected：" + vueData2.barCodeRuleSelected +
+                //     "+++this.barCode+++" + this.barCode);
+                // api.ajax({
+                //     url: getUrl(OtherUrl.createCntrCode),
+                //     method: 'post',
+                //     timeout: 60,
+                //     data: {
+                //         values: {
+                //             palletCodeRule: vueData2.barCodeRuleSelected,
+                //             barCode: this.barCode //条码生成规则中，带有物料编码，需要通过条码查询
+                //         }
+                //     }
+                // }, function (ret) {
+                //     api.hideProgress();
+                //     if (ret && ret.errCode == 0 && !!ret.data) {
+                //         vueData2.formData.pBarCode = ret.data;
+                //         vueData2.isTemporary = true;
+                //         vueData2.pBarCode = vueData2.formData.pBarCode;
+                //         printToJiaBo(vueData2.formData.pBarCode);
+                //         $('#finishCode').focus();
+                //     } else {
+                //         api.toast({
+                //             msg: ret.msg,
+                //             duration: 3000,
+                //             location: 'middle'
+                //         });
+                //     }
+                // });
+            },
+        }
+    });
+
+
+    /*--------------vue3--------------*/
+    var vueData3 = {};
+    var app3 = new Vue({
+        el: '#aui-tab-3',
+        data: vueData3,
+        methods: {
+            CloseWin: function() {
+                api.confirm({
+                    title: '注意',
+                    msg: '确认退出当前菜单？',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        api.closeWin();
+                    }
+                })
+            },
+            submit: function() {
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '提交中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                var bill = vueData1.formData;
+                var taskDetails = $('#bootstrap-tab-1').bootstrapTable('getData');
+                var details = $('#bootstrap-tab-2').bootstrapTable('getData');
+                var barCodes = $('#bootstrap-tab-3').bootstrapTable('getData');
+
+                //step 1.准备bill
+                bill.originBillGid = vueData1.formData.id;
+                bill.originBillCode = vueData1.formData.code;
+                delete bill["id"];
+
+                //step 2.准备details
+                for (var i = 0; i < details.length; i++) {
+                    delete details[i]["barCode"];
+                    // delete details[i]["lotCode2"];
+                    // delete details[i]["uda2"];
+                }
+                for (var i in details) {
+                    for (var j in details[i]) {
+                        if (j == 'mrlCode') {
+                            for (var k = 0; k < taskDetails.length; k++) {
+                                //入库任务，没有批次号
+                                if (details[i][j] == taskDetails[k].mrlCode) {
+                                    details[i]['originDetailGid'] = taskDetails[k]['id'];
+                                    break;
+                                }
+                            }
+                        }
+                        if (j == 'rowId') {
+                            details[i]['id'] = details[i][j];
+                            delete details[i]["rowId"];
+                        }
+                    }
+                }
+
+                //step 3.准备barCodes
+                for (var i = 0; i < barCodes.length; i++) {
+                    // delete barCodes[i]["lotCode"];
+                    delete barCodes[i]["workCellCode"];
+                    delete barCodes[i]["measureName"];
+                    // delete barCodes[i]["areaName"];
+                    // delete barCodes[i]["subAreaName"];
+                }
+                for (var i = barCodes.length - 1; i >= 0; i--) {
+                    if (barCodes[i].isSNCode == 1) {
+                        barCodes.splice(i, 1);
+                    }
+                }
+                for (var i in barCodes) {
+                    for (var j in barCodes[i]) {
+                        if (j == 'rowId') {
+                            barCodes[i]['arrivalBillDetailGid'] = barCodes[i][j];
+                            delete barCodes[i]['rowId']
+                        }
+                        // if (j == 'uda2') {
+                        //     barCodes[i]['uda2'] = barCodes[i][j].replace(/-/g, '');
+                        // }
+                    }
+                }
+
+                // step 4.是否允许超任务入库
+                var isBeyondInstore = false;
+                for (var x = 0; x < taskDetails.length; x++) {
+                    if (Number(taskDetails[x].completeQty) > Number(taskDetails[x].remainQty)) {
+                        isBeyondInstore = true;
+                        break;
+                    }
+                }
+                if (isBeyondInstore) {
+                    api.confirm({
+                        title: '提示',
+                        msg: '是否超任务入库？',
+                        buttons: ['确定', '取消']
+                    }, function(ret) {
+                        if (ret.buttonIndex == 1) {
+                            submit(pageConfig.targetBusinessType, bill, details, barCodes);
+                        }
+                    });
+                } else {
+                    submit(pageConfig.targetBusinessType, bill, details, barCodes);
+                }
+            }
+        }
+    })
+</script>
+
+</html>

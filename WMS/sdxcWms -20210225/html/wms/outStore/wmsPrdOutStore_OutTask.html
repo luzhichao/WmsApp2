@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>销售出库</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">销售出库任务</div>
+    <div class="aui-tab-item">物料扫描</div>
+    <div class="aui-tab-item">已扫描</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab1-scan-barcode" @keyup.enter="onEnter" v-model.trim="tab1ScanCode"
+                               placeholder="扫描出库任务条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">出库任务</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="code" v-model="formData.code" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">任务状态</div>
+                    <select disabled="disabled">
+                        <option v-for="item in stateItems" :value="item.key">{{item.value}}</option>
+                    </select>
+                </div>
+            </li>
+            <!--<li class="aui-list-item" v-if="wareHouse == 'HW'">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">任务令</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" v-model="formData.uda5c" readonly="readonly">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">客户</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="customer-name" v-model="formData.customerName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <!--<li class="aui-list-item">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">部门</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" v-model="formData.departmentName" readonly="readonly">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+        </ul>
+    </form>
+    <table id="bootstrap-tab-1"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="querySourceList">源单查询</div>
+    </footer>
+</div>
+<div id="aui-tab-2" class="tab-content-item app">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" @keyup.enter="onEnterWorkCell" v-model.trim="tab2ScanWorkCell"
+                               placeholder="扫描库位条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">库位</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="locationData.workCellCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab2-bar-code" @keyup.enter="onEnterBarCode"
+                               v-model.trim="tab2ScanBarcode"
+                               placeholder="扫描任意箱码带出本栈所有箱">
+                    </div>
+                </div>
+            </li>
+            <!--<li class="aui-list-item" v-if="wareHouse == 'HW'">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">扫码</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" id="tab2-bar-code2" @keyup.enter="onEnterExtendCode"-->
+            <!--v-model.trim="tab2ScanExtendCode"-->
+            <!--placeholder="扫描或输入外部编码">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <!--<li class="aui-list-item" v-if="wareHouse == 'HW'">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">扫码</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" id="tab2-bar-code3" @keyup.enter="onEnterBarCode3"-->
+            <!--v-model.trim="tab2ScanBarcode3"-->
+            <!--placeholder="扫描中箱条码(二选一)">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <!--<li class="aui-list-item" v-if="wareHouse == 'HW'">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">扫码</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" id="tab2-bar-code4" @keyup.enter="onEnterBarCode2"-->
+            <!--v-model.trim="tab2ScanBarcode2"-->
+            <!--placeholder="扫描栈板码(二选一)">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <!--<li class="aui-list-item" v-if="wareHouse == 'HW'">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">外部编码</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" v-model="formData.extendCode" readonly="readonly">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="mrlCode" v-model="formData.mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="lotCode" v-model="formData.lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-2"></table>
+</div>
+<div id="aui-tab-3" class="tab-content-item app">
+    <div class="aui-margin-b-10 aui-margin-t-10">
+        <table id="bootstrap-tab-3" style="table-layout: fixed"></table>
+    </div>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-3">
+        <!--<div class="aui-btn aui-col-xs-6" @click="refreshWin()">刷新</div>-->
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+    </footer>
+</div>
+
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    /**
+     * 操作流程概述：
+     *      1.Tab1中录入销售出库任务。 支持 源单选取和扫码带出两种操作方式；
+     *      2.Tab2扫描库位条码带出库位；
+     *      3.Tab2扫码箱码带出一栈信息
+     *      4.重复第3步，逐一扫码；
+     *      5.提交生成出库单。
+     *
+     */
+
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        sourceBusinessType: TYPE.OUT_TASK,     //来源-单据类型-出库任务
+        targetBusinessType: TYPE.OUT_BILL,     //目标-单据类型-出库单
+        isDialogToConfirmQty: false            //是否弹框输入数量
+    };
+
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    tableField1 = [
+        {name: 'id', title: 'outTaskDetailGid', visible: false},      //outTaskDetailGid,用于提交的时候
+        {name: 'mrlCode', title: '物料编码'},
+        {name: 'mrlName', title: '物料名称', visible: false},
+        // {name: 'uda1', title: '外部编码'},
+        {name: 'originDetailGid', title: '原始单据明细Gid', visible: false},
+        {name: 'qty', title: '计划数量'},
+        {name: 'outStockQty', title: '已出库数量', visible: false},
+        {name: 'remainQty', title: '剩余数量'},                    //由(qty - outStockQty)计算得到
+        {
+            name: 'completeQty', title: '已扫描数量', formatter: function (value) {
+                if (value) {
+                    return value
+                } else {
+                    return 0;
+                }
+            }
+        }
+    ];
+    tableField2 = [
+        {name: 'rowId', title: 'rowId', visible: false},        //用于前台逻辑关联
+        {name: 'barCode', title: '条码', visible: false},
+        {name: 'mrlCode', title: '物料编码'},
+        {name: 'lotCode', title: '批次'},
+        {name: 'workCellCode', title: '库位'},
+        {name: 'qty', title: '数量'}
+    ];
+    var tableField3 = [
+        {
+            name: 'no', title: '', width: 40, formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name: 'rowPid', title: '父主键', visible: false},
+        {name: 'barCode', title: '条码', width: 150, sortable: true, order: 'asc'},
+        {name: 'mrlCode', title: '物料编码', width: 80},
+        {name: 'lotCode', title: '批次号', width: 80},
+        {name: 'qty', title: '数量', width: 50},
+        {name: 'workCellCode', title: '库位', width: 80}
+    ];
+
+    apiready = function () {
+        //1.初始化多tab结构
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+
+        //2.初始化表格
+        initTable(1, tableField1, null, null, function (row) {
+            var style;
+            if (row.remainQty == 0 || row.remainQty == row.completeQty) {    //计划数量等于完成数量则变红色
+                style = {css: {'color': 'red'}};
+                return style;
+            }
+            if (row.isUpdate) {  //动态变化的，蓝色
+                style = {css: {'color': '#03A9F4'}};
+                return style;
+            }
+            return {css: {'color': 'e3e3e3'}};
+        });
+        initTable(2, tableField2, null, null);
+        initTable(3, tableField3, null);
+
+        //3.设置监听
+        setQueryListener(api)
+    };
+
+    /*--------------vue1--------------*/
+    var vueData1 = {
+        tab1ScanCode: '',       //出库任务扫码
+        wareHouse: '',
+        stateItems: OUTSTORE_STATUS_2,
+        formData: {         //表头数据
+            code: '',               //出库任务编码
+            state: '',
+            originBillGid: '',      //原始单据GID,在单据查询的时候特殊处理赋值
+            originBillCode: '',
+            businessType: OUTSTORE_TYPE.SALE,
+            workCenterGid: WCEN_GID,
+            // uda5c: '', //任务令(华为)
+            departmentCode: '',     //部门
+            departmentName: '',
+            customerName: '',       //客户名称
+            customerCode: ''        //客户编码
+        }
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        mounted: function () {
+            //页面加载时，判断是华为仓库还是烽火库存，两者扫码的方式不一样（扫箱码，扫栈板码）
+            // if (SITE_CODE == SITE_CODE_VALUE.FH) {    //孝感-烽火
+            //     vueData1.wareHouse = 'FH';
+            // } else if (SITE_CODE == SITE_CODE_VALUE.HW) {  //武汉-华为
+            //     vueData1.wareHouse = 'HW';
+            // }
+        },
+        methods: {
+            onEnter: function () {
+                var params = {
+                    "code": this.tab1ScanCode,
+                    "workCenterGid": WCEN_GID,
+                    // "businessType": OUTSTORE_TYPE.SALE,
+                    "state": OUTSTORE_STATUS.NEW
+                };
+                if (this.tab1ScanCode) {
+                    loadTaskOrBillByCode(params, pageConfig.sourceBusinessType, app1.$data.formData);
+                }
+                this.tab1ScanCode = '';
+            },
+            querySourceList: function () {
+                querySourceList(pageConfig.sourceBusinessType, OUTSTORE_TYPE.SALE);
+            }
+        }
+    });
+
+
+    /*--------------vue2--------------*/
+    var vueData2 = {
+        // wareHouse: '',               //所在仓库不同，扫码方式不同(烽火仓库扫箱码出库，华为仓库支持扫箱码或扫栈板码出库)
+        tab2ScanWorkCell: '',        //扫描-货位
+        tab2ScanBarcode: '',         //扫描-中箱条码(用于烽火成品)
+        tab2ScanBarcode2: '',        //扫描-栈板码(用于华为成品)
+        tab2ScanBarcode3: '',        //扫描-中箱条码(用于华为成品)
+        tab2ScanExtendCode: '',      //扫描-外部编码(用于华为成品)
+        extendCode: '',
+        isDialog: pageConfig.isDialogToConfirmQty,
+        locationData: {
+            workCellGid: '',    //库位
+            workCellCode: ''
+        },
+        palletCode: '',     //栈板码
+        formData: {
+            mrlCode: '',        //物料编码
+            lotCode: '',        //批次
+            qty: ''             //数量
+        }
+    };
+    var app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        mounted: function () {
+            //页面加载时，判断是华为仓库还是烽火库存，两者扫码的方式不一样（扫箱码，扫栈板码）
+            // var siteCode = localStorage.getItem('siteCode');
+            // if (siteCode == '1001') {    //孝感-烽火
+            //     vueData2.wareHouse = 'FH';
+            // } else if (siteCode == '1002') {  //武汉-华为
+            //     vueData2.wareHouse = 'HW';
+            // }
+        },
+        methods: {
+            onEnterWorkCell: function () {
+                //1校验是否有内容输入及出库任务是否输入-2查询库位并赋值-3光标焦点聚焦到扫描条码的Input
+                if (!vueData2.tab2ScanWorkCell) {
+                    return false;
+                }
+                if (!vueData1.formData.code) {
+                    api.toast({msg: '请先选择出库任务！', location: 'middle'});
+                    this.tab2ScanWorkCell = '';
+                    return false;
+                }
+                //2.通过库位查找对应的区域库区
+                var retObj = getAreaAndSubAreaByWorkCell(this.tab2ScanWorkCell);
+                if (JSON.stringify(retObj) !== '{}') {
+                    this.locationData.workCellGid = retObj.workCellGid;
+                    this.locationData.workCellCode = this.tab2ScanWorkCell;
+                    $("#tab2-bar-code").focus();
+                    // var siteCode = localStorage.getItem('siteCode');
+                    // if (siteCode == '1001') {    //孝感-烽火
+                    //
+                    // } else if (siteCode == '1002') {  //武汉-华为
+                    //     $("#tab2-bar-code2").focus();
+                    // }
+                }
+                this.tab2ScanWorkCell = '';
+            },
+            onEnterBarCode: function () {
+                //step 1.校验：是否有内容输入； 是否已经扫描库位； 是否已经被扫描； 是否已出库
+                if (!this.tab2ScanBarcode) {
+                    return false
+                }
+                if (!this.locationData.workCellGid) {
+                    api.toast({msg: '请先扫描库位！', location: 'middle'});
+                    this.tab2ScanBarcode = '';
+                    return false
+                }
+                if (isExistInTab3(this.tab2ScanBarcode)) {
+                    this.tab2ScanBarcode = '';
+                    return false
+                }
+                if (isAlreadyOutOrInStore(this.tab2ScanBarcode, TYPE_2.OUT_BILL)) {
+                    this.tab2ScanBarcode = '';
+                    return false
+                }
+
+                //step 2.通过栈板码获取其包含的所有箱码
+                var barCode = this.tab2ScanBarcode;
+                //通过任意箱码获取对应的栈板码
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                api.ajax({
+                    url: getUrl(OtherUrl.getParentCodeByBarCode),
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: {
+                        values: {
+                            barCode: barCode
+                            // extendCode: this.extendCode
+                        }
+                    }
+                }, function (ret) {
+                    if (ret.errCode == 0) {
+                        vueData2.palletCode = ret.data.barCode;
+                        $.ajax({
+                            type: "POST",
+                            url: getUrl(OtherUrl.getBarCodesByParentCode),
+                            dataType: "json",
+                            data: {
+                                barCode: vueData2.palletCode
+                            },
+                            async: false,
+                            success: function (ret) {
+                                if (ret.errCode == 0) {
+                                    var boxArr = ret.data;
+                                    //3.校验并完善表单信息
+                                    var tableData1 = $('#bootstrap-tab-1').bootstrapTable('getData');
+                                    if (ret.data[0].workCellCode != vueData2.locationData.workCellCode) {
+                                        api.toast({
+                                            msg: '扫描库位: 【' + vueData2.locationData.workCellCode + '】 与条码所在库位: 【' + ret.data[0].workCellCode + '】 不一致！',
+                                            duration: 3000,
+                                            location: 'middle'
+                                        });
+                                        api.hideProgress();
+                                        this.tab2ScanBarcode = '';
+                                        return false
+                                    }
+                                    if (!isInTableData(ret.data[0], tableData1)) {
+                                        api.hideProgress();
+                                        this.tab2ScanBarcode = '';
+                                        return false
+                                    }
+
+                                    vueData2.formData['mrlCode'] = ret.data[0].mrlCode;
+                                    vueData2.formData['lotCode'] = ret.data[0].lotCode;
+                                    // vueData2.formData['extendCode'] = vueData2.extendCode;
+
+                                    var newDate = {};
+                                    var sumQty = 0;
+                                    for (var i = 0; i < boxArr.length; i++) {
+                                        for (var name in boxArr[i]) {
+                                            newDate[name] = boxArr[i][name];
+                                        }
+                                        for (var name in vueData2.locationData) {
+                                            newDate[name] = vueData2.locationData[name];
+                                        }
+                                        updateTable3ByInsertForPrd(newDate, tableField3);
+                                        sumQty += Number(newDate['qty']);
+                                    }
+                                    newDate['qty'] = sumQty;
+                                    updateTable23ByInsertForPrd(newDate, tableField2);
+                                    api.hideProgress();
+                                } else {
+                                    api.hideProgress();
+                                    api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                                }
+                            },
+                            error: function (e) {
+                                api.hideProgress();
+                                console.log(JSON.stringify(e));
+                            }
+                        });
+                    } else {
+                        api.hideProgress();
+                        api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                    }
+                });
+                this.tab2ScanBarcode = '';
+            }
+            // onEnterBarCode2: function () {
+            //     //step 1.条件判断
+            //     if (!this.tab2ScanBarcode2) {
+            //         return false
+            //     }
+            //     if (this.tab2ScanBarcode2.substring(0, 4) == 'FHTT') {
+            //         api.toast({msg: '设备标识码！', location: 'middle'});
+            //         this.locationData.workCellGid = '';
+            //         this.tab2ScanBarcode2 = '';
+            //         return false
+            //     }
+            //     if (!this.locationData.workCellGid) {
+            //         api.toast({msg: '请先扫描库位！', location: 'middle'});
+            //         this.tab2ScanBarcode2 = '';
+            //         return false
+            //     }
+            //     //栈板码也需要判断是否重复
+            //     if (checkIsSameBarcode(this.tab2ScanBarcode2)) {
+            //         api.toast({msg: '栈板 [' + this.tab2ScanBarcode2 + '] 已被扫描!', duration: 3000, location: 'middle'});
+            //         this.tab2ScanBarcode2 = '';
+            //         return false
+            //     }
+            //     var isOutStore = false;
+            //     api.showProgress({
+            //         style: 'default',
+            //         animationType: 'fade',
+            //         title: '努力加载中...',
+            //         text: '请稍后...',
+            //         modal: true
+            //     });
+            //     $.ajax({
+            //         type: "POST",
+            //         url: getUrl(OtherUrl.checkBillOper2),      //判断条码已入库
+            //         dataType: "json",
+            //         data: {
+            //             barCode: this.tab2ScanBarcode2,
+            //             billType: TYPE_2.OUT_BILL
+            //         },
+            //         async: false,
+            //         success: function (ret) {
+            //             api.hideProgress();
+            //             isOutStore = ret.data;
+            //             if (isOutStore == null) {
+            //                 api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+            //                 deleteBarcode();
+            //                 vueData2.tab2ScanBarcode2 = '';
+            //                 return false;
+            //             }
+            //         },
+            //         error: function (e) {
+            //             api.hideProgress();
+            //             deleteBarcode();
+            //             console.log(JSON.stringify(e));
+            //         }
+            //     });
+            //     if (isOutStore) {
+            //         api.toast({msg: '该条码 [' + this.tab2ScanBarcode2 + '] 已出库！', duration: 3000, location: 'middle'});
+            //         vueData2.tab2ScanBarcode2 = '';
+            //         deleteBarcode();
+            //         return false;
+            //     }
+            //     if (!isOutStore && isOutStore != null) {
+            //         var parentBarCode = this.tab2ScanBarcode2;
+            //         api.showProgress({
+            //             style: 'default',
+            //             animationType: 'fade',
+            //             title: '努力加载中...',
+            //             text: '请稍后...',
+            //             modal: true
+            //         });
+            //         $.ajax({
+            //             type: "POST",
+            //             url: getUrl(OtherUrl.getBarCodesByParentCode),
+            //             dataType: "json",
+            //             data: {
+            //                 barCode: parentBarCode
+            //             },
+            //             async: false,
+            //             success: function (ret) {
+            //                 if (ret.errCode == 0) {
+            //                     var boxArr = ret.data;
+            //                     //3.校验并完善表单信息
+            //                     var tableData1 = $('#bootstrap-tab-1').bootstrapTable('getData');
+            //                     if (ret.data[0].workCellCode != vueData2.locationData.workCellCode) {
+            //                         api.toast({
+            //                             msg: '扫描库位: 【' + vueData2.locationData.workCellCode + '】 与条码所在库位: [' + ret.data[0].workCellCode + '] 不一致！',
+            //                             duration: 3000,
+            //                             location: 'middle'
+            //                         });
+            //                         deleteBarcode();
+            //                         api.hideProgress();
+            //                         this.tab2ScanBarcode = '';
+            //                         return false
+            //                     }
+            //                     if (!isInTableData(ret.data[0], tableData1)) {
+            //                         api.hideProgress();
+            //                         api.toast({msg: '所选任务中明细信息与条码信息不匹配！', location: 'middle'});
+            //                         deleteBarcode();
+            //                         vueData2.tab2ScanBarcode2 = '';
+            //                         return false
+            //                     }
+            //                     //华为出库需要校验是否与出库任务上的任务令一一对应
+            //                     if (ret.data[0].lotCode != vueData1.formData.uda5c) {
+            //                         api.toast({
+            //                             msg: '条码的批次：【' + ret.data[0].lotCode + '】与出库任务的任务令：【' + vueData1.formData.uda5c + '】不一致！',
+            //                             location: 'middle'
+            //                         });
+            //                         deleteBarcode();
+            //                         this.tab2ScanBarcode = '';
+            //                         api.hideProgress();
+            //                         return false
+            //                     }
+            //                     vueData2.formData['mrlCode'] = ret.data[0].mrlCode;
+            //                     vueData2.formData['lotCode'] = ret.data[0].lotCode;
+            //                     vueData2.formData['extendCode'] = ret.data[0].uda3;
+            //
+            //                     var newDate = {};
+            //                     var sumQty = 0;
+            //                     for (var i = 0; i < boxArr.length; i++) {
+            //                         for (var name in boxArr[i]) {
+            //                             newDate[name] = boxArr[i][name];
+            //                             if (name == 'uda3') {
+            //                                 if (boxArr[i]['uda3'] == '' || boxArr[i]['uda3'] == null) {
+            //                                     api.hideProgress();
+            //                                     api.toast({
+            //                                         msg: boxArr[i]['barCode'] + ' 的外部编码为空，请联系IT人员检查数据！',
+            //                                         location: 'middle'
+            //                                     });
+            //                                     deleteBarcode();
+            //                                     vueData2.tab2ScanBarcode2 = '';
+            //                                     return false
+            //                                 }
+            //                             }
+            //                         }
+            //                         for (var name in vueData2.locationData) {
+            //                             newDate[name] = vueData2.locationData[name];
+            //                         }
+            //                         updateTable3ByInsertForPrd(newDate, tableField3);
+            //                         sumQty += Number(newDate['qty']);
+            //                     }
+            //                     newDate['qty'] = sumQty;
+            //                     updateTable23ByInsertForPrd(newDate, tableField2);
+            //                     api.hideProgress();
+            //                 } else {
+            //                     api.hideProgress();
+            //                     deleteBarcode();
+            //                     api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+            //                 }
+            //             },
+            //             error: function (e) {
+            //                 api.hideProgress();
+            //                 deleteBarcode();
+            //                 console.log(JSON.stringify(e));
+            //             }
+            //         });
+            //         this.tab2ScanBarcode2 = '';
+            //     }
+            // },
+            // onEnterExtendCode: function () {
+            //     if (!this.locationData.workCellGid) {
+            //         api.toast({msg: '请先扫描库位！', location: 'middle'});
+            //         this.tab2ScanExtendCode = '';
+            //         this.locationData.workCellGid = '';
+            //         return false
+            //     }
+            //     vueData2.formData.extendCode = this.tab2ScanExtendCode;
+            //     vueData2.extendCode = this.tab2ScanExtendCode;
+            //     if (this.tab2ScanExtendCode) {
+            //         $("#tab2-bar-code3").focus();
+            //     } else {
+            //         $("#tab2-bar-code4").focus();
+            //     }
+            //     this.tab2ScanExtendCode = '';
+            // },
+            // onEnterBarCode3: function () {
+            //     if (!vueData2.formData.extendCode) {
+            //         api.toast({msg: '扫箱码请先输入外部编码!', duration: 3000, location: 'middle'});
+            //         return false
+            //     }
+            //     if (!this.tab2ScanBarcode3) {
+            //         return false
+            //     }
+            //     var tableData3 = $("#bootstrap-tab-3").bootstrapTable('getData');
+            //     if (tableData3.length >= 1 && checkIsInBarCodeArr(this.tab2ScanBarcode3, tableData3)) {
+            //         this.tab2ScanBarcode3 = '';
+            //         return false
+            //     }
+            //
+            //     var isOutStore = false;
+            //     toast.loading({title: "判断条码是否已出库...", duration: 10000});
+            //     $.ajax({
+            //         type: "POST",
+            //         url: getUrl(OtherUrl.checkBillOper),      //判断条码已出库
+            //         dataType: "json",
+            //         data: {
+            //             barCode: this.tab2ScanBarcode3,
+            //             billType: TYPE_2.OUT_BILL,
+            //             extendCode: vueData2.formData.extendCode
+            //         },
+            //         async: false,
+            //         success: function (ret) {
+            //             toast.hide();
+            //             isOutStore = ret.data;
+            //         },
+            //         error: function (e) {
+            //             toast.hide();
+            //             console.log(JSON.stringify(e));
+            //         }
+            //     });
+            //     if (isOutStore) {
+            //         api.toast({msg: '条码： 【' + this.tab2ScanBarcode3 + '】 已出库！', duration: 3000, location: 'middle'});
+            //         this.tab2ScanBarcode3 = '';
+            //         return false;
+            //     }
+            //
+            //     //step 2.通过栈板码获取其包含的所有箱码
+            //     var barCode = this.tab2ScanBarcode3;
+            //     if (!isOutStore && isOutStore != null) {
+            //         //通过任意箱码获取对应的栈板码
+            //         api.showProgress({
+            //             style: 'default',
+            //             animationType: 'fade',
+            //             title: '努力加载中...',
+            //             text: '请稍后...',
+            //             modal: true
+            //         });
+            //         api.ajax({
+            //             url: getUrl(OtherUrl.getParentCodeByBarCode),
+            //             method: 'post',
+            //             headers: {
+            //                 'Content-Type': 'application/x-www-form-urlencoded'
+            //             },
+            //             data: {
+            //                 values: {
+            //                     barCode: barCode,
+            //                     extendCode: vueData2.formData.extendCode
+            //                 }
+            //             }
+            //         }, function (ret) {
+            //             if (ret.errCode == 0) {
+            //                 vueData2.palletCode = ret.data.barCode;
+            //                 $.ajax({
+            //                     type: "POST",
+            //                     url: getUrl(OtherUrl.getBarCodesByParentCode),
+            //                     dataType: "json",
+            //                     data: {
+            //                         barCode: vueData2.palletCode
+            //                     },
+            //                     async: false,
+            //                     success: function (ret) {
+            //                         if (ret.errCode == 0) {
+            //                             var boxArr = ret.data;
+            //                             //3.校验并完善表单信息
+            //                             var tableData1 = $('#bootstrap-tab-1').bootstrapTable('getData');
+            //                             if (ret.data[0].workCellCode != vueData2.locationData.workCellCode) {
+            //                                 api.alert({
+            //                                     title: '',
+            //                                     msg: '扫描库位: [' + vueData2.locationData.workCellCode + '] 与条码所在库位: [' + ret.data[0].workCellCode + '] 不一致！'
+            //                                 })
+            //                                 api.hideProgress();
+            //                                 this.tab2ScanBarcode = '';
+            //                                 return false
+            //                             }
+            //                             if (!isInTableData(ret.data[0], tableData1)) {
+            //                                 api.hideProgress();
+            //                                 this.tab2ScanBarcode = '';
+            //                                 return false
+            //                             }
+            //                             //华为出库需要校验是否与出库任务上的任务令一一对应
+            //                             if (ret.data[0].lotCode != vueData1.formData.uda5c) {
+            //                                 api.toast({
+            //                                     msg: '条码的批次：【' + ret.data[0].lotCode + '】与出库任务的任务令：【' + vueData1.formData.uda5c + '】不一致！',
+            //                                     location: 'middle'
+            //                                 });
+            //                                 api.hideProgress();
+            //                                 this.tab2ScanBarcode = '';
+            //                                 return false
+            //                             }
+            //                             vueData2.formData['mrlCode'] = ret.data[0].mrlCode;
+            //                             vueData2.formData['lotCode'] = ret.data[0].lotCode;
+            //                             vueData2.formData['extendCode'] = vueData2.extendCode;
+            //
+            //                             var newDate = {};
+            //                             var sumQty = 0;
+            //                             for (var i = 0; i < boxArr.length; i++) {
+            //                                 for (var name in boxArr[i]) {
+            //                                     newDate[name] = boxArr[i][name];
+            //                                 }
+            //                                 for (var name in vueData2.locationData) {
+            //                                     newDate[name] = vueData2.locationData[name];
+            //                                 }
+            //                                 updateTable3ByInsertForPrd(newDate, tableField3);
+            //                                 sumQty += Number(newDate['qty']);
+            //                             }
+            //                             newDate['qty'] = sumQty;
+            //                             updateTable23ByInsertForPrd(newDate, tableField2);
+            //                             api.hideProgress();
+            //                         } else {
+            //                             api.hideProgress();
+            //                             api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+            //                         }
+            //                     },
+            //                     error: function (e) {
+            //                         api.hideProgress();
+            //                         console.log(JSON.stringify(e));
+            //                     }
+            //                 });
+            //             } else {
+            //                 api.hideProgress();
+            //                 api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+            //             }
+            //         });
+            //     }
+            //     this.tab2ScanBarcode3 = '';
+            //
+            // }
+        }
+    });
+
+
+    /*--------------vue3--------------*/
+    var vueData3 = {};
+    var app3 = new Vue({
+        el: '#aui-tab-3',
+        data: vueData3,
+        methods: {
+            refreshWin: function () {
+                reloadWin();
+            },
+            submit: function () {
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '提交中...',
+                    text: '请稍候',
+                    modal: true
+                });
+                var bill = vueData1.formData;
+                var taskDetails = $('#bootstrap-tab-1').bootstrapTable('getData');
+                var details = $('#bootstrap-tab-2').bootstrapTable('getData');
+                var barCodes = $('#bootstrap-tab-3').bootstrapTable('getData');
+
+                //step 1.准备bill
+                bill.originBillCode = vueData1.formData.code;
+                bill.sourceBillCode = vueData1.formData.code;
+                bill.sourceBillGid = bill.originBillGid;
+                bill.sourceBillType = TYPE_2.OUT_TASK;
+
+                //step 2.准备details
+                for (var i = 0; i < details.length; i++) {
+                    delete details[i]["barCode"];
+                }
+                var ary = [];
+                for (var i in details) {
+                    for (var j in details[i]) {
+                        for (var k = 0; k < taskDetails.length; k++) {
+                            //入库任务，没有批次号
+                            if (details[i][j] == taskDetails[k].mrlCode) {
+                                details[i]['originDetailGid'] = taskDetails[k]['id'];
+                                details[i]['sourceDetailGid'] = taskDetails[k]['id'];
+                                details[i]['sourceBillType'] = TYPE_2.OUT_TASK;
+                                break;
+                            }
+                        }
+                        if (j == 'rowId') {
+                            details[i]['id'] = details[i][j];
+                            delete details[i]["rowId"];
+                        }
+                        if (j == 'lotCode') {
+                            ary.push(details[i]['mrlCode'] + '|||' + details[i][j]);
+                        }
+                    }
+                }
+
+                //step 3.准备barCodes
+                for (var i = 0; i < barCodes.length; i++) {
+                    delete barCodes[i]["lotCode"];
+                    delete barCodes[i]["workCellGid"];
+                    delete barCodes[i]["workCellCode"];
+                }
+                for (var i in barCodes) {
+                    barCodes[i]["uda1"] = vueData2.palletCode;
+                    for (var j in barCodes[i]) {
+                        if (j == 'rowPid') {
+                            barCodes[i]['outBillDetailGid'] = barCodes[i][j];
+                            delete barCodes[i]['rowPid']
+                        }
+                        // if (j == 'barCode' && barCodes[i]['barCode'].indexOf("---") == -1) {
+                        //     if (vueData2.formData['extendCode']) {
+                        //         barCodes[i]['barCode'] = barCodes[i][j] + '---' + vueData2.formData['extendCode'];
+                        //     }
+                        // }
+                    }
+                }
+
+                //是否确定不同工单出库
+                var isMultipleOutStore = false;
+                var nary = ary.slice().sort();
+                if (nary.length > 1) {
+                    for (var xx = 0; xx < nary.length - 1; xx++) {
+                        var nary_1 = nary[xx].split('|||');
+                        var nary_2 = nary[xx + 1].split('|||');
+                        if (nary_1[0] == nary_2[0] && nary_1[1] != nary_2[1]) {
+                            isMultipleOutStore = true;
+                            break;
+                        }
+                    }
+                }
+                if (isMultipleOutStore) {
+                    api.confirm({
+                        title: '提示',
+                        msg: '是否确定不同工单出库？',
+                        buttons: ['确定', '取消']
+                    }, function (ret) {
+                        if (ret.buttonIndex == 1) {
+                            submit(pageConfig.targetBusinessType, bill, details, barCodes);
+                        }
+                    });
+                } else {
+                    submit(pageConfig.targetBusinessType, bill, details, barCodes);
+                }
+            }
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toolbar="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/tab_checked">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolBarTheme" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp">
+
+            <TextView
+                android:id="@+id/tv_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="武汉"
+                android:textColor="@color/btn_white_normal"
+                android:textSize="@dimen/detail_blue_bigger" />
+
+            <ImageView
+                android:id="@+id/iv_xiala"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:layout_toRightOf="@+id/tv_city"
+                android:background="@drawable/xiala"/>
+
+            <TextView
+                android:id="@+id/tv_search_text"
+                android:layout_width="280dp"
+                android:layout_height="35dp"
+                android:paddingLeft="25dp"
+                android:layout_centerVertical="true"
+                android:text="输入老师/科目/年级"
+                android:layout_toRightOf="@+id/iv_xiala"
+                android:textColor="@color/btn_white_normal"
+                android:textSize="@dimen/detail_blue_bigger"
+                android:background="@drawable/shape_search_radius"/>
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:layout_marginLeft="40dp"
+                android:layout_toRightOf="@+id/tv_city"
+                android:background="@drawable/search"/>
+
+            <ImageView
+                android:id="@+id/iv_xiaoxi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/tv_search_text"
+                android:background="@drawable/xiaoxi"/>
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+</LinearLayout>

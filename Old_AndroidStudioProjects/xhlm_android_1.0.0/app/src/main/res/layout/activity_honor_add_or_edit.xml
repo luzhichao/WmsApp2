@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.HonorAddOrEditActivity">
+
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--title-->
+
+    <!--<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="2dp">
+
+    </RelativeLayout>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/et_honor_intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp10"
+            android:maxLength="20"
+            android:hint="请输入荣誉介绍，20字以内"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/left_margin"
+        android:text="上传荣誉证明(最多5张)"
+        android:background="@color/backgroundColor"/>
+
+    <!-- 图片列表 -->
+    <LinearLayout
+        android:id="@+id/llContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical"></LinearLayout>
+    <!-- 图片列表 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="0dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp5"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/select_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/btMarginSmall"
+                android:layout_marginLeft="@dimen/btMarginBig"
+                android:layout_weight="1"
+                android:background="@drawable/btn_blue_solid"
+                android:textColor="@color/titleWhite"
+                android:enabled="true"
+                android:text="选择图片" />
+
+            <Button
+                android:id="@+id/del_honor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_blue_solid"
+                android:enabled="true"
+                android:layout_marginRight="@dimen/btMarginBig"
+                android:textColor="@color/titleWhite"
+                android:visibility="gone"
+                android:text="删除记录" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

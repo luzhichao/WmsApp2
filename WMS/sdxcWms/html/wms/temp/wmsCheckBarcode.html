@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>来料条码校验</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">条码校验</div>
+    <div class="aui-tab-item">来料小计</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="barcode" id="barCode" placeholder="物料条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">条码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="code" id="code" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">所属工厂</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="siteName" id="siteName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">采购合同号</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="inTaskCode" id="inTaskCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">供应商编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="supplierCode" id="supplierCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="mrlCode" id="mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="qty" id="qty" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">生产日期</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="proDate" id="proDate" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次号</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="lotCode" id="lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">送货日期</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="supplyDate" id="supplyDate" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">流水号</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="snCode" id="snCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+</div>
+<div id="aui-tab-2" class="tab-content-item app">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab2-scan-bar-code" @keyup.enter="onEnterBarCode"
+                               v-model.trim="tab2ScanBarcode"
+                               placeholder="扫描物料条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">供应商</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.supplierCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">每箱数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.qty" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        箱数
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="number" v-model="formData.num" placeholder="输入箱数">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">尾箱数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="number" v-model="formData.lastNum" placeholder="输入尾箱数量">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">收货数量</div>
+                    <div class="aui-list-item-input" id="total-num">
+                        {{totalNum}}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-2">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="refreshWin">刷新</div>
+    </footer>
+</div>
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script>
+    //定义加载动画
+    var toast = new auiToast({});
+
+    apiready = function () {
+        /** 物料扫描 **/
+        $("#barCode").bind('keydown', function (event) {
+            var barCode = $.trim($("#barCode").val());
+            barCode = barCode.replace(/，/g, ',');                   //统一格式，将中文逗号全转换成英文逗号
+            var mrlCodeArr = barCode.split(',');
+            if (event.keyCode === 13) {
+                if (!barCode) {
+                    api.toast({msg: '请扫描条码！', location: 'middle'});
+                    return false
+                }
+
+                //解析条码
+                splitBarCode(mrlCodeArr);
+                $("#code").val(barCode);
+                $("#barCode").val('');
+            }
+        });
+
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+    };
+
+    function isNumber(val) {
+        var regPos = /^\d+(\d+)?$/; //非负浮点数
+
+        if(regPos.test(val)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /** 解析物料条码填充表格 */
+    function splitBarCode(mrlCodeArr) {
+        //条码构成：采购合同号+供应商代码+物料编码+生产日期+生产批次+本箱数量+供货日期+6位流水号
+        //1.解析条码
+        //华工正源-条码构成：采购合同号（入库任务）+供应商代码+物料编码+生产日期+生产批次+本箱数量+供货日期+6位流水号
+        //PO-ZNZD-20181679-BOB,0.B.F0.120,30.B.01.0080-6,2019-01-07,20190107,114,2019-02-07,000001
+        var obj = {};
+        obj.inTaskCode = $.trim(mrlCodeArr[0]);               //入库任务编码
+        obj.supplierCode = $.trim(mrlCodeArr[1]);             //供应商编码
+        obj.mrlCode = $.trim(mrlCodeArr[2]);                  //物料编码
+        obj.proDate = $.trim(mrlCodeArr[3]);                  //生产日期
+        obj.lotCode = $.trim(mrlCodeArr[4]);               //来料批号（供应商的批次号）
+        obj.qty = $.trim(mrlCodeArr[5]);                    //本箱数量
+        obj.supplyDate = $.trim(mrlCodeArr[6]);             //供货日期
+        obj.snCode = $.trim(mrlCodeArr[7]);                 //6位流水号
+
+        var formData = $('form').serializeArray();
+        $.each(formData, function (idx, val) {
+            $(":input[name=" + val.name + "]").css({'color':'black'});
+            $(":input[name=" + val.name + "]").val(obj[val.name]);
+        });
+
+        //校验
+        var msg = "";
+        var isError = false;
+
+        //校验PO号是否在库中有数据
+        var params = {
+            "code": obj.inTaskCode,
+            "workCenterGid": WCEN_GID,
+            // "businessType": INSTORE_TYPE.PURCHASE
+        };
+
+        //防呆：入库任务
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getInTaskByCode.m'),
+            dataType: "json",
+            data: params,
+            async: false,
+            success: function (ret) {
+                api.hideProgress();
+                if (ret && ret.errCode === 0 && ret.data) {
+                    $("#siteName").val(ret.data.siteName)
+                } else {
+                    api.alert({msg: '查询出错：' + ret.msg})
+                    $("#inTaskCode").css({'color':'red'});
+                    return false;
+                }
+            },
+            error: function (e) {
+                api.hideProgress();
+                console.log(JSON.stringify(e));
+            }
+        });
+
+        //防呆：物料编码
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getMrlByMrlCode.m'),
+            dataType: "json",
+            data: {
+                "mrlCode": obj.mrlCode
+            },
+            async: false,
+            success: function (ret) {
+                api.hideProgress();
+                if (ret && ret.errCode === 0 && ret.data) {
+
+                } else {
+                    api.alert({msg: '查询出错：' + ret.msg})
+                    $("#mrlCode").css({'color':'red'});
+                    return false;
+                }
+            },
+            error: function (e) {
+                api.hideProgress();
+                console.log(JSON.stringify(e));
+            }
+        });
+
+        //防呆：供应商编码
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getSupBySupCode.m'),
+            dataType: "json",
+            data: {
+                "supCode": obj.supplierCode
+            },
+            async: false,
+            success: function (ret) {
+                api.hideProgress();
+                if (ret && ret.errCode === 0 && ret.data) {
+
+                } else {
+                    api.alert({msg: '查询出错：' + ret.msg})
+                    $("#supplierCode").css({'color':'red'});
+                    return false;
+                }
+            },
+            error: function (e) {
+                api.hideProgress();
+                console.log(JSON.stringify(e));
+            }
+        });
+
+        //校验 任务号下没有此物料
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getDetailByTaskCodeAndMrlCode.m'),
+            dataType: "json",
+            data: {
+                "mrlCode": obj.mrlCode,
+                "taskCode": obj.inTaskCode,
+            },
+            async: false,
+            success: function (ret) {
+                api.hideProgress();
+                if (ret && ret.errCode === 0 && ret.data) {
+
+                } else {
+                    api.alert({msg: '查询出错：' + ret.msg})
+                    $("#mrlCode").css({'color':'red'});
+                    return false;
+                }
+            },
+            error: function (e) {
+                api.hideProgress();
+                console.log(JSON.stringify(e));
+            }
+        });
+
+
+
+
+        if (obj.snCode.length > 6 || obj.snCode.length < 3){
+            msg = "流水码长度不对！";
+            isError = true;
+            $("#snCode").css({'color':'red'});
+        }
+
+        if (!isNumber(obj.snCode)){
+            msg = "流水码中存在非数字字符！";
+            isError = true;
+            $("#snCode").css({'color':'red'});
+        }
+
+
+        // if (obj.supplierCode.length !== 9){
+        //     msg += "供应商编码长度不对！";
+        //     isError = true;
+        //     $("#supplierCode").css({'color':'red'});
+        // }
+
+        // var dateFormat = /^(\d{4})-(\d{2})-(\d{2})$/;
+        // if (!dateFormat.test(document.getElementById("supplyDate").value)) {
+        //     msg += "供货日期格式不正确！";
+        //     isError = true;
+        //     $("#supplyDate").css({'color':'red'});
+        // }
+        // if (!dateFormat.test(document.getElementById("proDate").value)) {
+        //     msg += "生产日期格式不正确！";
+        //     isError = true;
+        //     $("#proDate").css({'color':'red'});
+        // }
+        if (isError) {
+            api.toast({msg: msg, duration: 3000, location: 'middle'})
+        }
+    }
+
+
+    /*--------------vue2--------------*/
+    var vueData2 = {
+        tab2ScanBarcode: '',
+        formData: {
+            mrlCode: '',        //物料编码
+            lot: '',            //批次
+            supplierCode: '',   //供应商编码
+            qty: '',            //实收数量
+            lastNum: '',        //尾箱数量
+            num: '',            //箱数
+            totalNum: ''
+        }
+    };
+    new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        computed: {
+            totalNum: function () {
+                if (this.formData.num) {
+                    if (this.formData.lastNum) {
+                        this.formData.totalNum = this.formData.num * this.formData.qty + parseInt(this.formData.lastNum);
+                        return this.formData.num * this.formData.qty + parseInt(this.formData.lastNum);
+                    } else {
+                        this.formData.totalNum = this.formData.num * this.formData.qty;
+                        return this.formData.num * this.formData.qty
+                    }
+                }
+            }
+        },
+        methods: {
+            onEnterBarCode: function () {
+                //step 1.条件判断
+                if (!this.tab2ScanBarcode) {
+                    return false
+                }
+
+                // 条码规范
+                this.tab2ScanBarcode = formatBarCode(this.tab2ScanBarcode);
+
+                //step 2.加载物料信息
+                var barCode = this.tab2ScanBarcode;
+                var retObj = loadBarCodeInfoBySplit(barCode);   //解析加载
+
+                if (JSON.stringify(retObj) != "{}") {
+                    var newDate = {};
+                    newDate.barCode = barCode;
+                    for (var name in retObj) {
+                        newDate[name] = retObj[name];
+                        this.formData[name] = retObj[name];
+                    }
+                    for (var name in this.locationData) {
+                        newDate[name] = this.locationData[name];
+                    }
+                }
+
+                this.tab2ScanBarcode = '';
+            },
+            refreshWin: function() {
+                api.confirm({
+                    title: '提示',
+                    msg: '是否刷新当前菜单？',
+                    buttons: ['确定', '取消']
+                }, function (ret) {
+                    if (ret.buttonIndex == 1) {
+                        var items = vueData2.formData;
+                        for (var item in items) {
+                            items[item] = '';
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+</html>

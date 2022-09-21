@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+
+    <style>
+        body {}
+    </style>
+</head>
+
+<body>
+    <!-- <header class="aui-bar aui-bar-nav" style="background-color: #03a9f4;color: #fff" id="header">
+		<div class="aui-pull-left aui-btn" id="setting">请设置工厂</div>
+		//<div style="text-align:right;right:15px;" >菜单</div>
+	</header> -->
+    <header class="aui-bar aui-bar-nav" style="background-color: #03a9f4;color: #fff" id="header">
+        <a class="aui-pull-left aui-btn" id="setting">
+            请设置工厂
+        </a>
+        <!-- <div class="aui-title"></div> -->
+        <a class="aui-pull-right aui-btn aui-btn-outlined">
+            <span class="aui-iconfont aui-icon-menu" id="menu_factory"></span>
+        </a>
+    </header>
+
+    <footer class="aui-bar aui-bar-tab" id="footer">
+        <div class="aui-bar-tab-item aui-active" tapmode>
+            <i class="aui-iconfont aui-icon-home"></i>
+            <div class="aui-bar-tab-label">首页</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="toPhoto()">
+            <i class="aui-iconfont aui-icon-camera"></i>
+            <div class="aui-bar-tab-label">拍照</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="toScanner()">
+            <i class="aui-iconfont aui-icon-scan aui-text-epblue" style="font-size: 1.8rem"></i>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="toMsgList()">
+            <i class="aui-iconfont aui-icon-mail"></i>
+            <div class="aui-bar-tab-label">消息</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="setPerson()">
+            <i class="aui-iconfont aui-icon-my"></i>
+            <div class="aui-bar-tab-label">个人中心</div>
+        </div>
+    </footer>
+    <script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="../../script/public.js"></script>
+    <script type="text/javascript" src="../../script/api.js"></script>
+</body>
+
+<script type="text/javascript">
+    function closeWin() {
+        api.closeWin();
+    }
+    var siteGid = localStorage.getItem('siteGid');
+    var siteName = localStorage.getItem('siteName');
+    var workcenterGid = localStorage.getItem('workCenterGid');
+    var workcenterName = localStorage.getItem('workCenterName');
+
+    apiready = function() {
+        $api.fixStatusBar(document.querySelector('#header'));
+        var footer = $api.byId('footer');
+        var header = $api.byId('header');
+        var footerPos = $api.offset(footer);
+        var headerPos = $api.offset(header);
+        //var obj = document.getElementById("setting");
+        var menu_factory = document.getElementById("menu_factory"); //by likun 20190515 16:06
+
+        localStorage.setItem('winY', $api.offset($api.byId('header')).h);
+        localStorage.setItem('winH', api.winHeight - $api.offset($api.byId('footer')).h - $api.offset($api.byId('header')).h);
+        if (!workcenterName || !siteName) {
+            api.openWin({
+                name: 'factoryFram',
+                url: './factoryFram.html',
+            });
+        }
+
+        menu_factory.onclick = function() {
+            api.openWin({
+                name: 'factoryFram',
+                url: './factoryFram.html',
+            });
+
+        }
+
+        if (siteGid != null && siteGid != undefined) {
+            //$("#setting").css("color","purple");
+            // $("#setting").html(siteCode+":"+siteName+"      "+workcenterName);
+            $("#setting").html(siteName + " : " + workcenterName);
+        }
+        api.addEventListener({
+            name: 'myEvent'
+        }, function(ret, err) {
+            if (ret.value.isChangeColor) {
+                document.getElementById("setting").style.cssText = "color:purple"; //cssText是复合属性
+            }
+        });
+        api.addEventListener({
+            name: 'factoryChange'
+        }, function(ret, err) {
+            if (ret) {
+                var val = ret.value;
+                $("#setting").html(val.siteName + " : " + val.workcenterName);
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            if (ret) {
+                api.confirm({
+                    title: '退出提示',
+                    msg: '确定要退出程序吗?',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if (index == 1) {
+                        api.closeWidget({
+                            silent: true
+                        });
+                    }
+                });
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+        api.openFrame({
+            name: 'main',
+            url: 'main.html',
+            bounces: false,
+            rect: { // 推荐使用Margin布局，用于适配屏幕的动态变化
+                x: 0,
+                y: headerPos.h,
+                w: 'auto',
+                h: api.winHeight - footerPos.h - headerPos.h,
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: 0, //相对父 window 上外边距的距离
+                marginBottom: 0, //相对父 window 下外边距的距离
+                marginRight: 0 //相对父 window 右外边距的距离
+            },
+            reload: true
+        });
+    };
+
+    function toPhoto() {
+        api.getPicture({
+            sourceType: 'camera', //library    图片库//camera    相机         // albm  相册
+            encodingType: 'jpg', //返回图片类型，jpg或png
+            mediaValue: 'pic', //媒体类型，图片或视频
+            destinationType: 'url', //返回数据类型，指定返回图片地址或图片经过base64编码后的字符串
+            allowEdit: true, //是否可以选择图片后进行编辑，支持iOS及部分安卓手机
+            targetWidth: 400, //压缩后的图片宽度，图片会按比例适配此宽度
+            targetHeight: 500, //压缩后的图片高度，图片会按比例适配此高度
+            saveToPhotoAlbum: true //拍照或录制视频后是否保存到相册
+        }, function(ret, err) {
+            if (ret) {
+                //alert( JSON.stringify( ret ) );
+            } else {
+                //alert( JSON.stringify( err ) );
+            }
+            window.location.reload();
+        });
+    }
+
+    function toScanner() {
+        var FNScanner = api.require('FNScanner');
+        FNScanner.openScanner({
+            autorotation: true
+        }, function(ret, err) {
+            if (ret.eventType == "success") {
+
+            }
+        });
+    }
+
+    function toMsgList() {
+        api.openWin({
+            name: "msglist_win",
+            url: "msglist_win.html"
+        });
+    }
+
+    function setPerson() {
+        api.openWin({
+            name: "person_win",
+            url: "person_win.html"
+        });
+    }
+
+    function toWorkCenter() {
+        api.openWin({
+            name: "workcenter_win",
+            url: "workcenter_win.html",
+            animation: {
+                type: "fade",
+                subType: "from_bottom",
+                duration: 100
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.Wallet">
+
+    <!--title-->
+    <!--<com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/tv_wallet_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />-->
+    <!--title-->
+
+    <!--头部基本信息和填报完整度信息-->
+    <RelativeLayout
+        android:id="@+id/rl_info"
+        android:layout_width="match_parent"
+        android:layout_height="185dp">
+        <!--引入头部背景-->
+        <ImageView
+            android:id="@+id/iv_title_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@mipmap/banner_about_me" />
+        <!--title-->
+        <com.linkingwin.elearn.common.widget.TitleView
+            android:id="@+id/tv_wallet_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- 钱包余额 -->
+        <LinearLayout
+            android:id="@+id/ll_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp30"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginRight="@dimen/dp30"
+            android:layout_below="@id/tv_wallet_title"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="钱包余额（元）"
+                android:textColor="@color/titleWhite" />
+
+            <TextView
+                android:id="@+id/tv_balance_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="10000.00"
+                android:textColor="@color/titleWhite" />
+        </LinearLayout>
+        <!-- 钱包余额 -->
+        <!-- 课酬 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp30"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginRight="@dimen/dp30"
+            android:layout_below="@id/ll_balance"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="12月课酬"
+                    android:textColor="@color/titleWhite" />
+
+                <TextView
+                    android:id="@+id/tv_sum_reward"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1888.00"
+                    android:textColor="@color/titleWhite" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="累计课酬"
+                        android:textColor="@color/titleWhite" />
+
+                    <TextView
+                        android:id="@+id/tv_reward"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="11888.00"
+                        android:textColor="@color/titleWhite" />
+                </LinearLayout>
+                <!--<LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </LinearLayout>-->
+            </LinearLayout>
+
+        </LinearLayout>
+        <!-- 课酬 -->
+
+        <ProgressBar
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:id="@+id/pg_fill"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/wide_line"
+            android:layout_alignParentBottom="true"
+            android:max="100"
+            android:progress="22"
+            android:progressDrawable="@drawable/fill_progress" />
+    </RelativeLayout>
+
+    <!--条目内容-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_info">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!--钱包明细Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="钱包明细" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_school"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tv_school"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:gravity="right"/>
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <!--钱包明细End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--提现Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="提现" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_job_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tv_job_titile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:gravity="right"
+                        android:hint="添加本人支付宝，微信" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <!--提现End-->
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

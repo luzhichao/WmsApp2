@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.SchoolEdit">
+      <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_school_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--学校名称Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/editTextSize"
+            android:text="学校名称" />
+        <EditText
+            android:id="@+id/tv_school_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/icon_right_size"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:background="@null"
+            android:textSize="@dimen/editTextSize"
+            android:hint="请填写毕业学校的名称" />
+    </LinearLayout>
+    <!--学校名称End-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+    <!--开始时间Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/editTextSize"
+            android:text="开始日期" />
+        <RelativeLayout
+            android:id="@+id/rl_begin_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_begin_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/icon_right_size"
+                android:layout_centerVertical="true"
+                android:gravity="right"
+                android:layout_marginLeft="@dimen/dp5"
+                android:textSize="@dimen/editTextSize"
+                android:hint="选择日期" />
+            <ImageView
+                android:layout_width="@dimen/icon_right_size"
+                android:layout_height="@dimen/icon_right_size"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/arrows_right" />
+        </RelativeLayout>
+    </LinearLayout>
+    <!--开始时间End-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+    <!--结束日期Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/editTextSize"
+            android:text="结束日期" />
+        <RelativeLayout
+            android:id="@+id/rl_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/icon_right_size"
+                android:layout_centerVertical="true"
+                android:gravity="right"
+                android:layout_marginLeft="@dimen/dp5"
+                android:textSize="@dimen/editTextSize"
+                android:hint="选择日期" />
+
+            <ImageView
+                android:layout_width="@dimen/icon_right_size"
+                android:layout_height="@dimen/icon_right_size"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/arrows_right" />
+        </RelativeLayout>
+    </LinearLayout>
+    <!--结束日期End-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+    <!--学校名称Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/editTextSize"
+            android:text="学历" />
+        <RelativeLayout
+            android:id="@+id/rl_education"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_education"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/icon_right_size"
+                android:layout_centerVertical="true"
+                android:gravity="right"
+                android:layout_marginLeft="@dimen/dp5"
+                android:textSize="@dimen/editTextSize"
+                android:hint="选择学历" />
+
+            <ImageView
+                android:layout_width="@dimen/icon_right_size"
+                android:layout_height="@dimen/icon_right_size"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/arrows_right" />
+        </RelativeLayout>
+    </LinearLayout>
+    <!--学校名称End-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+    <!--学校名称Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/editTextSize"
+            android:text="专业" />
+        <RelativeLayout
+            android:id="@+id/rl_job_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+            <EditText
+                android:id="@+id/tv_major"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/icon_right_size"
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:gravity="right"
+                android:textSize="@dimen/editTextSize"
+                android:hint="输入10字以内的专业名称" />
+        </RelativeLayout>
+    </LinearLayout>
+    <!--学校名称End-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+    <Button
+        android:id="@+id/bt_del_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:background="@drawable/btn_blue_solid"
+        android:text="删除此条记录"
+        android:textColor="@color/titleWhite"/>
+</LinearLayout>

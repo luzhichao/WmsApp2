@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.CourseEdit">
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_course_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_course_edit">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--课程名称Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="课程名称"
+                    android:textSize="@dimen/editTextSize" />
+
+                <EditText
+                    android:id="@+id/tv_course_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/icon_right_size"
+                    android:background="@null"
+                    android:gravity="right"
+                    android:hint="请简写课程内容(10个字)"
+                    android:textSize="@dimen/editTextSize"
+                    android:ellipsize="end"
+                    android:singleLine="true"/>
+            </LinearLayout>
+            <!--课程名称End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--学部Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="学部"
+                    android:textSize="@dimen/editTextSize" />
+
+                <Spinner
+                    android:id="@+id/sp_grade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:autofillHints="选择学部"/>
+            </LinearLayout>
+            <!--学部End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--年级Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="年级"
+                    android:textSize="@dimen/editTextSize" />
+
+                <Spinner
+                    android:id="@+id/sp_class"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:autofillHints="选择年级"/>
+            </LinearLayout>
+            <!--年级End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--类型Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="类型"
+                    android:textSize="@dimen/editTextSize" />
+                <Spinner
+                    android:id="@+id/sp_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:autofillHints="选择类型"/>
+            </LinearLayout>
+            <!--类型End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--人数Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="人数"
+                    android:textSize="@dimen/editTextSize" />
+
+                <Spinner
+                    android:id="@+id/sp_persons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:autofillHints="选择人数"/>
+            </LinearLayout>
+            <!--人数End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--专业Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="科目"
+                    android:textSize="@dimen/editTextSize" />
+
+                <Spinner
+                    android:id="@+id/sp_subjects"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:autofillHints="选择科目"/>
+            </LinearLayout>
+            <!--专业End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--价格Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="价格"
+                    android:textSize="@dimen/editTextSize" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_prices"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/tv_prices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:background="@null"
+                        android:gravity="right"
+                        android:hint="请输入价格"
+                        android:textSize="@dimen/editTextSize"
+                        android:inputType="numberDecimal"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <!--价格End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--授课课节Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="授课课节"
+                    android:textSize="@dimen/editTextSize" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_max_subject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/tv_max_subject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:background="@null"
+                        android:gravity="right"
+                        android:hint="输入课节数"
+                        android:textSize="@dimen/editTextSize"
+                        android:inputType="number"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <!--授课课节End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--最低授课课节Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="最低授课课节"
+                    android:textSize="@dimen/editTextSize" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_min_subject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/tv_min_subject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:background="@null"
+                        android:gravity="right"
+                        android:hint="输入课节数"
+                        android:textSize="@dimen/editTextSize"
+                        android:inputType="number"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <!--最低授课课节End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!--每课节课时数Start-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="每课节课时数(时/课节)"
+                    android:textSize="@dimen/editTextSize" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/et_duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:background="@null"
+                        android:gravity="right"
+                        android:hint="输入课时"
+                        android:textSize="@dimen/editTextSize"
+                        android:inputType="numberDecimal"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <!--每课节课时数End-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+
+            <Button
+                android:id="@+id/bt_del_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/btMarginBig"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/btMarginBig"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:background="@drawable/btn_blue_solid"
+                android:text="删除此条记录"
+                android:textColor="@color/titleWhite" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

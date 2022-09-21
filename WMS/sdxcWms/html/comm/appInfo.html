@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>系统设置</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+
+		footer>div {
+			position: fixed;
+			bottom: 0;
+			color: #3c7390;
+			font-size: 0.6rem;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header class="aui-bar aui-bar-nav" style="background-color: #03a9f4" id="header">
+		<a class="aui-pull-left aui-btn" onclick="closeWin()">
+			<span class="aui-iconfont aui-icon-left"></span>
+		</a>
+		<div class="aui-title">关于</div>
+	</header>
+	<div class="aui-content" style="margin-top: 0.75rem">
+		<ul class="aui-list aui-list-in">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title" id="ver"></div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<footer>
+		<div class="aui-bar-tab-item">
+			<div class="aui-bar-tab-label">
+				Copyright © 2012-2019 艾普工华科技（武汉）有限公司-Powered by Mestar ®
+			</div>
+		</div>
+	</footer>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		$api.fixStatusBar(document.querySelector('#header'));
+		var ver = api.appVersion;
+		$("#ver").html("版本号：" + ver);
+	};
+
+	function closeWin() {
+		api.closeWin();
+	}
+</script>
+
+</html>

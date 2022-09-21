@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".teacher.activities.PlatformRules"
+android:orientation="vertical">
+<com.linkingwin.elearn.common.widget.TitleView
+    android:id="@+id/title_plat_rule"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+<ScrollView
+    android:id="@+id/sc_view"
+    android:layout_below="@id/title_plat_rule"
+    android:layout_above="@id/bt_confirm"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tv_plat_rule"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="25dp"/>
+</ScrollView>
+    <Button
+        android:id="@+id/bt_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/btMargin50dp"
+        android:layout_marginRight="@dimen/btMargin50dp"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/titleWhite"
+        android:background="@drawable/btn_blue_solid"
+        android:text="学习并同意平台规则" />
+</RelativeLayout>

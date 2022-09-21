@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.youth.banner.Banner
+        android:id="@+id/welcome_banner"
+        android:contentDescription="@string/banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/titleWhite"/>
+
+    <Button
+        android:id="@+id/bt_loader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="加载资源……"
+        android:layout_marginLeft="@dimen/btMarginBiggest"
+        android:layout_marginRight="@dimen/btMarginBiggest"
+        android:background="@drawable/btn_blue_gradual"
+        android:enabled="false"
+        android:textColor="@color/titleWhite"
+        android:layout_marginBottom="@dimen/btMarginBig"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

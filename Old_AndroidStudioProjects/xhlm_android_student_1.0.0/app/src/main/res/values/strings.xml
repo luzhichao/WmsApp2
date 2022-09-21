@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">student</string>
+
+
+    <!-- ******************************************************明细***********************************-->
+    <string name="tv_smrz">实名认证</string>
+    <string name="tv_wdrz">我的认证</string>
+    <string name="tv_grzl">个人资料</string>
+    <string name="tv_xbxk">学部学科</string>
+
+    <string name="tv_sksj">授课时间</string>
+    <string name="tv_zxsk">在线授课</string>
+    <string name="tv_jbfwzz">基础服务准则</string>
+    <string name="tv_xxptgz">学习平台规则</string>
+    <string name="tv_xgkpxsp">学观看培训视频</string>
+
+    <string name="tv_wcjdkc">我参加的课程</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tv_wdpj">我的评价</string>
+    <string name="tv_wdsc">我的收藏</string>
+    <string name="tv_gyjy">关于经验</string>
+    <string name="tv_tsyjy">投诉与建议</string>
+    <string name="tv_bzzj">帮助中心</string>
+    <string name="label_dfk">待付款</string>
+    <string name="label_qbdd">全部订单</string>
+    <string name="label_ddh">订单号:</string>
+    <string name="lable_hj">合计:</string>
+    <string name="lable_xdsj">下单时间:</string>
+    <string name="save_password">保存密码</string>
+    <string name="login">登陆</string>
+    <string name="hint_input_password">请输入您的密码</string>
+    <string name="hint_input_account">请输入您的手机号</string>
+    <string name="is_forget_password">找回密码</string>
+    <string name="is_regis_user">注册新用户</string>
+    <string name="send_captcha">发送验证码</string>
+    <string name="login_regist">注册</string>
+    <string name="login_login">登录</string>
+    <string name="hint_input_captcha">请输入验证码</string>
+    <string name="login_nextstep">下一步</string>
+    <string name="hint_input_password_again">请再次输入您的密码</string>
+    <string name="login_resetpassword">重设密码</string>
+
+
+    <string name="demo_info_text">Warning: \n\nFor demonstration purpose, the assembling and signing of the request parameters are done on the client side.\nHowever, in practice, both assembling and signing MUST BE carried out on the server side.</string>
+    <string name="pay_with_alipay">Pay with Alipay</string>
+    <string name="auth_with_alipay">Authenticate with Alipay</string>
+    <string name="web_to_native">Call Alipay from Web Content</string>
+    <string name="check_sdk_version">Alipay SDK Version</string>
+    <string name="pay_success">Payment success:</string>
+    <string name="auth_failed">Authentication failed:</string>
+    <string name="permission_already_granted">Required permissions have already been granted to AlipaySDK</string>
+    <string name="permission_rejected">Missing permissions. Please grant required permissions in system settings</string>
+    <string name="permission_granted">Required permissions have been granted to AlipaySDK</string>
+    <string name="error_missing_appid_rsa_private">Error: Missing \"APPID\" or \"RSA_PRIVATE\" in PayDemoActivity.</string>
+    <string name="error_auth_missing_partner_appid_rsa_private_target_id">Error: Missing \"PARTNER\", \"APP_ID\", \"RSA_PRIVATE\", or \"TARGET_ID\" in PayDemoActivity.</string>
+    <string name="confirm">Confirm</string>
+    <string name="pay_failed">Payment failed:</string>
+    <string name="auth_success">Authentication success:</string>
+    <string name="alipay_sdk_version_is">"Alipay SDK version: "</string>
+    <string name="error_missing_h5_pay_url">Missing URL to load. Please configure in PayDemoActivity.h5Pay()</string>
+    <string name="error">Error</string>
+    <string name="pay_with_wxpay">微信支付</string>
+    <string name="title_activity_search_subject">SearchSubjectActivity</string>
+    <string name="online_course">在线课程</string>
+    <string name="one2one_online_study">在线1对1辅导</string>
+    <string name="one2one_online_study_detail">让学习理高效</string>
+    <string name="buy_now">立刻购买</string>
+    <string name="featured_course">精选课程</string>
+    <string name="panic_buying">抢购</string>
+    <string name="student_evaluation">学生评价</string>
+    <string name="show_all_comment">查看全部</string>
+    <string name="teaching_experience">教学经历</string>
+    <string name="success_case">成功案例</string>
+    <string name="teaching_characteristics">教学特点</string>
+</resources>

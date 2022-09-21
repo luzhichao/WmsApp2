@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.linkingwin.elearn">
+
+    <!-- 打开权限，很重要，否则相关的程序代码会执行，但不会报错，比较难搞！ -->
+    <!-- Required -->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission
+        android:name="android.permission.STATUS_BAR"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.SET_ORIENTATION"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- 打开本地的位置服务 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- 相机权限 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 打开本地的存储卡读写的权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- 应用资源注册 -->
+    <application
+        android:name=".common.ElearnApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <!-- 设置环信应用的appkey start -->
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="easemob-demo#chatdemoui" />
+        <!-- 声明sdk所需的service -->
+        <service
+            android:name="com.hyphenate.chat.EMChatService"
+            android:exported="true"
+            tools:ignore="ExportedService" />
+        <service
+            android:name="com.hyphenate.chat.EMJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!-- 声明sdk所需的receiver -->
+        <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+            <!-- 可选filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 百度地图所需的service -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="3ecea51f560650b1ed8a4b99808f52e8" />
+        <!-- 设置环信应用所需资源end -->
+
+
+        <!-- 欢迎页面 -->
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 老师登陆页面 -->
+        <activity
+            android:name=".teacher.LoginActivity"
+            android:theme="@style/NoBarTheme" />
+        <!-- 老师注册页面 -->
+        <activity
+            android:name=".teacher.activities.Register"
+            android:label="@string/title_activity_register"
+            android:theme="@style/NoBarTheme" />
+        <!-- 老师忘记密码页面 -->
+        <activity
+            android:name=".teacher.activities.ForgetPWD"
+            android:theme="@style/NoBarTheme" />
+        <!-- 老师注册协议页面 -->
+        <activity
+            android:name=".teacher.activities.RegisterProtocol"
+            android:theme="@style/NoBarTheme" />
+        <!-- 老师基本信息页面 -->
+        <activity
+            android:name=".teacher.activities.TeacherBaseInfo"
+            android:theme="@style/CityCustomTheme" />
+        <!-- 注册成功弹出页面 -->
+        <activity android:name=".teacher.activities.RegisterSuccess" />
+        <!-- 老师主页 -->
+        <activity android:name=".teacher.activities.HomePage" />
+        <!-- 工作台主页 -->
+        <activity android:name=".teacher.activities.WorkSpace" />
+        <!-- 即时聊天主页 -->
+        <activity android:name=".teacher.activities.Message" />
+        <!-- 我的中心主页 -->
+        <activity
+            android:name=".teacher.activities.Mine"
+            android:theme="@style/NoBarTheme" />
+        <!-- 个人资料页 -->
+        <activity
+            android:name=".teacher.activities.AboutMe"
+            android:theme="@style/NoBarTheme" />
+        <!-- 毕业院校列表 -->
+        <activity
+            android:name=".teacher.activities.School"
+            android:theme="@style/NoBarTheme" />
+        <!-- 毕业院校新增、编辑 -->
+        <activity
+            android:name=".teacher.activities.SchoolEdit"
+            android:theme="@style/NoBarTheme" />
+        <!-- 教学经历 -->
+        <activity
+            android:name=".teacher.activities.Experience"
+            android:theme="@style/NoBarTheme" />
+        <!-- 教学经历新增和编辑 -->
+        <activity
+            android:name=".teacher.activities.ExperienceEdit"
+            android:theme="@style/NoBarTheme" />
+        <!-- 成功案例 -->
+        <activity
+            android:name=".teacher.activities.SuccessCase"
+            android:theme="@style/NoBarTheme" />
+        <!-- 成功案例新增和编辑 -->
+        <activity
+            android:name=".teacher.activities.SuccessCaseEdit"
+            android:theme="@style/NoBarTheme" />
+        <!-- 教学特点界面 -->
+        <activity
+            android:name=".teacher.activities.Peculiar"
+            android:theme="@style/NoBarTheme" />
+        <!-- 职称页面 -->
+        <activity
+            android:name=".teacher.activities.JobLevel"
+            android:theme="@style/NoBarTheme" />
+        <!-- 奖励荣誉页面 -->
+        <activity
+            android:name=".teacher.activities.HonorActivity"
+            android:theme="@style/NoBarTheme" />
+        <!-- 奖励荣誉新增和编辑 -->
+        <!-- 实名认证 -->
+        <activity
+            android:name=".teacher.activities.RealAuth"
+            android:theme="@style/NoBarTheme" />
+        <!-- 申请课程 -->
+        <activity
+            android:name=".teacher.activities.TeacherApplySubject"
+            android:theme="@style/NoBarTheme" />
+        <!-- 认证中心 -->
+        <activity
+            android:name=".teacher.activities.AuthCentre"
+            android:theme="@style/NoBarTheme" />
+        <!-- 我的认证 -->
+        <activity
+            android:name=".teacher.activities.OtherAuth"
+            android:theme="@style/NoBarTheme" />
+        <!-- 我的钱包 -->
+        <activity android:name=".teacher.activities.Wallet" />
+        <!-- 授课时间 -->
+        <activity android:name=".teacher.activities.TeachTime" />
+        <!-- 基本服务准则 -->
+        <activity android:name=".teacher.activities.BasicServiceCriteria" />
+        <!-- 学习平台规则 -->
+        <activity android:name=".teacher.activities.PlatformRules" />
+        <!-- 荣誉奖励新增编辑 -->
+        <activity android:name=".teacher.activities.HonorAddOrEditActivity" />
+        <!-- 个人风采 -->
+        <activity android:name=".teacher.activities.MyPictureActivity" />
+        <!-- 我的视频 -->
+        <activity android:name=".teacher.activities.VideoActivity" />
+        <!-- 课程管理列表 -->
+        <activity android:name=".teacher.activities.Course" />
+        <!-- 课程新增和编辑 -->
+        <activity android:name=".teacher.activities.CourseEdit" />
+        <activity android:name=".teacher.activities.EvaluateActivity" />
+        <!-- 环信聊天页 -->
+        <activity android:name=".teacher.activities.ChatActivity" />
+        <!-- 环信位置地图页 -->
+        <activity
+            android:name="com.hyphenate.easeui.ui.EaseBaiduMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" />
+        <!-- 显示下载大图页面 -->
+        <activity
+            android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" />
+        <!-- 下载文件 -->
+        <activity
+            android:name="com.hyphenate.easeui.ui.EaseShowNormalFileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" />
+        <activity android:name=".teacher.activities.LabelSet" />
+        <activity android:name=".teacher.activities.TeachTraitTag" />
+        <activity android:name=".teacher.activities.SchoolTag" />
+        <activity android:name=".teacher.activities.CustomPeculiarTag" />
+        <activity android:name=".teacher.activities.MyOrderActivity" />
+        <activity android:name=".teacher.activities.MySudentActivity"/>
+    </application>
+
+</manifest>

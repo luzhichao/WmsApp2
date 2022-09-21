@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>修改密码</title>
+	<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/icons.css" />
+	<style>
+	.aui-btn-info {
+		width: 100%;
+		line-height: 2.5rem;
+	}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+		<a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">
+			<span class="aui-iconfont aui-icon-left"></span> </a>
+		<div class="aui-title">修改密码</div>
+	</header>
+
+	<section class="aui-content-padded">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">旧密码</div>
+					<div class="aui-list-item-input">
+						<input type="password" id="oldPassword" value="" placeholder="旧密码" >
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">新密码</div>
+					<div class="aui-list-item-input">
+						<input type="password" id="newPassword" value="" placeholder="新密码" >
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">重复输入新密码</div>
+					<div class="aui-list-item-input">
+						<input type="password" id="repeatPassword" value="" placeholder="重复输入新密码" >
+					</div>
+				</div>
+			</li>
+		</ul>
+	</section>
+
+	<div class="aui-content-padded" onclick="doSave()">
+		<p><div class="aui-btn aui-btn-info"><i class="aui-input-addon aui-iconfont aui-icon-mobile "></i>提交</div></p>
+	</div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+
+	apiready = function() {
+		$api.fixStatusBar(document.querySelector('#aui-header'));
+	};
+
+	function doSave(){
+		var oldPassword = $("#oldPassword").val().trim();
+		var newPassword = $("#newPassword").val().trim();
+		var repeatPassword = $("#repeatPassword").val().trim();
+		var loginName = localStorage.getItem("un");
+		if(newPassword != repeatPassword){
+			api.toast({
+				msg: '两次输入的密码不一致，请重新入数',
+				duration: 3000,
+				location: 'top'
+			});
+			$("#newPassword").val("");
+			$("#repeatPassword").val("");
+			return;
+		}
+		api.showProgress({
+			style: 'default',
+			animationType: 'fade',
+			title: '努力加载中...',
+			text: '请稍后...',
+			modal: true
+		});
+		api.ajax({
+			url: getUrl("padCommController!doChangePwd.m"),
+			method: 'post',
+			data: {
+				values: {
+					loginName : loginName,
+					newPassword : newPassword,
+					oldPassword : oldPassword
+				}
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (ret) {
+				var myobj = eval(ret);
+				api.toast({
+					msg: myobj.msg,
+					duration: 3000,
+					location: 'middle',
+					global:true
+				});
+				if(myobj.erroCode==0){
+					setTimeout(function() {
+						api.rebootApp();
+					}, 3000);
+				}else if(myobj.erroCode==1){
+					return;
+				}
+			} else {
+				console.log(JSON.stringify(err));
+				api.toast({
+					msg: err.msg,
+					duration: 3000,
+					location: 'middle'
+				});
+			}
+		});
+	}
+
+</script>
+</html>

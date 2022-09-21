@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>补货</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/outBound.css">
+    <style>
+    body{
+      background-color: rgb(245,245,245);
+    }
+    #easyLayout{
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      height: 100vh;
+    }
+    .dataIsNone{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: rgb(139,134,130);
+    }
+    </style>
+</head>
+<body>
+  <div id="easyLayout">
+
+    <div class="dataIsNone" v-if="billList.length == 0">
+      暂无数据
+    </div>
+
+    <!-- 获取拣选任务单 -->
+    <div class="shipment-easyLayout shipment-easyLayout-active" id="shipment-easyLayout1" v-if="billList.length != 0">
+
+      <div class="shipment-easyLayout-item"
+      v-for="(item,index) in billList"
+      :class="{'shipment-easyLayout-item-margin':index != (billList.length - 1)}"
+      @click="startValidate(item)" style="font-size:10px">
+        <p style="width:100%">退料单:  {{item.outBillCode}}</p>
+        <p style="width:100%">物料编码: {{item.targetWorkCellCode}}</p>
+        <p style="width:100%">批次:  {{item.mrlCode}}</p>
+        <p style="width:100%">数量:  {{item.mrlName}}</p>
+      </div>
+    </div>
+
+    <div class="shipment-easyLayout" id="shipment-easyLayout2">
+      <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+          <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">物料编码</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" v-model.trim="formData.mrlCode" readonly="readonly">
+                  </div>
+              </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料名称</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model.trim="formData.mrlName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">库位编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model.trim="formData.mrlName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">容器编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model.trim="formData.mrlName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">退料数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model.trim="formData.remainQty" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            
+            <li class="aui-list-item">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">校验容器</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab2-scan-ctBarCode" v-model.trim="formData.pickCtCode" placeholder="扫描来源容器" @keyup.enter="onEnterCtBarcode">
+                  </div>
+              </div>
+            </li>
+           </ul>
+        </form>
+    </div>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-2" v-if="vueData.itemShow == 2">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success"  @click="postSubmit">提交</div>
+    </footer>
+  </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+
+    apiready = function () {
+        api.parseTapmode();
+
+        //查询退料单明细
+        var params = {
+          workCenterCode:localStorage.getItem('workCenterCode'),
+          businessType:46,
+          id:"$filter=state eq 0",
+        }
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getOutBillsByParams.m'),
+            dataType: "json",
+            data: {
+              data: JSON.stringify(params),
+            },
+            //async: false,
+            success: function (res) {
+                if (res.errCode === 0) {
+                  vueData.billList = res.data;
+                  vueData.billList = vueData.billList.sort(function (a, b) {
+                      return new Date(b.billDate.replace(/-/g, '/')).getTime() - new Date(a.billDate.replace(/-/g, '/')).getTime()
+                  });
+                  api.hideProgress();
+                } else {
+                  api.hideProgress();
+                  api.toast({msg: res.msg, duration: 3000, location: 'middle'});
+                }
+            },
+            error: function (e) {
+                api.hideProgress();
+            }
+        });
+    };
+    var vueData = {
+        itemShow:1,//控制显示隐藏
+        outBillCode:'',
+
+        formData:{
+          mrlCode:"",   //物料编码
+          mrlName:"",   //物料名称
+          qty:"",       //计划数量
+          targetWorkCellCode: "", //目标库位
+          id:'',        //补料任务id
+
+          pickCtCode:"",          //实际扫描容器
+        }
+    };
+    var app = new Vue({
+        el: '#easyLayout',
+        data: vueData,
+        mounted: function () {
+
+        },
+        methods: {
+            //开始校验
+            startValidate:function(item){
+              api.confirm( {
+                  title: '注意',
+                  msg: '是否开始作业？',
+                  buttons: [ '确定', '取消' ]
+              }, function ( ret, err ) {
+                  if ( ret.buttonIndex == 1 ) {
+                    vueData.outBillCode = item.outBillCode;
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: getUrl('padWmsController!getOutBillByCode.m'),
+                        dataType: "json",
+                        data: {
+                          code:item.outBillCode,
+                        },
+                        async: false,
+                        success: function (res) {
+                            console.log("退料出库单==>" + JSON.stringify(res))
+                            if (res.errCode == 0) {
+                              var obj = res.data[0];
+                              vueData.formData.mrlName = obj.mrlName;
+                              vueData.formData.mrlCode = obj.mrlCode;
+                              vueData.formData.qty = obj.qty;
+                              vueData.formData.remainQty = obj.remainQty;
+                              vueData.formData.id = obj.id;
+                              vueData.formData.targetWorkCellCode = obj.targetWorkCellCode;
+                              $('#tab2-scan-workCellCode').focus();
+
+                              vueData.recWorkCellList = getPickWorkCellList(obj.mrlCode);
+                              vueData.recWorkCell = "";
+                              for (var i = 0; i < vueData.recWorkCellList.length; i++) {
+                                  vueData.recWorkCell += (vueData.recWorkCellList[i].workCellCode + '\n')
+                              }
+
+                            } else {
+                                api.hideProgress();
+                                api.toast({msg: res.msg, duration: 3000, location: 'middle'});
+                            }
+                        },
+                        error: function (e) {
+                            api.hideProgress();
+                        }
+                    });
+                    api.hideProgress();
+                    vueData.itemShow += 1 ;
+                    $('.shipment-easyLayout').removeClass('shipment-easyLayout-active');
+                    $('#shipment-easyLayout' + vueData.itemShow).addClass('shipment-easyLayout-active');
+                  }
+              } )
+            },
+
+            //扫描容器
+            onEnterCtBarcode:function(){
+              //step1. 校验是否为空；是否扫描的内容存在于推荐的列表内
+                if (vueData.formData.pickWorkCellCode == "" || !vueData.formData.pickWorkCellCode) {
+                    api.toast({msg: '请先扫描库位', location: 'middle'});
+                    vueData.formData.pickCtCode = "";
+                    return false
+                }
+                var isAlive = false;
+                for (let i = 0; i < vueData.recCtList.length; i++) {
+                    if (vueData.recCtList[i] == vueData.formData.pickCtCode) {
+                        isAlive = true;
+                    }
+                }
+                if (!isAlive) {
+                    api.toast({msg: '请扫描推荐的容器', location: 'middle'});
+                    vueData.formData.pickCtCode = "";
+                    return $('#tab2-scan-ctBarCode').focus();
+                }
+
+                $("#tab2-scan-lotcode").focus();
+            },
+
+            //提交校验
+            postSubmit:function(){
+              api.showProgress({
+                  style: 'default',
+                  animationType: 'fade',
+                  title: '努力加载中...',
+                  text: '请稍后...',
+                  modal: true
+              });
+              $.ajax({
+                  type: "POST",
+                  url: getUrl("padWmsController!validateReturnOutBill.m"),
+                  dataType: "json",
+                  data: {
+                    ctBarcode: vueData.formData.id,
+                    outBillDetailId: vueData.formData.pickWorkCellCode
+                  },
+                  async: false,
+                  success: function (ret) {
+                      if (ret.errCode == 0) {
+                          //step4.重置tab2的数据
+                          
+                              // 已拣货完毕
+                              vueData.recCtList = [];
+                              vueData.recWorkCellList = [];
+                              vueData.recCt = "";
+                              vueData.recWorkCell = "";
+                              vueData.formData.mrlCode = "";
+                              vueData.formData.mrlName = "";
+                              vueData.formData.qty = "";
+                              vueData.formData.remainQty = "";
+                              vueData.formData.pickLotCode = "";
+                              vueData.formData.pickCtCode = "";
+                              vueData.formData.pickWorkCellCode = "";
+
+                              vueData.itemShow -= 1 ;
+                              $('.shipment-easyLayout').removeClass('shipment-easyLayout-active');
+                              $('#shipment-easyLayout' + vueData.itemShow).addClass('shipment-easyLayout-active');
+                          
+                          api.toast({msg: '提交成功', location: 'middle'});
+                          api.hideProgress();
+                      } else {
+                          api.hideProgress();
+                          api.alert({title: '提交失败', msg: JSON.stringify(ret.msg)});
+                      }
+                  },
+                  error: function (e) {
+                      api.hideProgress();
+                  }
+              });
+            }
+        }
+    });
+</script>
+
+</html>

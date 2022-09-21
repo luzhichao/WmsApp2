@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly files('../app/libs/apiEngine v1.1.0.jar')
+    implementation files('libs/tscsdk.jar')
+    implementation files('libs/gprintersdkv.jar')
+    implementation files('libs/jiaboprinter.aar')
+}

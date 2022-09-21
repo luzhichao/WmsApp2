@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>生产报工</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/LCalendar.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="product-report">
+        <div class="aui-tab" id="report-tab">
+            <div class="aui-tab-item aui-active">选择工序</div>
+            <div class="aui-tab-item">报工</div><!-- v-bind:style="reportOptionStyle" -->
+        </div>
+        <div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+            <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+                <ul class="aui-list aui-form-list">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">开始日期</div>
+                            <div class="aui-list-item-input">
+                                <input type="date" v-model="reportForm.startDate" />
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">结束日期</div>
+                            <div class="aui-list-item-input">
+                                <input type="date" v-model="reportForm.endDate" />
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">产品编码</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" @keyup.enter="onEnterProductCode" v-model="reportForm.matnr" placeholder="扫描货品条码">
+                                <input type="text" v-show=false>
+                            </div>
+                            <div class="aui-list-item-right">
+                                <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnterProductCode">
+                                    查询
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">生产订单</div>
+                            <select @change="slectProductOrder($event)">
+                                <option value="" key="" readonly>--请选择--
+                                </option>
+                                <option v-for="(item,index) in product.orders" :value="item.aufnr" :key="item.aufnr">{{item.aufnr}}
+                                </option>
+                            </select>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+            <table id="bootstrap-tab"></table>
+        </div>
+
+        <div id="aui-tab-2" class="tab-content-item app">
+            <form id="processForm" class="aui-content aui-margin-b-10 aui-margin-t-10">
+                <ul class="aui-list aui-form-list">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">工序编码</div>
+                            <div class="aui-list-item-input">
+                                <input id="vornr" type="text" readonly v-model="reportForm.vornr">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">产品编码</div>
+                            <div class="aui-list-item-input">
+                                <input id="matnr" type="text" readonly v-model="reportForm.matnr">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">订单数量</div>
+                            <div class="aui-list-item-input">
+                                <input id="orderQty" type="text" readonly v-model="reportForm.orderQty">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">已报数量</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" readonly v-model="reportForm.reportedQty">
+                            </div>
+                        </div>
+                    </li> -->
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">报工人编号</div>
+                            <div class="aui-list-item-input">
+                                <input id="persNo" type="text" v-model="reportForm.persNo" placeholder="输入报工人编号">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">原材料库位</div>
+                            <div class="aui-list-item-input">
+                                <input id="materialCenter" type="text" v-model="reportForm.materialCenter" @keyup.enter="onEnterMaterCenter" placeholder="请扫描反冲料库位编码">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">原材料库存</div>
+                            <div class="aui-list-item-input">
+                                <input id="inventory" type="number" v-model="reportForm.inventory" readonly>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">原材料使用</div>
+                            <div class="aui-list-item-input">
+                                <input id="matnrQty" type="number" v-model="reportForm.matnrQty">
+                            </div>
+                        </div>
+                    </li> -->
+                    <div v-if="maxVornr">
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label">库位编码</div>
+                                <div class="aui-list-item-input">
+                                    <input id="centerCellCode" type="text" v-model="reportForm.centerCellCode" placeholder="请扫描成品入线边库编码">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label">容器编码</div>
+                                <div class="aui-list-item-input">
+                                    <input id="containCode" type="text" v-model="reportForm.containCode" placeholder="请扫描成品入容器编码">
+                                </div>
+                                <div class="aui-list-item-right">
+                                    <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createBarCode">
+                                        生成
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">完工数量</div>
+                            <div class="aui-list-item-input">
+                                <input id="completeQty" type="number" v-model="reportForm.completeQty">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">报废数量</div>
+                            <div class="aui-list-item-input">
+                                <input id="scrappedQty" type="number" v-model="reportForm.scrappedQty">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">完工日期</div>
+                            <div class="aui-list-item-input">
+                                <input id="completeDate" type="date" v-model="reportForm.completeDate" />
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label" style="width: 160px;">选择班组人员</div>
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; width: 100%;" @click="selectTeamGroup">
+                                选择班组人员
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">变式原因</div>
+                            <select @change="slectVRS($event)">
+                                <option value="" key="" readonly>--请选择--
+                                </option>
+                                <option v-for="item in vrs" :value="item.code">{{item.name}}
+                                </option>
+                            </select>
+                            <!-- <div class="aui-list-item-input">
+                                <input id="variationReasons" type="text" v-model="reportForm.variationReasons" placeholder="输入变式原因">
+                            </div> -->
+                        </div>
+                    </li>
+                </ul>
+            </form>
+
+            <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+                <button class="aui-btn aui-col-xs-12 aui-btn-success" @click="submitProductionReport" :disabled="submitFlag">提交</button>
+            </footer>
+        </div>
+
+    </div>
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript" src="../../../script/Lcalendar.js"></script>
+<script type="text/javascript" src="../../../script/LZCDate.min.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript" src="../../../script/public/print.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast({});
+    var processTableField = [
+        // {
+        //     field: 'id',
+        //     title: 'gId',
+        //     visible: false
+        // },
+        {
+            field: 'steusStr',
+            title: '是否报工工序',
+        },
+        {
+            field: 'vornr',
+            title: '工序编码'
+        },
+        {
+            field: 'ltxa',
+            title: '工序描述'
+        },
+        {
+            field: 'matnr',
+            title: '产品编码'
+        },
+        {
+            field: 'bomMatnr',
+            title: '物料编码'
+        },
+        {
+            field: 'aufnr',
+            title: '订单编码'
+        },
+        {
+            field: 'orderQty',
+            title: '产品数量',
+        },
+        {
+            field: 'reportedQty',
+            title: '总已报数量',
+        },
+        {
+            field: 'completeQty',
+            title: '总完工数量',
+        },
+        {
+            field: 'scrappedQty',
+            title: '总报废数量',
+        },
+        {
+            field: 'bomBdmng',
+            title: '原材料数量', //BOM中原材料的使用量
+        },
+        {
+            field: 'steus',
+            title: '工序控制码',
+            visible: false
+        },
+        {
+            field: 'rgekz',
+            title: '原材料反冲标识',
+            visible: false
+        },
+    ];
+    apiready = function() {
+        var app = new Vue({
+            el: '#product-report',
+            data: {
+                reportForm: {
+                    startDate: "", //moment().subtract(1, "months").format("YYYY-MM-DD"), //生产订单开始日期
+                    endDate: "", //moment().format("YYYY-MM-DD"), //生产订单结束日期
+                    matnr: "", //产品编码:只读
+                    vornr: "", //工序编码:只读
+                    orderQty: 0, //订单数量:只读
+                    reportedQty: 0,
+                    aufnr: "", //生产订单编码
+                    persNo:"",
+                    centerCellCode: "", //入线边库编码:扫描
+                    containCode: "", //容器编码:扫描
+                    completeQty: 0, //完成数量:手填
+                    scrappedQty: 0, //报废数量:手填
+                    // bomMatnr: "", //原材料编码:不显示,用于与"原材料线边库编码"一起查询库存量
+                    // materialCenter: "", //原材料线边库编码:扫描,用于与"原材料编码"一起查询库存量
+                    // inventory: 0, //原材料库存,不可修改
+                    // matnrQty: 0, //原材料使用量:展示默认展示订单BOM原材料数量,用户可修改但不可大于库存量
+                    completeDate: moment().format("YYYY-MM-DD"),//完工日期:手填
+                    teamGroup: "", //班组:选择
+                    variationReasons: "", //变式原因:手填
+                    workCenterCode: localStorage.getItem('workCenterCode'), //当前仓库编码
+                    // bomMatnrLotCode: "", //原材料线边库中最小的批次号,用于报工时材料出库
+                    steus: "",
+                },
+                productUsers: [],
+                product: {
+                    orders: [], //订单
+                    orderProcess: [], //订单工序
+                },
+                allTeamGroups: [],
+                vrs: [],
+                auiTab: {},
+                // reportOptionStyle: { "pointer-events": "none" },
+                processFormValidator: null,
+                submitFlag: false,
+                maxVornr: false,
+            },
+            created: function() {},
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.initTab();
+                    this.initTable();
+                    this.initTeamGroup();
+                    this.initEventListener();
+                    this.initVariationReasons();
+                    this.processFormValidator = new Validator('processForm', [
+                        { name: 'matnr', display: "产品编码必填", rules: 'required' },
+                        { name: 'vornr', display: "工序编码必填", rules: 'required' },
+                        { name: 'orderQty', display: "订单数量必填", rules: 'required' },
+                        { name: 'persNo', display: "报工人编号必填", rules: 'required' },
+                        { name: 'centerCellCode', display: "入线边库编码必填", rules: 'required' },
+                        { name: 'containCode', display: "入线边库容器编码必填", rules: 'required' },
+                        { name: 'completeQty', display: "完成数量必填", rules: 'required' },
+                        { name: 'scrappedQty', display: "报废数量必填", rules: 'required' },
+                        // { name: 'materialCenter', display: "原材料线边库编码必填", rules: 'required' },
+                        // { name: 'inventory', display: "原材料线边库库存必填", rules: 'required' },
+                        // { name: 'matnrQty', display: "原材料使用量必填", rules: 'required' },
+                        { name: 'completeDate', display: "完工日期必填", rules: 'required' },
+                    ])
+                },
+                initTab: function() {
+                    var that = this;
+                    //初始化多tab结构
+                    that.auiTab = new auiTab({
+                        element: document.getElementById("report-tab"),
+                        index: 1,
+                        repeatClick: false
+                    }, that.toTab);
+                },
+                toTab: function(param) {
+                    var that = this;
+                    var index = param.index;
+                    $('.tab-content-item').removeClass('tab-content-item-active');
+                    $('#aui-tab-' + index).addClass('tab-content-item-active');
+                    if (param.auto) {
+                        that.auiTab.setActive(index);
+                    }
+                },
+                initTable: function() {
+                    var that = this;
+                    $("#bootstrap-tab").bootstrapTable('destroy');
+                    $("#bootstrap-tab").bootstrapTable({
+                        columns: processTableField,
+                        data: that.product.orderProcess,
+                        onClickRow: that.onClickRowFunction
+                    });
+                },
+                initTeamGroup: function() {
+                    this.allTeamGroups = getTeamGroupsFn();
+                },
+                initVariationReasons: function(){
+                    this.vrs = getVariationReasonsFn();
+                },
+                initEventListener: function() {
+                    var that = this;
+                    api.addEventListener({
+                        name: 'selectTeamsBack'
+                    }, function(ret) {
+                        console.log(JSON.stringify(ret));
+                        that.reportForm.teamGroup = JSON.parse(JSON.stringify(ret.value.teamGroup));
+                        that.productUsers = JSON.parse(JSON.stringify(ret.value.users));
+                    });
+                },
+                //扫描产品编码,查询生产订单
+                onEnterProductCode: function() {
+                    var that = this;
+                    console.log("TODO:LZC==》扫描产品编码" + JSON.stringify(that.reportForm.matnr) + ",需要根据产品编码、开始日期、结束日期查询相应的生产订单");
+                    // if (that.reportForm.startDate == '' || that.reportForm.endDate == '') {
+                    //     return api.toast({
+                    //         msg: '请选择开始时间和结束时间',
+                    //         location: 'middle'
+                    //     });
+                    // }
+
+                    if(!!that.reportForm.startDate && !!that.reportForm.endDate){
+                        if(moment(that.reportForm.startDate) > moment(that.reportForm.endDate)){
+                            return api.toast({
+                                msg: '开始时间不能大于结束时间!',
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    }
+
+                    if (that.reportForm.matnr == '') {
+                        return api.toast({
+                            msg: '请输入产品编码',
+                            location: 'middle'
+                        });
+                    }
+
+                    that.product.orders = findProductionOrderFn(that.reportForm);
+                    // console.log(JSON.stringify(that.product.orders));
+                },
+                createBarCode: function() {
+                    var that = this;
+                    if (!!that.reportForm.containCode) {
+                        api.toast({
+                            msg: '已有容器码!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        return;
+                    }
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+
+                    var createCode = function(ret) {
+                        api.hideProgress();
+                        console.log(JSON.stringify(ret))
+                        if (ret && ret.type == 'success' && !!ret.data) {
+                            //提交另外需要的数据
+                            that.reportForm.containCode = ret.data; //目标容器编码
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    };
+                    createPBarCodeFN(createCode, localStorage.getItem('workCenterCode'));
+                },
+                //选择生产订单
+                slectProductOrder: function(event) {
+                    var that = this;
+                    var aufnr = event.target.value;
+                    console.log("TODO:LZC===>选择生产订单===" + aufnr + ",需要根据生产订单编号查询响应的报工工序");
+                    that.product.orderProcess = findBOMByAufnrFn({ "aufnr": aufnr });
+                    // console.log("===>" + JSON.stringify(that.product.orderProcess));
+                    that.initTable(); //重载工序表格
+                },
+                slectVRS: function(event){
+                    this.reportForm.variationReasons = event.target.value;
+                },
+                selectTeamGroup: function() {
+                    var that = this;
+                    api.openFrame({
+                        name: "selectTeamGroup",
+                        url: "./select-team-group.html",
+                        reload: true,
+                        scrollEnabled: true,
+                        pageParam: {
+                            event: "selectTeamsBack",
+                            teams: that.allTeamGroups
+                        },
+                        rect: {
+                            marginTop: 100,
+                            marginLeft: 50,
+                            marginRight: 50,
+                            marginBottom: 150,
+                        },
+                    });
+                },
+                //点击工序操作
+                onClickRowFunction: function(row, $element, field) {
+                    var that = this;
+                    // console.log("row===" + JSON.stringify(row));
+                    if (row.steus != 'PP01') {
+                        return api.alert({
+                            msg: "非报工工序不需要操作",
+                            location: 'middle'
+                        });
+                    }
+
+                    // if (row.orderQty == row.reportedQty) {
+                    //     return api.alert({
+                    //         msg: "该工序已完成报工",
+                    //         location: 'middle'
+                    //     });
+                    // }
+
+                    that.product.orderProcess.forEach(function(d) {
+                        if(row.vornr < d.vornr){
+                            that.maxVornr = false;
+                        } else {
+                            that.maxVornr = true;
+                        }
+                    });
+
+                    that.reportForm.aufnr = row.aufnr; //生产订单编码
+                    that.reportForm.matnr = row.matnr; //产品编码:只读
+                    that.reportForm.vornr = row.vornr; //工序编码:只读
+                    that.reportForm.orderQty = row.orderQty; //订单数量:只读
+                    that.reportForm.reportedQty = row.reportedQty;
+                    // that.reportForm.bomMatnr = row.bomMatnr; //原材料编码:不显示,用于与"原材料线边库编码"一起查询库存量
+                    // that.reportForm.matnrQty = row.bomBdmng; //原材料使用量:展示默认展示订单BOM原材料数量,用户可修改但不可大于库存量
+                    that.reportForm.workCenterCode = localStorage.getItem('workCenterCode'); //当前仓库编码
+                    that.reportForm.steus = row.steus;
+                    // that.reportOptionStyle = {};
+                    that.toTab({ index: 2, auto: true });
+                },
+                //扫描线边库原材料库位
+                // onEnterMaterCenter: function() {
+                //     //查询原材料使用量的剩余库存
+                //     var that = this;
+                //     var param = {
+                //         matnr: that.reportForm.bomMatnr,
+                //         materialCenter: that.reportForm.materialCenter
+                //     }
+                //     var result = getMaterialInventoryFn(param);
+                //     that.$set(that.reportForm, "inventory", result.inventory);
+                //     that.reportForm.bomMatnrLotCode = result.bomMatnrLotCode;
+                // },
+                submitProductionReport: function() {
+                    var that = this;
+                    console.log("TODO:LZC==》提交报工===" + JSON.stringify(that.reportForm));
+                    // console.log("TODO:LZC==》提交报工班组人员===" + JSON.stringify(that.productUsers));
+                    var valid = that.processFormValidator.validate();
+                    // console.log("校验结果" + JSON.stringify(valid))
+                    if (valid.errors && valid.errors.length > 0) {
+                        return api.alert({
+                            msg: valid.errors[0].display,
+                            location: 'middle'
+                        });
+                    } else {
+                        // if (that.reportForm.inventory < that.reportForm.matnrQty) {
+                        //     return api.alert({
+                        //         msg: "填写的原材料使用量大于当前库存",
+                        //         location: 'middle'
+                        //     });
+                        // }
+                        if(that.reportForm.completeQty == 0 && that.reportForm.scrappedQty == 0){
+                            return api.alert({
+                                msg: "完工数量和报废数量都为0不需要报工",
+                                location: 'middle'
+                            });
+                        }
+                        var surQty = parseFloat(that.reportForm.orderQty) - parseFloat(that.reportForm.reportedQty);
+                        var repQty = parseFloat(that.reportForm.completeQty) + parseFloat(that.reportForm.scrappedQty);
+                        if(surQty < repQty){
+                            return api.alert({
+                                msg: "完成数量加报废数量不能大于可报工数量",
+                                location: 'middle'
+                            });
+                        }
+                        if (that.reportForm.scrappedQty > 0 && that.reportForm.variationReasons == '') {
+                            return api.alert({
+                                msg: "报废数量大于0变式原因必填",
+                                location: 'middle'
+                            });
+                        }
+                        if (that.productUsers.length <= 0) {
+                            return api.alert({
+                                msg: "请选择报工班组人员",
+                                location: 'middle'
+                            });
+                        }
+                        that.submitFlag = true;
+                        var result = submitProductionReportFn({ "data": JSON.stringify(that.reportForm), "productUsers": JSON.stringify(that.productUsers) });
+                        if(result && result.type == "success"){
+                            api.toast({
+                                msg: "操作成功",
+                                location: 'middle'
+                            });
+                            //跳转到选择工序页签
+                            // that.reportOptionStyle = { "pointer-events": "none" };
+                            // that.toTab({ index: 1, auto: true });
+                            if(that.maxVornr){
+                                var resultData = JSON.parse(result.data);
+                                printToJiaBo(that.reportForm.matnr, that.reportForm.matnr, resultData.productLotCode, that.reportForm.completeQty, that.reportForm.containCode);
+                            }
+                            that.productUsers = [];
+                            that.reportForm.matnr = '';
+                            that.reportForm.aufnr = '';
+                            that.reportForm.vornr = '';
+                            that.reportForm.orderQty = '';
+                            that.reportForm.containCode = '';
+                            that.reportForm.centerCellCode = '';
+                            that.reportForm.completeQty = 0;
+                            that.reportForm.scrappedQty = 0;
+                            that.reportForm.variationReasons = '';
+                        }else{
+                            api.alert({
+                                msg: result.data,
+                                buttons: ['确定']
+                            });
+                        }
+                        that.submitFlag = false;
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</html>

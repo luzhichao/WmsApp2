@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>菜单设置</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.2.1.css" />
+		<style>
+			body {
+			}
+			p {
+				margin-bottom: 15px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" style="background-color: #03a9f4" id="aui-header">
+		    <a class="aui-pull-left aui-btn" onclick="closeWin()">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+		    <div class="aui-title" >
+		    	设置菜单
+		    	<!--<img src='../image/logo-smaller.png'/>-->
+		    </div>
+		</header>
+
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in" id="menuList">
+				<!--<li class="aui-list-item">
+		            <div class="aui-list-item-inner">
+		                <div class="aui-list-item-title">checkbox</div>
+		                <div class="aui-list-item-right">
+		                    <input type="checkbox" class="aui-checkbox" checked>
+		                </div>
+		            </div>
+		        </li>-->
+			</ul>
+		</div>
+
+		<!--<div class="aui-content-padded">
+			<p><div class="aui-btn aui-btn-success aui-btn-block" onclick='doSave()'>保存</div></p>
+		</div>
+		-->
+		<footer class="aui-bar aui-bar-tab" id="footer">
+		    <div class="aui-bar-tab-item" tapmode>
+		        <div class="aui-btn aui-btn-success aui-margin-r-5" class="btn" onclick='doSave()'>保存</div>
+		    </div>
+		</footer>
+
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+    <script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="../../script/public.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			$api.fixStatusBar(document.querySelector('#aui-header'));
+			getAllMenu();
+
+		};
+		function closeWin() {
+			api.closeWin();
+		}
+
+		function getAllMenu(){
+			var serverUrl = localStorage.getItem('serverUrl');
+			var url = serverUrl + "padController!getAppMenu.m";
+			var un = localStorage.getItem('un');
+			var pw = localStorage.getItem('pw');
+			var serverIp = localStorage.getItem('serverIp');
+			var serverPort = localStorage.getItem('serverPort');
+			var serverProject = localStorage.getItem('serverProject');
+			var url1 = serverIp+":"+serverPort+"/"+serverProject;
+
+			var menuStr = localStorage.getItem(un+":menu");
+
+			var params = new Object();
+			params.url = url;
+			params.method = 'post';
+			params.dataType = 'json';
+			params.returnAll = 'false';
+			params.timeout = 60;
+
+			var data = {
+				values: {
+					un: un,
+		            pw: pw,
+		            url: url1
+		        }
+			};
+
+			ajaxForData(params,data,false,function(ret, err){
+				var myobj=eval("("+ret.data+")");;
+
+				$("#menuList").children().remove();
+		        for (var i = 0; i < myobj.length; i++)
+		        {
+		        	var menuTitle = myobj[i].title;
+		        	var iconColor = myobj[i].iconColor;
+		        	var rel = myobj[i].rel;
+		        	if(menuStr != null){
+		        		if(menuStr.indexOf(rel) != -1){
+		        			//已选中的菜单
+		        			$("#menuList").append("<li class='aui-list-item'><div class='aui-list-item-inner'><div class=\"aui-list-item-title " + iconColor +" \" >"+menuTitle+"</div><div class='aui-list-item-right'><input type='checkbox' class='aui-checkbox' checked name='menuCode' value=\""+rel+"\"></div></div></li>");
+		        		}else{
+		        			//未选中的菜单
+		        			$("#menuList").append("<li class='aui-list-item'><div class='aui-list-item-inner'><div class=\"aui-list-item-title " + iconColor +" \" >"+menuTitle+"</div><div class='aui-list-item-right'><input type='checkbox' class='aui-checkbox' name='menuCode' value=\""+rel+"\"></div></div></li>");
+		        		}
+		        	}else{
+		        		$("#menuList").append("<li class='aui-list-item'><div class='aui-list-item-inner'><div class=\"aui-list-item-title " + iconColor +" \" >"+menuTitle+"</div><div class='aui-list-item-right'><input type='checkbox' class='aui-checkbox' name='menuCode' value=\""+rel+"\"></div></div></li>");
+		        	}
+				}
+			});
+		}
+
+		function doSave() {
+			var un = localStorage.getItem('un');
+			var r=document.getElementsByName("menuCode");
+			var menuKeyItem = "";
+		    for(var i=0;i<r.length;i++){
+		         if(r[i].checked){
+		         	//alert(r[i].value);
+		         	//将选中的菜单保存到localStorage中
+		         	menuKeyItem = menuKeyItem + r[i].value + ",";
+		         }
+		    }
+		    if(menuKeyItem != ""){
+		    	menuKeyItem = menuKeyItem.substr(0,menuKeyItem.length-1);
+
+		    	localStorage.setItem(un+":menu", menuKeyItem);
+		    }else{
+		    	localStorage.removeItem(un+":menu");
+		    }
+
+            api.rebootApp();
+		}
+	</script>
+</html>

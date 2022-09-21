@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="23.5dp"
+        android:id="@+id/iv_subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/teacher" />
+
+    <TextView
+        android:layout_marginLeft="23.5dp"
+        android:id="@+id/tv_subject_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_subject"
+        android:layout_marginTop="2dp"
+        android:text="小初高级语..." />
+
+    <TextView
+        android:layout_marginLeft="23.5dp"
+        android:id="@+id/tv_subject_describe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_subject_name"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/holo_red_light"
+        android:textSize="@dimen/detail_title"
+        android:text="￥145" />
+
+
+    <TextView
+        android:layout_marginLeft="3.5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_subject_name"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/holo_red_light"
+        android:layout_toRightOf="@+id/tv_subject_describe"
+        android:textSize="@dimen/detail_gray_smaller"
+        android:text="起"  />
+
+
+
+
+</RelativeLayout>

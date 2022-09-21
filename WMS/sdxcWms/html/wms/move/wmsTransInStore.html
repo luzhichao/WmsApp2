@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>调拨入库</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<!--<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">-->
+<!--<a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">-->
+<!--<span class="aui-iconfont aui-icon-left"></span> </a>-->
+<!--<div class="aui-title" id="middle">调拨入库</div>-->
+<!--</header>-->
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">调拨任务</div>
+    <div class="aui-tab-item">扫描</div>
+    <div class="aui-tab-item">已扫描</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab1-scan-barcode" @keyup.enter="onEnter" v-model.trim="tab1ScanCode"
+                               placeholder="扫描调拨任务条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">调拨任务</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="code" v-model="formData.code" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">目标仓库</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.relWorkCenterName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">来源仓库</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.workCenterName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-1"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="querySourceList">源单查询</div>
+    </footer>
+</div>
+<div id="aui-tab-2" class="tab-content-item app">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">盘点类型</div>
+                    <div class="aui-list-item-input">
+                        <input type='radio' id='type1' value='1' v-model='radioType'/><label for='type1'
+                                                                                             style="margin-right: 40px">原材料</label>
+                        <input type='radio' id='type2' value='2' v-model='radioType'/><label
+                            for='type2'>成品</label>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul class="aui-list aui-form-list" style="margin-top: 10px">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" @keyup.enter="onEnterWorkCell" v-model.trim="tab2ScanWorkCell"
+                               placeholder="扫描库位条码">
+                    </div>
+                </div>
+            </li>
+            <!--<li class="aui-list-item" v-show="radioType == 1">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">区域</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" name="areaName" v-model="locationData.areaName" readonly="readonly">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <!--<li class="aui-list-item" v-show="radioType == 1">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">库区</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" name="subAreaName" v-model="locationData.subAreaName" readonly="readonly">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">库位</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="workCellCode" v-model="locationData.workCellCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item" v-show="radioType == 1">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab2-scan-mrl-barcode" @keyup.enter="onEnterMrlBarCode"
+                               v-model.trim="tab2ScanMrlBarcode"
+                               placeholder="扫描物料条码">
+                    </div>
+                </div>
+            </li>
+            <!--<li class="aui-list-item" v-show="radioType == 2 && isShowExtendCode">-->
+            <!--<div class="aui-list-item-inner">-->
+            <!--<div class="aui-list-item-label">扫码</div>-->
+            <!--<div class="aui-list-item-input">-->
+            <!--<input type="text" id="tab2-extend-code" @keyup.enter="onEnterExtendCode"-->
+            <!--v-model.trim="tab2ExtendCode"-->
+            <!--placeholder="扫描外部编码(手动输入需要回车)">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+            <li class="aui-list-item" v-show="radioType == 2">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">扫码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="tab2-scan-prd-barcode" @keyup.enter="onEnterPrdBarCode"
+                               v-model.trim="tab2ScanPrdBarcode"
+                               placeholder="扫描物料条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="mrlCode" v-model="formData.mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="lotCode" v-model="formData.lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-2"></table>
+</div>
+<div id="aui-tab-3" class="tab-content-item app">
+    <div class="aui-margin-b-10 aui-margin-t-10">
+        <table id="bootstrap-tab-3" style="table-layout: fixed"></table>
+    </div>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-3">
+        <!--<div class="aui-btn aui-col-xs-6" @click="api.closeWin();">取消</div>-->
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        sourceBusinessType: TYPE.TRANSFER_TASK,   //来源-单据类型--出库任务
+        targetBusinessType: TYPE.IN_BILL,   //目标-单据类型--入库单
+        isTaskFromBarCode: false,           //任务是否来源于条码
+        isSplitBarCode: true,               //条码带的信息是解析还是从后台获取
+        isDialogToConfirmQty: false         //是否弹框输入数量
+    };
+
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    var tableField1 = [
+        {name: 'id', title: 'outTaskDetailGid', visible: false},      //inTaskDetailGid,用于提交的时候
+        {name: 'mrlCode', title: '物料编码'},
+        {name: 'mrlName', title: '物料名称'},
+        {name: 'lotCode', title: '批次'},
+        {name: 'originDetailGid', title: '原始单据明细Gid', visible: false},
+        {name: 'qty', title: '计划数量'},
+        {name: 'arrivalQty', title: '已收货数量', visible: false},
+        {name: 'remainQty', title: '剩余数量'}, //由(qty - arrivalQty)计算得到
+        {
+            name: 'completeQty', title: '已扫描数量', formatter: function (value, row, index) {
+                if (value) {
+                    return value
+                } else {
+                    return 0;
+                }
+            }
+        }
+    ];
+    var tableField2 = [
+        {name: 'rowId', title: 'rowId', visible: false},        //用于前台逻辑关联
+        {name: 'mrlCode', title: '物料编码'},
+        {name: 'lotCode', title: '批次'},
+        // {name: 'areaGid', title: '区域', visible: false},
+        // {name: 'areaName', title: '区域', visible: false},
+        // {name: 'subAreaGid', title: '库区', visible: false},
+        // {name: 'subAreaName', title: '库区', visible: false},
+        {name: 'workCellCode', title: '库位'},
+        {name: 'qty', title: '数量'}
+    ];
+    var tableField3 = [
+        {
+            name: 'no', title: '', width: 40, formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name: 'rowPid', title: '父主键', visible: false},
+        {name: 'barCode', title: '条码', width: 150, sortable: true, order: 'asc'},
+        {name: 'mrlCode', title: '物料编码', width: 80},
+        {name: 'lotCode', title: '批次号', width: 80},
+        {name: 'qty', title: '数量', width: 50},
+        // {name: 'areaName', title: '区域', width: 80},
+        // {name: 'subAreaName', title: '库区', width: 80},
+        {name: 'workCellCode', title: '库位', width: 80}
+    ];
+
+    apiready = function () {
+        //1.初始化多tab结构
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+
+        //2.初始化表格
+        initTable(1, tableField1, null, null, function (row) {
+            var style;
+            if (row.remainQty == 0 || row.remainQty == row.completeQty) {
+                style = {css: {'color': 'red'}};    //计划数量等于完成数量则变红色
+                return style;
+            }
+            if (row.isUpdate) {                     //动态变化的，蓝色
+                style = {css: {'color': '#03A9F4'}};
+                return style;
+            }
+            return {css: {'color': 'e3e3e3'}};      //默认样式
+        });
+        initTable(2, tableField2, null, null);
+        initTable(3, tableField3, null, function (row, $element) {
+            if (vueData2.radioType == 1) {
+                dialog.alert({
+                    title: "确认删除吗?",
+                    buttons: ['取消', '确定']
+                }, function (ret) {
+                    if (ret.buttonIndex === 2) {
+                        updateTableByDelete(row, $element.data('index'), $element);
+                    }
+                })
+            }
+        });
+
+        //3.设置监听(查询页面数据的回传)
+        setQueryListener(api)
+    };
+
+    /*--------------vue1--------------*/
+    var vueData1 = {
+        tab1ScanCode: '',       //入库任务扫码
+        formData: {         //表头数据
+            code: '',               //入库任务编码
+            businessType: OUTSTORE_TYPE.TRANSFER,
+            workCenterGid: WCEN_GID,
+            workCenterName: '',     //调出仓库
+            relWorkCenterName: ''   //调入仓库
+        }
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        methods: {
+            onEnter: function () {
+                var params = {
+                    "code": this.tab1ScanCode,
+                    "workCenterGid": WCEN_GID,
+                    "businessType": OUTSTORE_TYPE.TRANSFER
+                    //"state": INSTORE_STATUS.NEW
+                };
+                if (this.tab1ScanCode) {
+                    loadTaskOrBillByCode(params, pageConfig.sourceBusinessType, app1.$data.formData);
+                }
+                this.tab1ScanCode = '';
+            },
+            querySourceList: function () {
+                querySourceList('transferTask', 'in');
+            }
+        }
+    });
+
+
+    /*--------------vue2--------------*/
+    var vueData2 = {
+        radioType: '',          //盘点类型：原材料，成品
+        tab2ScanWorkCell: '',        //扫描货位
+        tab2ScanMrlBarcode: '',                //扫描物料条码
+        tab2ScanPrdBarcode: '',
+        // isShowExtendCode: '',
+        // tab2ExtendCode: '',
+        locationData: {
+            workCellGid: '',    //库位
+            workCellCode: '',
+            // areaGid: '',        //库区
+            // areaName: '',
+            // subAreaGid: '',     //区域
+            // subAreaName: ''
+        },
+        formData: {
+            mrlCode: '',        //物料编码
+            lot: ''             //批次
+        }
+    };
+    var app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        mounted: function () {
+            if (SITE_CODE == SITE_CODE_VALUE.HW) {
+                this.isShowExtendCode = true;
+            } else if (SITE_CODE == SITE_CODE_VALUE.FH) {
+                this.isShowExtendCode = false;
+            }
+        },
+        methods: {
+            onEnterWorkCell: function () {
+                if (!vueData1.formData.code) {
+                    api.toast({msg: '请先选择出库任务！', location: 'middle'});
+                    this.tab2ScanWorkCell = '';
+                    return false
+                }
+                if (!vueData2.radioType) {
+                    api.toast({msg: '请先选择调拨类型！', location: 'middle'});
+                    this.tab2ScanWorkCell = '';
+                    return false
+                }
+                //通过库位查找对应的区域库区
+                var retObj = getAreaAndSubAreaByWorkCell(this.tab2ScanWorkCell);
+                if (JSON.stringify(retObj) !== '{}') {
+                    this.locationData.workCellGid = retObj.workCellGid;
+                    this.locationData.workCellCode = this.tab2ScanWorkCell;
+                    // this.locationData.areaGid = retObj.areaGid;
+                    // this.locationData.areaName = retObj.areaName;
+                    // this.locationData.subAreaGid = retObj.subAreaGid;
+                    // this.locationData.subAreaName = retObj.subAreaName;
+
+                    if (this.radioType == 1) {
+                        $('#tab2-scan-mrl-barcode').focus();
+                    } else if (this.radioType == 2) {
+                        if (SITE_CODE == SITE_CODE_VALUE.HW) {
+                            $('#tab2-extend-code').focus();
+                        } else {
+                            $('#tab2-scan-prd-barcode').focus();
+                        }
+                    }
+
+                    this.tab2ScanWorkCell = '';
+                }
+            },
+            onEnterMrlBarCode: function () {
+                //step 1.条件判断
+                if (!this.tab2ScanMrlBarcode) {
+                    return false
+                }
+                if (!this.locationData.workCellGid) {
+                    api.toast({msg: '请先扫描库位！', location: 'middle'});
+                    this.tab2ScanMrlBarcode = '';
+                    return false
+                }
+                if (isExistInTab3(this.tab2ScanMrlBarcode)) {
+                    this.tab2ScanMrlBarcode = '';
+                    return false
+                }
+                var retMsg = isAlreadyOutOrInStore(this.tab2ScanMrlBarcode, TYPE_2.IN_BILL, 'true');
+                if (retMsg == null || retMsg) {
+                    this.tab2ScanMrlBarcode = '';
+                    return false
+                }
+
+                //step 2.加载物料信息
+                var barCode = this.tab2ScanMrlBarcode;
+                var retObj = loadBarCodeInfoByQuery(barCode);   //ajax后台加载
+                if (JSON.stringify(retObj) != "{}") {
+                    //step 3.校验
+                    //     是否被包含在所选的任务中
+                    var tableData1 = $('#bootstrap-tab-1').bootstrapTable('getData');
+                    if (!isInTableData(retObj, tableData1)) {
+                        this.tab2ScanMrlBarcode = '';
+                        return false
+                    }
+                    //step 6.合并数据
+                    var newDate = {};
+                    newDate.barCode = barCode;
+                    for (var name in retObj) {
+                        newDate[name] = retObj[name];
+                        this.formData[name] = retObj[name];
+                    }
+                    for (var name in this.locationData) {
+                        newDate[name] = this.locationData[name];
+                    }
+                    //step 7.更新三个表格
+                    updateTableByInsert(newDate, tableField2, tableField3);
+                }
+
+                this.tab2ScanMrlBarcode = '';
+            },
+            // onEnterExtendCode: function () {
+            //     vueData2.formData.extendCode = this.tab2ExtendCode;
+            //     $('#tab2-scan-prd-barcode').focus();
+            // },
+            onEnterPrdBarCode: function () {
+                //step 1.条件判断
+                if (!this.tab2ScanPrdBarcode) {
+                    return false
+                }
+                if (!this.locationData.workCellGid) {
+                    api.toast({msg: '请先扫描库位！', location: 'middle'});
+                    this.tab2ScanPrdBarcode = '';
+                    return false
+                }
+                if (isExistInTab3(this.tab2ScanPrdBarcode)) {
+                    this.tab2ScanPrdBarcode = '';
+                    return false
+                }
+                var retMsg = isAlreadyOutOrInStore(this.tab2ScanPrdBarcode, TYPE_2.IN_BILL);
+                if (retMsg == null || retMsg) {
+                    this.tab2ScanPrdBarcode = '';
+                    return false
+                }
+                var barCode = this.tab2ScanPrdBarcode;
+                //通过任意箱码获取对应的栈板码
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                api.ajax({
+                    url: getUrl(OtherUrl.getParentCodeByBarCode),
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: {
+                        values: {
+                            barCode: barCode,
+                            extendCode: vueData2.formData.extendCode
+                        }
+                    }
+                }, function (ret) {
+                    if (ret.errCode == 0) {
+                        vueData2.palletCode = ret.data.barCode;
+                        //栈板码也需要判断是否重复
+                        $.ajax({
+                            type: "POST",
+                            url: getUrl(OtherUrl.getBarCodesByParentCode),
+                            dataType: "json",
+                            data: {
+                                barCode: vueData2.palletCode
+                            },
+                            async: false,
+                            success: function (ret) {
+                                if (ret.errCode == 0) {
+                                    var boxArr = ret.data;
+                                    //3.校验并完善表单信息
+                                    var tableData1 = $('#bootstrap-tab-1').bootstrapTable('getData');
+                                    if (!isInTableData(ret.data[0], tableData1)) {
+                                        api.hideProgress();
+                                        this.tab2ScanPrdBarcode = '';
+                                        return false
+                                    }
+                                    vueData2.formData['mrlCode'] = ret.data[0].mrlCode;
+                                    vueData2.formData['lotCode'] = ret.data[0].lotCode;
+                                    // vueData2.formData['extendCode'] = vueData2.tab2ExtendCode;
+
+                                    var newDate = {};
+                                    var sumQty = 0;
+                                    for (var i = 0; i < boxArr.length; i++) {
+                                        for (var name in boxArr[i]) {
+                                            newDate[name] = boxArr[i][name];
+                                        }
+                                        for (var name in vueData2.locationData) {
+                                            newDate[name] = vueData2.locationData[name];
+                                        }
+                                        updateTable3ByInsertForPrd(newDate, tableField3);
+                                        sumQty += Number(newDate['qty']);
+                                    }
+                                    newDate['qty'] = sumQty;
+                                    updateTable23ByInsertForPrd(newDate, tableField2);
+                                    api.hideProgress();
+                                } else {
+                                    api.hideProgress();
+                                    api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                                }
+                            },
+                            error: function (e) {
+                                api.hideProgress();
+                                console.log(JSON.stringify(e));
+                            }
+                        });
+                    } else {
+                        api.hideProgress();
+                        api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                    }
+                });
+                this.tab2ScanPrdBarcode = '';
+            }
+        }
+    });
+
+
+    /*--------------vue3--------------*/
+    var vueData3 = {};
+    var app3 = new Vue({
+        el: '#aui-tab-3',
+        data: vueData3,
+        methods: {
+            submit: function () {
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '提交中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                var bill = vueData1.formData;
+                var taskDetails = $('#bootstrap-tab-1').bootstrapTable('getData');
+                var details = $('#bootstrap-tab-2').bootstrapTable('getData');
+                var barCodes = $('#bootstrap-tab-3').bootstrapTable('getData');
+
+                bill.originBillCode = vueData1.formData.code;
+                bill.sourceBillCode = vueData1.formData.code;
+                bill.sourceBillType = TYPE_2.OUT_TASK;
+                //整理符合后台的数据
+                for (var i = 0; i < details.length; i++) {
+                    delete details[i]["barCode"];
+                }
+                for (var i in details) {
+                    for (var j in details[i]) {
+                        if (j == 'rowId') {
+                            for (var k = 0; k < taskDetails.length; k++) {
+                                if (taskDetails[k].lotCode) {
+                                    if (details[i][j] == taskDetails[k].mrlCode + '+' + taskDetails[k].lotCode) {
+                                        details[i]['originDetailGid'] = taskDetails[k]['id'];
+                                        details[i]['sourceDetailGid'] = taskDetails[k]['id'];
+                                        details[i]['sourceBillType'] = TYPE_2.OUT_TASK;
+                                        break;
+                                    }
+                                } else {
+                                    var temp = details[i][j].split('+');
+                                    if (temp[0] == taskDetails[k].mrlCode) {
+                                        details[i]['originDetailGid'] = taskDetails[k]['id'];
+                                        details[i]['sourceDetailGid'] = taskDetails[k]['id'];
+                                        details[i]['sourceBillType'] = TYPE_2.OUT_TASK;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (j == 'rowId') {
+                            details[i]['id'] = details[i][j];
+                            delete details[i]["rowId"];
+                        }
+                    }
+                }
+
+                for (var i = 0; i < barCodes.length; i++) {
+                    delete barCodes[i]["lotCode"];
+                    delete barCodes[i]["workCellCode"];
+                    // delete barCodes[i]["areaName"];
+                    // delete barCodes[i]["subAreaName"];
+                }
+                for (var i in barCodes) {
+                    for (var j in barCodes[i]) {
+                        if (j == 'rowPid') {
+                            barCodes[i]['inBillDetailGid'] = barCodes[i][j];
+                            delete barCodes[i]['rowPid']
+                        }
+                    }
+                }
+                submit(pageConfig.targetBusinessType, bill, details, barCodes);
+            }
+        }
+    })
+</script>
+
+</html>

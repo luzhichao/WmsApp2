@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/blue" />
+<gradient
+
+    android:endColor="#ff25b9f9"
+    android:startColor="#ff0290fc"
+    android:type="linear"
+    android:useLevel="true"
+    android:angle="180"/>
+<corners
+    android:bottomLeftRadius="@dimen/bt_big_radius"
+    android:bottomRightRadius="@dimen/bt_big_radius"
+    android:topLeftRadius="@dimen/bt_big_radius"
+    android:topRightRadius="@dimen/bt_big_radius" />
+</shape>

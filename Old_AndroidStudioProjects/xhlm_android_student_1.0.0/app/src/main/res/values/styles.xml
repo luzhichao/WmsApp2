@@ -1,0 +1,81 @@
+<resources>
+
+    <style name="NoAction.Bar" parent="QMUI.Compat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="AppTheme.Base" parent="NoAction.Bar"></style>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="ToolBarTheme" parent="Theme.AppCompat">
+
+        <!-- 用于替换菜单的三个小白点，换成自已的图片-->
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <!--用于控制menu弹出的位置，位于toolbar的下面，而不是上面-->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <!-- 用于修改item默认的分割线-->
+        <item name="dropDownListViewStyle">@style/dropDownStyle</item>
+    </style>
+
+    <style name="OverflowButtonStyle" parent="@android:style/Widget.ActionButton.Overflow">
+        <item name="android:src">@mipmap/ic_settings</item>
+    </style>
+    <!--把overlapAnchor属性改为false即可使menu位置位于toolbar之下-->
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:popupBackground">@color/colorToolBarPopupBg</item>
+
+    </style>
+
+    <!--用于修改popmenu的分割线-->
+    <style name="dropDownStyle" parent="android:style/Widget.Holo.ListView.DropDown">
+        <!--<item name="android:listSelector">可添加选中背景颜色</item>-->
+        <item name="android:divider">#E6E6E6</item>
+        <item name="android:dividerHeight">0.5dp</item>
+    </style>
+
+    <style name="MenuTextStyle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- toolbar弹出菜单样式 -->
+    <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat">
+        <item name="android:colorBackground">#a00</item>
+        <item name="android:textColor">#a00</item>
+        <item name="android:actionMenuTextColor">#0a0</item>
+        <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AnimationTopFade">
+        <item name="android:windowEnterAnimation">@anim/dropdown_in</item>
+        <item name="android:windowExitAnimation">@anim/dropdown_out</item>
+    </style>
+
+    <style name="select_style">
+        <item name="android:layout_width">60dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:paddingTop">4dip</item>
+        <item name="android:paddingBottom">4dip</item>
+        <item name="android:background">@drawable/select_selector</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@drawable/txt_select_selector</item>
+    </style>
+</resources>

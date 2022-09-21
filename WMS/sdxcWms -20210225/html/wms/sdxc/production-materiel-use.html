@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>人工叫料</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/LCalendar.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="use-materiel">
+        <div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+            <form id="formVaild" class="aui-content aui-margin-b-10 aui-margin-t-10">
+                <ul class="aui-list aui-form-list">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">叫料模式</div>
+                            <select @change="slectUseModel($event)">
+                                <option value="1" key="1" readonly>按数量(按数量发)
+                                </option>
+                                <option value="2" key="2" readonly>按容器(按数量匹配整箱发)
+                                </option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">物料编码</div>
+                            <div class="aui-list-item-input">
+                                <input id="mrlCode" type="text" v-model="formData.mrlCode" placeholder="扫描原材料编码"><!--@keyup.enter="onEnterMrlCode"-->
+                                <input type="text" v-show=false>
+                            </div>
+                            <!-- <div class="aui-list-item-right">
+                                <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnterMrlCode">
+                                    查询
+                                </div>
+                            </div> -->
+                        </div>
+                    </li>
+                    <!-- <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">生产订单</div>
+                            <select @change="slectProductOrder($event)">
+                                <option value="" key="" readonly>--请选择--
+                                </option>
+                                <option v-for="(item,index) in productOrders" :value="item.aufnr" :key="item.aufnr">{{item.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </li> -->
+                    <!-- <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">总数量</div>
+                            <div class="aui-list-item-input">
+                                <input id="allQty" type="number" v-model="formData.allQty" readonly>
+                            </div>
+                        </div>
+                    </li> -->
+                    <!-- <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">已使用数量</div>
+                            <div class="aui-list-item-input">
+                                <input id="usedQty" type="number" v-model="formData.usedQty" readonly>
+                            </div>
+                        </div>
+                    </li> -->
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">叫料数量</div>
+                            <div class="aui-list-item-input">
+                                <input id="needQty" type="number" v-model="formData.needQty" placeholder="请输入叫料数量">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">叫料库位</div>
+                            <div class="aui-list-item-input">
+                                <input id="centerCellCode" type="text" v-model="formData.centerCellCode" placeholder="请扫描库位编码">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">机台编码</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="formData.machCode" placeholder="请输入机台编码">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">叫料容器</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" v-model="formData.containCode" placeholder="请扫描容器编码">
+                            </div>
+                            <div class="aui-list-item-right">
+                                <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createBarCode">
+                                    生成
+                                </div>
+                            </div>
+                        </div>
+                    </li> -->
+                </ul>
+            </form>
+            <!-- <table id="bootstrap-tab"></table> -->
+            <footer class="aui-bar aui-bar-tab aui-row">
+                <button class="aui-btn aui-col-xs-12 aui-btn-success" @click="submit" :disabled="submitFlag">提交</button>
+            </footer>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript" src="../../../script/Lcalendar.js"></script>
+<script type="text/javascript" src="../../../script/LZCDate.min.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast({});
+    var tableFields = [{
+            field: 'id',
+            title: 'gId',
+            visible: false
+        },
+        {
+            field: 'aufnr',
+            title: '订单编号'
+        },
+        {
+            field: 'matnr',
+            title: '物料编号'
+        },
+        {
+            field: 'bdmng',
+            title: '数量'
+        },
+        {
+            field: 'vornr',
+            title: '工序编号'
+        },
+    ];
+    apiready = function() {
+        var app = new Vue({
+            el: '#use-materiel',
+            data: {
+                formData: {
+                    mrlCode: "", //物料编码
+                    aufnr: "", //订单编号
+                    allQty: "", //总数量
+                    usedType: "1",
+                    usedQty: "", //已使用量
+                    needQty: "", //领料数量
+                    centerCellCode: "", //入线边库编码:扫描
+                    containCode: "", //容器编码:扫描
+                    machCode: "",
+                    workCenterCode: localStorage.getItem('workCenterCode'), //当前仓库编码
+                },
+                productOrders: [], //订单数据
+                tableDatas: [],
+                formValidatord: null,
+                submitFlag: false,
+            },
+            created: function() {},
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    // this.initTable();
+                    this.formValidatord = new Validator('formVaild', [
+                        { name: 'mrlCode', display: "物料编码必填", rules: 'required' },
+                        // { name: 'allQty', display: "没有剩余可领物料", rules: 'required' },
+                        { name: 'needQty', display: "叫料数量必填", rules: 'required' },
+                        { name: 'centerCellCode', display: "库位编码必填", rules: 'required' },
+                    ])
+                },
+                initTable: function() {
+                    var that = this;
+                    //initTable
+                    $("#bootstrap-tab").bootstrapTable('destroy');
+                    $("#bootstrap-tab").bootstrapTable({
+                        columns: tableFields,
+                        data: that.tableDatas,
+                    });
+                },
+                slectUseModel: function(event){
+                    var that = this;
+                    that.formData.usedType = event.target.value;
+                },
+                //扫描物料编码,查询生产订单
+                // onEnterMrlCode: function() {
+                //     var that = this;
+                //     console.log("TODO:LZC==》扫描产品编码" + that.formData.mrlCode + ",需要根据物料查询相应的生产订单");
+                //     that.productOrders = findProductionByMrlCodeFn(that.formData);
+                // },
+                // createBarCode: function() {
+                //     var that = this;
+                //     if (!!that.formData.containCode) {
+                //         api.toast({
+                //             msg: '已有容器码!',
+                //             duration: 3000,
+                //             location: 'middle'
+                //         });
+                //         return;
+                //     }
+                //     api.showProgress({
+                //         style: 'default',
+                //         animationType: 'fade',
+                //         title: '努力加载中...',
+                //         text: '请稍后...',
+                //         modal: true
+                //     });
+
+                //     var createCode = function(ret) {
+                //         api.hideProgress();
+                //         console.log(JSON.stringify(ret))
+                //         if (ret && ret.type == 'success' && !!ret.data) {
+                //             //提交另外需要的数据
+                //             that.formData.containCode = ret.data; //目标容器编码
+                //         } else {
+                //             api.toast({
+                //                 msg: ret.msg,
+                //                 duration: 3000,
+                //                 location: 'middle'
+                //             });
+                //         }
+                //     };
+                //     createPBarCodeFN(createCode, localStorage.getItem('workCenterCode'));
+                // },
+                //选择生产订单
+                // slectProductOrder: function(event) {
+                //     var that = this;
+                //     if(event.target.value != ""){
+                //         that.formData.aufnr = event.target.value;
+                //         var result = findBOMByAufnrAndMatnrFn(that.formData);
+    
+                //         that.formData.allQty = result.allQty;
+                //         that.formData.usedQty = result.usedQty;
+                //         that.tableDatas = result.productBoms;
+    
+                //         that.initTable(); //重载表格
+                //     }
+                // },
+                submit: function() {
+                    var that = this;
+                    // console.log("叫料提交===>" + JSON.stringify(that.formData));
+                    var valid = that.formValidatord.validate();
+                    // console.log("校验结果" + JSON.stringify(valid))
+                    if (valid.errors && valid.errors.length > 0) {
+                        return api.alert({
+                            msg: valid.errors[0].display,
+                            buttons: ['确定']
+                        });
+                    } else {
+                        that.submitFlag = true;
+                        var ret = submitMaterielUseFn({ "data": JSON.stringify(that.formData) });
+                        // console.log("ret===>" + JSON.stringify(ret));
+                        that.submitFlag = false;
+                        if(ret){
+                            api.alert({
+                                msg: ret.data,
+                                buttons: ['确定']
+                            });
+                        }
+                        if (ret && ret.type == "success") {
+                            that.formData.mrlCode = "";
+                            that.formData.needQty = "";
+                            that.formData.centerCellCode="";
+                            that.formData.machCode="";
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</html>

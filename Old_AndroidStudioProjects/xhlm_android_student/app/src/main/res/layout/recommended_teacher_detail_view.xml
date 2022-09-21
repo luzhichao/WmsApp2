@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/u62_line"/>
+
+    <ImageView
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="10.5dp"
+        android:id="@+id/iv_teacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/teacher_c" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_teacher"
+        android:text="初高中张老师" />
+
+
+    <TextView
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="150.5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/holo_red_light"
+        android:layout_toRightOf="@+id/tv_name"
+        android:textSize="@dimen/detail_title"
+        android:text="￥145"  />
+
+    <TextView
+        android:layout_marginTop="18dp"
+        android:layout_marginLeft="200.5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_subject_name"
+        android:textColor="@color/holo_red_light"
+        android:layout_toRightOf="@+id/tv_name"
+        android:textSize="@dimen/detail_gray_smaller"
+        android:text="起"  />
+
+
+    <ImageView
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="8.5dp"
+        android:id="@+id/iv_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_toRightOf="@+id/iv_teacher"
+        android:background="@drawable/mark" />
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/tv_teacher_describe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_toRightOf="@+id/iv_mark"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/gray_normal"
+        android:text="教龄8年 已授13668节课" />
+
+    <ImageView
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="8.5dp"
+        android:id="@+id/iv_mark2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_toRightOf="@+id/tv_teacher_describe"
+        android:background="@drawable/mark2"
+        android:layout_marginBottom="20dp"/>
+
+
+</RelativeLayout>

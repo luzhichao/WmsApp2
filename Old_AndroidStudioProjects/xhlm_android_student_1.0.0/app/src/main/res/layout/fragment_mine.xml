@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".student.fragment.MineFragment">
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/toolbar" />
+    <ScrollView
+        android:layout_below="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/layout_adddevices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+
+                <com.linkingwin.education.studyonline.common.base.view.CircleImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/timg"/>
+
+                <LinearLayout
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:id="@+id/lable_account"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="小张"/>
+                    <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+                        android:id="@+id/logout_account"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="退出当前账号"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_marginBottom="@dimen/dp5"
+                        app:qmui_radius="8dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@color/login_under_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp15"
+                android:paddingBottom="@dimen/dp15"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/mine_course"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/iv_my_sudent"
+                        android:layout_width="@dimen/dp25"
+                        android:layout_height="@dimen/dp25"
+                        android:src="@drawable/icon_my_student"/>
+                    <TextView
+                        android:id="@+id/tv_my_subjects"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp5"
+                        android:layout_below="@id/iv_my_sudent"
+                        android:text="我的课程表" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mine_bills"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/iv_order"
+                        android:layout_width="@dimen/dp25"
+                        android:layout_height="@dimen/dp25"
+                        android:src="@drawable/icon_my_order"/>
+
+                    <TextView
+                        android:id="@+id/tv_order"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp5"
+                        android:layout_below="@id/iv_order"
+                        android:text="我的订单" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mine_wallet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_wallet"
+                        android:layout_width="@dimen/dp25"
+                        android:layout_height="@dimen/dp25"
+                        android:src="@drawable/icon_my_wallet"/>
+
+                    <TextView
+                        android:id="@+id/tv_wallet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp5"
+                        android:layout_below="@id/iv_wallet"
+                        android:text="钱包" />
+                </LinearLayout>
+
+            </LinearLayout>
+            <!--这是隔离带,替代背景色-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/wide_line"
+                android:background="@color/global_bg_color" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/login_under_color"
+                android:layout_marginTop="6sp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp">
+
+                    <ImageView
+                        android:id="@+id/iv_wcjdkc_pic"
+                        android:layout_width="18sp"
+                        android:layout_height="18sp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/choice_no" />
+
+                    <TextView
+                        android:id="@+id/iv_wcjdkc_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5sp"
+                        android:layout_toRightOf="@+id/iv_wcjdkc_pic"
+                        android:text="@string/tv_wcjdkc"
+                        android:textSize="@dimen/detail_blue_bigger" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp">
+
+                    <ImageView
+                        android:id="@+id/iv_wdpj_pic"
+                        android:layout_width="18sp"
+                        android:layout_height="18sp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/choice_no" />
+
+                    <TextView
+                        android:id="@+id/iv_wdpj_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5sp"
+                        android:layout_toRightOf="@+id/iv_wdpj_pic"
+                        android:text="@string/tv_wdpj"
+                        android:textSize="@dimen/detail_blue_bigger" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp">
+
+                    <ImageView
+                        android:id="@+id/iv_wdsc_pic"
+                        android:layout_width="18sp"
+                        android:layout_height="18sp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/choice_no" />
+
+                    <TextView
+                        android:id="@+id/iv_wdsc_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5sp"
+                        android:layout_toRightOf="@+id/iv_wdsc_pic"
+                        android:text="@string/tv_wdsc"
+                        android:textSize="@dimen/detail_blue_bigger" />
+                </RelativeLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/wide_line"
+                    android:background="@color/global_bg_color" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp">
+
+                    <ImageView
+                        android:id="@+id/iv_gyjy_pic"
+                        android:layout_width="18sp"
+                        android:layout_height="18sp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/choice_no" />
+
+                    <TextView
+                        android:id="@+id/iv_gyjy_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5sp"
+                        android:layout_toRightOf="@+id/iv_gyjy_pic"
+                        android:text="@string/tv_gyjy"
+                        android:textSize="@dimen/detail_blue_bigger" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp">
+
+                    <ImageView
+                        android:id="@+id/iv_bzzj_pic"
+                        android:layout_width="18sp"
+                        android:layout_height="18sp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/choice_no" />
+
+                    <TextView
+                        android:id="@+id/iv_bzzj_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5sp"
+                        android:layout_toRightOf="@+id/iv_bzzj_pic"
+                        android:text="@string/tv_bzzj"
+                        android:textSize="@dimen/detail_blue_bigger" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp">
+
+                    <ImageView
+                        android:id="@+id/iv_tsyjy_pic"
+                        android:layout_width="18sp"
+                        android:layout_height="18sp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/choice_no" />
+
+                    <TextView
+                        android:id="@+id/iv_tsyjy_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5sp"
+                        android:layout_toRightOf="@+id/iv_tsyjy_pic"
+                        android:text="@string/tv_tsyjy"
+                        android:textSize="@dimen/detail_blue_bigger" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/backgroundColor"
+    tools:context=".teacher.activities.ExperienceEdit">
+    <!--title-->
+        <com.linkingwin.elearn.common.widget.TitleView
+            android:id="@+id/title_experience_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/titleWhite">
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/right_margin"
+            android:padding="@dimen/wide_line"
+            android:background="@color/backgroundColor"
+            android:textSize="@dimen/linesEditTextSize"
+            android:hint="请输入教学经历简述，20字以内"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/wide_line"
+        android:background="@color/titleWhite"
+        android:orientation="vertical">
+        <!--开始时间Start-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/left_margin"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginRight="@dimen/right_margin"
+            android:layout_marginBottom="@dimen/bottom_margin"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="开始日期" />
+            <RelativeLayout
+                android:id="@+id/rl_begin_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_begin_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/icon_right_size"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:textSize="@dimen/editTextSize"
+                    android:hint="选择日期" />
+                <ImageView
+                    android:layout_width="@dimen/icon_right_size"
+                    android:layout_height="@dimen/icon_right_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/editTextSize"
+                    android:src="@drawable/arrows_right" />
+            </RelativeLayout>
+        </LinearLayout>
+        <!--开始时间End-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hair_line"
+            android:background="@color/backgroundColor" />
+        <!--结束日期Start-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/left_margin"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginRight="@dimen/right_margin"
+            android:layout_marginBottom="@dimen/bottom_margin"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/editTextSize"
+                android:text="结束日期" />
+            <RelativeLayout
+                android:id="@+id/rl_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_end_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/icon_right_size"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:textSize="@dimen/editTextSize"
+                    android:hint="选择日期" />
+
+                <ImageView
+                    android:layout_width="@dimen/icon_right_size"
+                    android:layout_height="@dimen/icon_right_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/arrows_right" />
+            </RelativeLayout>
+        </LinearLayout>
+        <!--结束日期End-->
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_describe"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="@dimen/wide_line"
+        android:gravity="top"
+        android:background="@color/titleWhite"
+        android:textSize="@dimen/linesEditTextSize"
+        android:textColor="@color/btBackground"
+        android:hint="描述您曾任职的学校、机构和岗位\n具体的教学内容，及研究成果等~\n200字以内"
+        android:padding="@dimen/wide_line"/>
+    <Button
+        android:id="@+id/bt_del_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:background="@drawable/btn_blue_solid"
+        android:text="删除此条记录"
+        android:textColor="@color/titleWhite"/>
+</LinearLayout>

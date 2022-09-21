@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>产成品入库</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/LCalendar.css">
+    <style media="screen">
+
+    </style>
+</head>
+
+<body>
+    <div id="productStorage" class="tab-content-item app tab-content-item-active">
+        <form id="form" class="aui-content aui-margin-b-10 aui-margin-t-10">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">产成品容器</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="ctBarCode" @keyup.enter="onEnterCtCode" v-model.trim="ctBarCode" placeholder="扫描或手动输入容器编码">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnterCtCode">
+                                查询
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-margin-t-10">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">库位编码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="cellCode" v-model.trim="cellCode" placeholder="扫描或输入目标库位编码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-margin-t-10">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">容器编码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="tctBatCode" v-model.trim="tctBatCode" placeholder="扫描或生成目标容器编码">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createBarCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-margin-t-10">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">入库批次</div>
+                        <div class="aui-list-item-input">
+                            <input type="number" id="lotCode" v-model.trim="lotCode" placeholder="扫描或生成入库批次号">
+                        </div>
+                        <div class="aui-list-item-right">
+                            <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="createLotCode">
+                                生成
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <table id="bootstrap-tab"></table>
+        <footer class="aui-bar aui-bar-tab aui-row" id="footer-2">
+            <button class="aui-btn aui-col-xs-12 aui-btn-success" @click="submit" :disabled="submitFlag">提交</button>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+<script type="text/javascript" src="../../../script/public/print.js"></script>
+<script type="text/javascript" src="../../../script/Lcalendar.js"></script>
+<script type="text/javascript" src="../../../script/validator.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        $('#ctBarCode').focus();
+
+        new Vue({
+            el: '#productStorage',
+            data: {
+                ctBarCode: "",
+                cellCode: "",
+                tctBatCode: "",
+                lotCode: "",
+                tableFields: [
+                    { field: 'mrlCode', title: '产品编码' },
+                    { field: 'mrlName', title: '产品名称' },
+                    { field: 'workCellCode', title: '库位编码' },
+                    { field: 'containName', title: '容器编码' },
+                    { field: 'lotCode', title: '生产批次号' },
+                    { field: 'qty', title: '数量' }
+                ],
+                tableData: [],
+                validator: null,
+                submitFlag: false,
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.initTable();
+                    this.validator = new Validator('form', [
+                        { name: 'ctBarCode', display: "源容器编码必填", rules: 'required' },
+                        { name: 'cellCode', display: "目标库位编码必填", rules: 'required' },
+                        { name: 'tctBatCode', display: '目标容器编码必填', rules: 'required' },
+                        { name: 'lotCode', display: "批次号必填且最大长度为10的数字", regexp_num: /^[0-9]+$/, rules: 'required|max_length(10)|regexp_num' },
+                    ]);
+                },
+                initTable: function() {
+                    var that = this;
+                    $("#bootstrap-tab").bootstrapTable('destroy');
+                    $("#bootstrap-tab").bootstrapTable({
+                        columns: that.tableFields,
+                        data: that.tableData,
+                    });
+                },
+                onEnterCtCode: function() {
+                    var that = this;
+                    var data = getProductByBarCodeFn(that.ctBarCode);
+                    that.tableData = data;
+                    // console.log("===>" + JSON.stringify(that.tableData));
+                    // setTimeout(function(){
+                    that.initTable();
+                    // }, 2000);
+                },
+                createBarCode: function() {
+                    var that = this;
+                    if (!!that.tctBatCode) {
+                        api.toast({
+                            msg: '已有容器码!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        return;
+                    }
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+
+                    var createCode = function(ret) {
+                        api.hideProgress();
+                        // console.log(JSON.stringify(ret))
+                        if (ret && ret.type == 'success' && !!ret.data) {
+                            that.tctBatCode = ret.data;
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    };
+                    createPBarCodeFN(createCode, localStorage.getItem('workCenterCode'));
+                },
+                createLotCode: function() {
+                    var that = this;
+                    if (!!that.lotCode) {
+                        api.toast({
+                            msg: '已有批次号!',
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        return;
+                    }
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '努力加载中...',
+                        text: '请稍后...',
+                        modal: true
+                    });
+
+                    var createCode = function(ret) {
+                        api.hideProgress();
+                        // console.log(JSON.stringify(ret))
+                        if (ret && ret.type == 'success' && !!ret.data) {
+                            //提交另外需要的数据
+                            that.lotCode = ret.data;
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 3000,
+                                location: 'middle'
+                            });
+                        }
+                    };
+                    getLotCodeFn(createCode);
+                },
+                submit: function() {
+                    var that = this;
+                    that.submitFlag = true;
+                    var valid = that.validator.validate();
+                    if (valid.errors && valid.errors.length > 0) {
+                        api.alert({
+                            msg: valid.errors[0].display,
+                            location: 'middle'
+                        });
+                    } else {
+                        if (that.tableData && that.tableData.length > 0) {
+                            api.showProgress({
+                                style: 'default',
+                                animationType: 'fade',
+                                title: '努力加载中...',
+                                text: '请稍后...',
+                                modal: true
+                            });
+                            var ret = productStorageFn(that.ctBarCode, that.cellCode, that.tctBatCode, that.lotCode);
+                            if (ret && ret.type == "success") {
+                                var qty = 0;
+                                var mrlCode = that.tableData[0].mrlCode;
+                                var mrlName = that.tableData[0].mrlName
+                                that.tableData.forEach(function(d) {
+                                    qty += d.qty;
+                                });
+                                printToJiaBo(mrlCode, mrlName, that.lotCode, qty, that.tctBatCode);
+                            }
+                        } else {
+                            api.alert({
+                                msg: "该容器为空",
+                                location: 'middle'
+                            });
+                        }
+                    }
+                    that.submitFlag = false;
+                },
+            }
+        });
+
+    };
+</script>
+
+</html>

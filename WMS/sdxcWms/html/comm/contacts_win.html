@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<title>联系人</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav aui-bar-epichust" id="aui-header" style="background-color: #03a9f4">
+		<a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="closeWin()">
+			<span class="aui-iconfont aui-icon-left"></span> </a>
+		<div class="aui-title">
+			联系人
+		</div>
+	</header>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+	function closeWin() {
+		api.closeWin();
+	}
+
+	apiready = function() {
+		api.parseTapmode();
+		var header = $api.byId('aui-header');
+		var headerPos = $api.offset(header);
+		var serverUrl = "http://" + localStorage.getItem("serverIp") + ":" + localStorage.getItem("serverPort") + "/" + localStorage.getItem("serverProject") + "/";
+		var url = serverUrl + "padCommController!getAllUser.m";
+
+		var params = new Object();
+		params.url = url;
+		params.dataType = 'json';
+		params.method = 'post';
+		params.timeout = 60;
+		var data = {
+			values: { ////以表单方式提交参数（JSON对象）
+				name: ''
+			}
+		};
+
+		ajaxForData(params, data, false, function(ret, err) {
+			if (ret) {
+				var myobj = eval(ret.data);
+			//	console.log(JSON.stringify(myobj));
+				var stringName = "";
+				var stringNickName = "";
+
+				for (var i = 0; i < myobj.length; i++) {
+					var name = myobj[i][1];
+					var nickName = myobj[i][2];
+					stringName = stringName + name + ",";
+					stringNickName = stringNickName + nickName + ",";
+				}
+				var contactPerson = api.require('contactPerson');
+				contactPerson.addContactPersonView({
+					x: 0,
+					y: headerPos.h,
+					w: api.frameWidth,
+					h: api.frameHeight,
+					name: stringName,
+					nickName: stringNickName,
+					rgb: '#88000000',
+					fixedOn: api.frameName
+				}, function(ret, err) {
+					api.closeWin();
+					api.execScript({
+						name: 'chatting_win',
+						frameName: 'chatting_frm',
+						script: 'setReceiver("' + ret + '")'
+					});
+				});
+			}
+		});
+	};
+</script>
+
+</html>

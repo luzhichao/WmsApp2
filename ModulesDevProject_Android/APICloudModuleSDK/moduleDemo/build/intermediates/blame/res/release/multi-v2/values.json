@@ -1,0 +1,48 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\workspace\\AndroidStudio\\ModulesDevProject_Android\\APICloudModuleSDK\\moduleDemo\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values\\values.xml",
+            "map": [
+                {
+                    "source": "D:\\workspace\\AndroidStudio\\ModulesDevProject_Android\\APICloudModuleSDK\\moduleDemo\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "17",
+                        "endColumns": "47",
+                        "endOffsets": "60"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "47",
+                        "endOffsets": "98"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "D:\\workspace\\AndroidStudio\\ModulesDevProject_Android\\APICloudModuleSDK\\moduleDemo\\build\\intermediates\\res\\merged\\release\\values\\values.xml",
+            "map": [
+                {
+                    "source": "D:\\workspace\\AndroidStudio\\ModulesDevProject_Android\\APICloudModuleSDK\\moduleDemo\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "17",
+                        "endColumns": "47",
+                        "endOffsets": "60"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "47",
+                        "endOffsets": "98"
+                    }
+                }
+            ]
+        }
+    ]
+}

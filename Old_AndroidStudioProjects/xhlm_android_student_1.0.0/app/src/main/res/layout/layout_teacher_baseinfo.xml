@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/teacher_baseinfo_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_teacherName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:textStyle="bold"
+            android:textSize="@dimen/actionbar_title_size"
+            android:text="小初语文老师"/>
+
+        <TextView
+            android:id="@+id/tv_minPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp_8"
+            android:textStyle="bold"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/actionbar_title_size"
+            android:text="￥ 458 起"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_below="@+id/teacher_baseinfo_title"
+        android:layout_marginLeft="8.5dp"
+        android:id="@+id/tv_teacherDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_teacher"
+        android:textColor="@color/login_under_color"
+        android:background="@drawable/textview_radius_yellow"
+        android:text="优秀老师"/>
+    <GridView
+        android:layout_below="@+id/tv_teacherDetail"
+        android:id="@+id/gv_schoolTags"
+        android:numColumns="4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </GridView>
+
+</RelativeLayout>

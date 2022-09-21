@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>盘点(成品)</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+</head>
+
+<body>
+<div class="aui-content aui-margin-b-15">
+    <ul class="aui-list aui-list-in" id="dataList">
+        <li class="aui-list-item" onclick="goToPage('Inventory_Bill_Prd1');">
+            <div class="aui-list-item-inner aui-list-item-arrow">
+                <div class="aui-list-item-title">1:盘点箱栈关系</div>
+            </div>
+        </li>
+        <li class="aui-list-item" onclick="goToPage('Inventory_Bill_Prd2');">
+            <div class="aui-list-item-inner aui-list-item-arrow">
+                <div class="aui-list-item-title">2:盘点栈板</div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../script/pda.js"></script>
+<script type="text/javascript" src="../../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+</body>
+<script>
+    function goToPage(pageLink, pageName) {
+        api.openWin({
+            name: 'wms' + pageLink,
+            url: 'wms' + pageLink + '.html',
+            pageParam: {
+                url: 'wms' + pageLink + '.html',
+                title: pageName
+            }
+        })
+    }
+</script>
+
+</html>

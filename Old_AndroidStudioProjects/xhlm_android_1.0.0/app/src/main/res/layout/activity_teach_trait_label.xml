@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.TeachTraitTag">
+
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_teach_trait"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wide_line"
+        android:background="@color/backgroundColor" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:text="教学特点" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+
+    <GridView
+        android:id="@+id/gv_selected_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wide_line"
+        android:background="@color/backgroundColor" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="标签设置" />
+
+        <TextView
+            android:id="@+id/tv_add_custom_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="添加自定义标签"
+            android:textColor="@color/blue" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gv_enum_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3" />
+</LinearLayout>

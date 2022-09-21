@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/u62_line"/>
+
+    <ImageView
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="10.5dp"
+        android:id="@+id/iv_teacher"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_teacher"/>
+
+
+    <TextView
+        android:id="@+id/tv_minPrice"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/holo_red_light"
+        android:layout_alignParentRight="true"
+        android:textSize="@dimen/detail_title"/>
+
+    <TextView
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="8.5dp"
+        android:id="@+id/tv_peculiarTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="@dimen/dp_80"
+        android:layout_below="@+id/tv_name"
+        android:layout_toRightOf="@+id/iv_teacher"
+        android:textColor="@color/login_under_color"
+        android:background="@drawable/textview_radius_yellow"
+     ></TextView>
+
+
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/tv_teacher_describe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_toRightOf="@+id/tv_peculiarTag"
+        android:padding="@dimen/dp5"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/gray_normal"/>
+
+    <TextView
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="8.5dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/tv_schoolTag"
+        android:layout_width="wrap_content"
+        android:maxWidth="@dimen/dp_80"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_toRightOf="@+id/tv_teacher_describe"
+        android:textColor="@color/login_under_color"
+        android:background="@drawable/textview_radius_blue"
+        ></TextView>
+
+
+</RelativeLayout>

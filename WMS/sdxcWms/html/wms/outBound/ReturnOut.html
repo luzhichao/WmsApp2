@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+<!--
+说明
+摘要：越库即为 依据出库任务进行出库，支持指定库位 序列等的出库
+1. 选择出库任务 接口返回数据明细过滤
+2. 扫库位 容器(需校验容器是否在库位上)   批次(校验) 序列(校验) ,
+3. 若任务中有 库位这些信息  扫描时就需校验
+4. tab2表数据填充扫描结果 tab1数量更新
+-->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>越库任务</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/LCalendar.css">
+    <style media="screen">
+    </style>
+</head>
+
+<body>
+<div class="aui-tab" id="frame">
+    <div class="aui-tab-item aui-active">越库任务</div>
+    <div class="aui-tab-item" id="aui-tab-item-2">物料扫描</div>
+    <div class="aui-tab-item">越库明细</div>
+</div>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">越库任务号</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.code" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <!-- <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">任务状态</div>
+                    <select disabled="disabled">
+                        <option v-for="item in stateItems" :value="item.key">{{item.value}}</option>
+                    </select>
+                </div>
+            </li> -->
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">计划日期</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.taskDate" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab-1"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="querySourceList">源单查询</div>
+    </footer>
+</div>
+<div id="aui-tab-2" class="tab-content-item app">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10" id="formSection">
+        <ul class="aui-list aui-form-list">
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">任务gid</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.sourceDetailGid" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料名称</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.mrlName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">任务库位</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.taskWorkCellCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">库位</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.workCellCode" placeholder="请扫描库位编码" id="#tab2-scan-bar-workCellCode" @keyup.enter="onEnterWorkCellCode">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">任务容器</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.taskCtBarcodeCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">容器</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.ctBarcodeCode" placeholder="请扫描容器编码" id="#tab2-scan-bar-ctBarcodeCode" @keyup.enter="onEnterCtBarcodeCode">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.taskLotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.lotCode" placeholder="请扫描批次码" id="#tab2-scan-bar-lotCode" @keyup.enter="onEnterLotCode">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">序列码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.taskSn" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">序列码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.sn" placeholder="请扫描批次码" id="#tab2-scan-bar-sn" @keyup.enter="onEnterSn">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">合格数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.qty" placeholder="请输入数量" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">总数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.allQty" placeholder="请输入数量">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">剩余数量</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="formData.remainQty" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    </form>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-2">
+        <!--<div class="aui-btn aui-col-xs-6" @click="CloseWin">取消</div>-->
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="save">保存</div>
+    </footer>
+</div>
+<div id="aui-tab-3" class="tab-content-item app">
+    <div class="aui-margin-b-10 aui-margin-t-10">
+        <table id="bootstrap-tab-3" style="table-layout: fixed;"></table>
+    </div>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-3">
+        <!--<div class="aui-btn aui-col-xs-6" @click="CloseWin">取消</div>-->
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/Lcalendar.js"></script>
+<script type="text/javascript">
+
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        targetBusinessType: TYPE.OUT_BILL,      //目标 - 单据类型 - 收货单
+
+    };
+    var audioModule;//语音播报
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    var tableField1 = [
+        {name: 'id', title: '任务gid',visible:false},      //inTaskDetailGid,用于提交的时候
+        {name: 'mrlCode', title: '物料编码'},
+        {name: 'mrlName', title: '物料名称'},
+        {name: 'workCellCode', title: '库位编码'},
+        {name: 'ctBarcodeCode', title: '容器编码'},
+        {name: 'lotCode', title: '批次号'},
+        {name: 'sn', title: '序列号'},
+        {name: 'qty', title: '计划数量'},
+        {name: 'outStockQty', title: '已出库数量', visible: false},
+        {name: 'remainQty', title: '剩余数量'}, //由(qty - outStockQty)计算得到
+        {name: 'completeQty', title: '已扫描数量'},
+        {
+            name:'work',title:'操作',formatter:function(value,row,index){
+
+                return [
+                    '<div class="like aui-btn">',
+                    '开始扫描',
+                    '</div>'
+                ].join('')
+
+            }
+        }
+    ];
+
+    var tableField3 = [
+        {
+            name: 'no', title: '序号', width: 60, formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name: 'sourceDetailGid', title: '父主键',visible:false},
+        {name: 'mrlCode', title: '物料编码', width: 80},
+        {name:'mrlName',title:'物料名称',width:80},
+        {name:'workCellCode',title:'库位编码',width:80},
+        {name:'ctBarcodeCode',title:'容器编码',width:80},
+        {name:'lotCode',title:'批次码',width:80},
+        {name:'sn',title:'序列码',width:80},
+
+        {name: 'qty', title: '合格数量', width: 50},
+        {name: 'allQty', title: '总数量', width: 50}
+
+    ];
+
+    apiready = function () {
+        audioModule = api.require('OtherOffLineSpeakModule');
+        $("#tab1-scan-barcode1").focus();
+
+        //1.初始化多tab结构
+        new auiTab({element: document.getElementById("frame")}, function (params) {
+            var index = params.index;
+            $('.tab-content-item').removeClass('tab-content-item-active');
+            $('#aui-tab-' + index).addClass('tab-content-item-active');
+        });
+
+        //2.初始化表格
+        initTable(1, tableField1, null, function (row, $element, field) {
+            if(field != 'work') return ;
+            dialog.alert({
+                title: "是否开始扫描: " + row.mrlName + "?",
+                buttons: ['取消', '确定']
+            }, function (ret) {
+                if (ret.buttonIndex === 2) {
+                    //增加变色逻辑  否则无法知道正在扫哪一行
+                    var obj = {};
+
+                    vueData2.formData.sourceDetailGid = row.id;
+                    vueData2.formData.mrlCode = row.mrlCode;
+                    vueData2.formData.mrlName = row.mrlName;
+                    vueData2.formData.remainQty = row.remainQty;
+
+                    vueData2.formData.taskWorkCellCode = row.workCellCode;
+
+                    vueData2.formData.taskCtBarcodeCode  = row.ctBarcodeCode;
+
+                    vueData2.formData.taskLotCode = row.lotCode;
+
+                    vueData2.formData.taskSn = row.sn;
+
+                    vueData2.formData.workCellCode = "";
+                    vueData2.formData.ctBarcodeCode  = "";
+                    vueData2.formData.lotCode = "";
+                    vueData2.formData.sn = "";
+
+
+                    $('.tab-content-item').removeClass('tab-content-item-active');
+                    $('#aui-tab-2').addClass('tab-content-item-active');
+                    $('.aui-tab-item').removeClass('aui-active');
+                    $('#aui-tab-item-2').addClass('aui-active');
+                }
+            })
+        },function (row) {
+            var style;
+            if (row.remainQty == 0 || row.remainQty == row.completeQty || row.remainQty < row.completeQty) {
+                style = {css: {'color': 'red'}};     //计划数量等于完成数量则变红色
+                return style;
+            }
+            if (row.isUpdate) {
+                style = {css: {'color': '#03A9F4'}}; //动态变化的，蓝色
+                return style;
+            }
+            return {css: {'color': 'e3e3e3'}};   //默认样式
+        });
+
+        initTable(3, tableField3, null, function (row, $element, field) {
+            if(btnController){
+                return false;
+            }
+            btnController = true;
+            dialog.alert({
+                title: "是否删除物料名称为: " + row.mrlName + "的物料信息吗?",
+                buttons: ['取消', '确定']
+            }, function (ret) {
+                if (ret.buttonIndex === 2) {
+                    updateTableByDelete_library(row, $element.data('index'), $element);
+                }
+            })
+            btnController = false;
+        });
+
+        //3.设置监听(查询页面数据的回传)
+        setQueryListener(api)
+    };
+
+    /*--------------Vue1-Tab1-------------*/
+    var btnController = false;
+    var vueData1 = {
+        stateItems: INSTORE_STATUS_2,
+        formData: {         //表头数据
+            id: '',
+            code: '',               //出库任务编码
+            state: '',
+            businessType: INSTORE_TYPE.PURCHASE,
+            workCenterGid: WCEN_GID,
+            supplierName: '',       //供应商名称
+            supplierCode: '',       //供应商编码
+            taskDate: ''            //计划日期
+        }
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        methods: {
+            querySourceList: function () {
+                querySourceList('return_work');
+            }
+        }
+    });
+
+
+    /*--------------vue2--------------*/
+    var vueData2 = {
+        formData: {
+            sourceDetailGid: '',
+            mrlCode: '',
+            mrlName:"",
+            taskWorkCellCode:"",
+            workCellCode:'',
+            taskCtBarcodeCode:'',
+            ctBarcodeCode:'',
+            taskLotCode:'',
+            lotCode:"",
+            taskSn:"",
+            sn:"",
+            qty:"",
+            allQty:"",
+            remainQty:'',
+        },
+    };
+    var workCellInfo = "";//全局变量
+    var ctInfo = "";
+    var app2 = new Vue({
+        el: '#aui-tab-2',
+        data: vueData2,
+        mounted: function () {
+
+        },
+        methods: {
+            onEnterWorkCellCode:function(){
+                //库位查询 带出容器批次序列 数量
+                if(!vueData2.formData.taskWorkCellCode === "" && !vueData2.formData.taskWorkCellCode === vueData2.formData.workCellCode)
+                {
+                    //需要判断是否一致;
+                    return api.toast({msg: '扫描库位与任务指定库位不一致！', location: 'middle'});
+                }
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: getUrl("padWmsController!getWorkCellCtInfo.m"),
+                    dataType: "json",
+                    data: {
+                        workCellCodeOrCtBarcode: vueData2.formData.workCellCode,
+                    },
+                    async: false,
+                    success: function (ret) {
+                        console.log(JSON.stringify(ret));
+                        if (ret.errCode == 0) {
+                            workCellInfo = ret.data;
+                            console.log("workcellCode"+workCellInfo.workCellCode);
+                            if(workCellInfo.workCellCode === "" || workCellInfo.workCellCode === undefined)
+                            {
+                                vueData2.formData.workCellCode="";
+                                api.alert({title:'操作失败,查询库位失败', msg:JSON.stringify(ret.msg)});
+                            }
+                            api.hideProgress();
+                        } else {
+                            vueData2.formData.workCellCode="";
+                            api.hideProgress();
+                            api.alert({title:'操作失败', msg:JSON.stringify(ret.msg)});
+                        }
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+            },
+            onEnterCtBarcodeCode:function(){
+                //判断是否在库位
+                if(vueData2.formData.workCellCode === "")
+                {
+                    return api.toast({msg: '请先扫描库位！', location: 'middle'});
+                }
+
+                if(!(vueData2.formData.taskCtBarcodeCode === "") && !(vueData2.formData.taskWorkCellCode === vueData2.formData.ctBarcodeCode))
+                {
+                    //需要判断是否一致;
+                    return api.toast({msg: '扫描容器与任务指定容器不一致！', location: 'middle'});
+                }
+
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: getUrl("padWmsController!getWorkCellCtInfo.m"),
+                    dataType: "json",
+                    data: {
+                        workCellCodeOrCtBarcode: vueData2.formData.ctBarcodeCode,
+                    },
+                    async: false,
+                    success: function (ret) {
+                        console.log(JSON.stringify(ret));
+                        if (ret.errCode == 0) {
+                            ctInfo = ret.data;
+                            console.log("ctinfo--->"+ctInfo.workCellCode+"workCellCode--->"+vueData2.formData.workCellCode);
+                            if(!(ctInfo.workCellCode === vueData2.formData.workCellCode))
+                            {
+                                vueData2.formData.ctBarcodeCode="";
+                                api.alert({title:'操作失败,容器不在所选库位上', msg:JSON.stringify(ret.msg)});
+                            }
+                            api.hideProgress();
+                        } else {
+                            vueData2.formData.ctBarcodeCode="";
+                            api.hideProgress();
+                            api.alert({title:'操作失败', msg:JSON.stringify(ret.msg)});
+                        }
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+
+            },
+            onEnterLotCode:function(){
+                if(vueData2.formData.workCellCode === "")
+                {
+                    return api.toast({msg: '请先扫描库位！', location: 'middle'});
+                }
+                var info = "";
+                if(vueData2.formData.ctBarcodeCode ==="")
+                {
+                    //校验库位
+                    info = workCellInfo;
+                }else
+                {
+                    //校验容器
+                    info = ctInfo;
+                }
+                //判断是否在容器或库位中
+                var mrlLotQty = workCellInfo.mrlLotQty;
+                if(mrlLotQty === undefined || mrlLotQty.length === 0 )
+                {
+                    vueData2.formData.lotCode = "";
+                    return api.toast({msg: '扫描批次不在库位中！', location: 'middle'});
+                }
+                var isContain = false;
+                for(var i = 0 ; i< mrlLotQty.length;i++)
+                {
+                    if(mrlLotQty[i].lotCode === vueData2.formData.lotCode)
+                    {
+                        isContain = true ;
+                        break;
+                    }
+                }
+                if(!isContain)
+                {
+                    vueData2.formData.lotCode = "";
+                    return api.toast({msg: '扫描批次不在库位中！', location: 'middle'});
+                }
+
+            },
+            onEnterSn:function(){
+                if(vueData2.formData.workCellCode === "")
+                {
+                    return api.toast({msg: '请先扫描库位！', location: 'middle'});
+                }
+                var info = "";
+                if(vueData2.formData.ctBarcodeCode ==="")
+                {
+                    //校验库位
+                    info = workCellInfo;
+                }else
+                {
+                    //校验容器
+                    info = ctInfo;
+                }
+
+                //判断是否在容器或库位中
+                //判断是否在容器或库位中
+                var sn = workCellInfo.sn;
+                if(sn === undefined || sn.length === 0 )
+                {
+                    vueData2.formData.sn = "";
+                    return api.toast({msg: '扫描序列不在库位中！', location: 'middle'});
+                }
+                var isContain = false;
+                for(var i = 0 ; i< sn.length;i++)
+                {
+                    if(sn[i].sn === vueData2.formData.sn)
+                    {
+                        isContain = true ;
+                        vueData2.formData.lotCode = sn[i].lotCode;
+                        break;
+                    }
+                }
+                if(!isContain)
+                {
+                    vueData2.formData.sn = "";
+                    return api.toast({msg: '扫描序列不在库位中！', location: 'middle'});
+                }
+                //vueData2.formData.qty = 1;
+                vueData2.formData.allQty = 1;
+
+
+            },
+            save: function ()
+            {
+                //数量校验
+                if(vueData2.formData.allQty === "")
+                {
+                    return api.toast({msg: '总数量不可为空！', location: 'middle'});
+                }
+
+                var data3 = {};
+                data3.sourceDetailGid = vueData2.formData.sourceDetailGid ;
+                data3.mrlCode =  vueData2.formData.mrlCode;
+                data3.mrlName =  vueData2.formData.mrlName;
+                data3.workCellCode = vueData2.formData.workCellCode ;
+                data3.ctBarcodeCode =  vueData2.formData.ctBarcodeCode;
+                data3.lotCode =  vueData2.formData.lotCode;
+                data3.sn =  vueData2.formData.sn;
+                data3.qty =  vueData2.formData.qty;
+                data3.allQty =  vueData2.formData.allQty;
+
+                var $table1 = $("#bootstrap-tab-1");
+                var tableData1 = $table1.bootstrapTable('getData');
+                var index = 0;
+                for (var i = 0; i < tableData1.length; i++) {
+                    // var row = tableData1[i];
+                    if(tableData1[i].id == vueData2.formData.sourceDetailGid){
+                        index = i
+                    }
+                }
+
+                tableData1[index].completeQty = Number(tableData1[index].completeQty) + Number(vueData2.formData.qty);
+                $table1.bootstrapTable('updateRow', {index: index, row: tableData1[index]});
+
+                $("#bootstrap-tab-3").bootstrapTable('prepend', data3);
+
+                vueData2.formData.workCellCode = "";
+                vueData2.formData.ctBarcodeCode  = "";
+                vueData2.formData.lotCode = "";
+                vueData2.formData.sn = "";
+
+                api.toast({msg: '保存成功！', location: 'middle'});
+            },
+        }
+    });
+
+
+    /*--------------vue3--------------*/
+    var vueData3 = {};
+    var app3 = new Vue({
+        el: '#aui-tab-3',
+        data: vueData3,
+        methods: {
+            CloseWin: function() {
+                api.confirm( {
+                    title: '注意',
+                    msg: '确认退出当前菜单？',
+                    buttons: [ '确定', '取消' ]
+                }, function ( ret, err ) {
+                    if ( ret.buttonIndex == 1 ) {
+                        api.closeWin();
+                    }
+                } )
+            },
+            submit: function () {
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '提交中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+
+                var details = $('#bootstrap-tab-3').bootstrapTable('getData');
+
+
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '提交中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                api.ajax({
+                    url: getUrl("padWmsController!createDirectOutBill.m"),
+                    method: 'post',
+                    timeout: 60,
+                    data: {
+                        values: {
+                            outTaskCode: vueData1.formData.code,
+                            detailBills: JSON.stringify(details)
+                        }
+                    }
+                }, function (ret) {
+                    api.hideProgress();
+                    if (ret && ret.errCode === 0) {
+                        api.toast({msg: '提交成功！', location: 'middle'});
+                        window.location.reload();
+                    } else {
+                        api.alert({msg: ret.msg});
+                    }
+                });
+
+
+                api.hideProgress();
+            }
+        }
+    })
+
+
+
+    function updateTableByDelete_library(row, index, $element) {
+        var $table1 = $("#bootstrap-tab-1");
+
+        var $table3 = $("#bootstrap-tab-3");
+        var tableData1 = $table1.bootstrapTable('getData');
+
+
+
+        var sourceDetailGid = row.sourceDetailGid;
+
+        var qty = row.qty;
+        //更新tab3,删除对应的一行数据
+        row.deleteFlag = "true";
+        $table3.bootstrapTable('remove', {field: 'deleteFlag', values: [row.deleteFlag]});
+
+        //更新tab1
+        var index = 0;
+        for (var i = 0; i < tableData1.length; i++) {
+            // var row = tableData1[i];
+            if(tableData1[i].id == row.sourceDetailGid){
+                index = i
+            }
+        }
+        tableData1[index].completeQty = Number(tableData1[index].completeQty) - Number(qty);
+        $table1.bootstrapTable('updateRow', {index: index, row: tableData1[index]});
+        $($element).addClass('info');
+    }
+</script>
+
+</html>

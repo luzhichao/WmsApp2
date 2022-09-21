@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>库位查询</title>
+	<link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/icons.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+		<a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">
+			<span class="aui-iconfont aui-icon-left"></span> </a>
+		<div class="aui-title" id="middle"></div>
+	</header>
+
+	<section class="aui-content" style="overflow: auto;">
+		<div class="aui-searchbar" id="search">
+	    <div class="aui-searchbar-input aui-border-radius" tapmode onclick="doSearch()">
+	        <i class="aui-iconfont aui-icon-search"></i>
+					<div class="aui-searchbar-input">
+		        <form>
+		            <input type="search" placeholder="请输入搜索内容" id="search-input" onkeyup="doQuery(this.value);">
+		        </form>
+					</div>
+					<i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="clearInput()"></i>
+	    </div>
+	    <div class="aui-searchbar-cancel aui-text-info" tapmod onclick="cancelSearch()">取消</div>
+		</div>
+		</section>
+
+	<section class="aui-content" id="Ul-li">
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in" id="dataList"></ul>
+			<div>
+		</section>
+		<script id="showData" type="text/x-dot-template">
+				{{~ it:value:index}}
+            <li class="aui-list-item" onclick="setDataBack('{{= value.workCellId }}','{{= value.workCellCode }}','{{= value.workCellName }}');" >
+		            <div class="aui-list-item-inner">
+		                <div class="aui-list-item-title">{{= value.workCellCode }}</div>
+		                <div class="aui-list-item-right">{{=value.workCellName||''}}</div>
+		                <!-- <div class="aui-list-item-right">{{= value.taskDate }}</div> -->
+		            </div>
+		        </li>
+        {{~}}
+    </script>
+
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../script/pda.js"></script>
+<script type="text/javascript" src="../../../script/doT.min.js"></script>
+<script src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+
+	apiready = function() {
+		 var div = document.getElementById('middle');
+		 div.innerHTML = "<strong id='title'>库位查询</strong>";
+		 api.parseTapmode();
+		 var condition="";
+		 doQuery(condition);
+	};
+
+	var searchBar = document.querySelector(".aui-searchbar-input");
+	if(searchBar){
+			 searchBar.onclick = function(){
+					 document.querySelector(".aui-searchbar-cancel").style.marginRight = 0;
+			 }
+	 }
+
+	 document.querySelector(".aui-searchbar-cancel").onclick = function(){
+			 this.style.marginRight = "-"+this.offsetWidth+"px";
+			 document.getElementById("search-input").value = '';
+			 document.getElementById("search-input").blur();
+	 }
+
+	function doSearch(){
+		$api.addCls($api.dom(".aui-searchbar"),"focus");
+		$api.dom('.aui-searchbar-input input').focus();
+	}
+
+	function cancelSearch(){
+		$api.removeCls($api.dom(".aui-searchbar.focus"),"focus");
+		$api.val($api.byId("search-input"),'');
+		$api.dom('.aui-searchbar-input input').blur();
+	}
+
+	function clearInput(){
+		$api.val($api.byId("search-input"),'');
+	}
+
+	// 查询
+	function doQuery(condition) {
+		api.showProgress({
+			style: 'default',
+			animationType: 'fade',
+			title: '努力加载中...',
+			text: '请稍后...',
+			modal: true
+		});
+		var data = {};
+		var workCenterGid = localStorage.getItem('workCenterGid');
+		api.ajax({
+			url: getUrl("padCommController!getWorkCellByWorkCenter.m"),
+			method: 'post',
+			data: {
+				values: {
+					 workCenterId : workCenterGid
+				}
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (ret) {
+				var myobj = eval(ret.data);
+				var obj = eval(myobj);
+				$("#dataList").children().remove();
+				var evaluation = doT.template($api.dom('#showData').innerHTML);
+				$api.dom('#dataList').innerHTML = evaluation(obj);
+			} else {
+				console.log(JSON.stringify(err));
+				api.toast({
+					msg: err.msg,
+					duration: 3000,
+					location: 'middle'
+				});
+				return;
+			}
+		});
+	}
+
+	function setDataBack(id, code, name){
+			api.closeWin();
+			api.sendEvent({
+				 name: 'workCell_Query',
+				 extra: {
+						 type : 'query',
+						 id : id,
+						 code : code,
+						 name : name
+				 }
+		 });
+	}
+
+</script>
+
+</html>

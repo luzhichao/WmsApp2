@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <header id='header' class="aui-bar aui-bar-nav" style="background-color: #03a9f4">
+        <a class="aui-pull-left aui-btn" onclick="closeCurrentMenu();">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title" id="middle"></div>
+    </header>
+</body>
+<script type="text/javascript" src="../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script>
+    var title = "";
+    apiready = function() {
+        $api.fixStatusBar(document.querySelector('#header'));
+        var pageUrl = api.pageParam.url;
+        title = api.pageParam.title;
+        var div = document.getElementById('middle');
+        div.innerHTML = "<strong id='title'>" + title + "</strong>";
+        openFrame();
+    };
+
+    function closeCurrentMenu() {
+        api.confirm({
+            title: '注意',
+            msg: '确认退出当前菜单？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            if (ret.buttonIndex == 1) {
+                if (Math.abs(window.orientation) == 90) {
+                    api.setScreenOrientation({
+                        orientation: 'auto_portrait'
+                    });
+                }
+                api.closeWin();
+            }
+        })
+    }
+
+    function openFrame() {
+        var pageUrl = api.pageParam.url;
+        var header = $api.byId('header');
+        var headerH = $api.offset(header).h;
+        console.log("打开的页面 " + api.pageParam.title + " 地址===" + pageUrl);
+        // api.toast({
+        //     msg: pageUrl,
+        //     global: true
+        // })
+        api.openFrame({
+            name: 'menu_fram',
+            url: '../' + pageUrl,
+            rect: {
+                marginTop: headerH, // main页面距离win顶部的高度
+                marginBottom: 0, // main页面距离win底部的高度
+                w: 'auto' // main页面的宽度 自适应屏幕宽度
+            },
+            bgColor: '#FFFFFF',
+            showProgress: true,
+            bounces: false
+        });
+    }
+
+    function doBack() {
+        localStorage.removeItem("picNames");
+        api.openWin({
+            name: 'main',
+            url: 'main.html'
+        });
+    }
+</script>
+
+</html>

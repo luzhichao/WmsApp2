@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="23.5dp"
+            android:id="@+id/iv_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/subject01" />
+
+        <TextView
+            android:layout_marginLeft="23.5dp"
+            android:id="@+id/tv_subject_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_subject"
+            android:layout_marginTop="2dp"
+            android:text="两节课避免小学易错点" />
+
+        <TextView
+            android:layout_marginLeft="23.5dp"
+            android:id="@+id/tv_subject_describe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_subject_name"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="43dp"
+            android:textColor="@color/gray_normal"
+            android:text="5月27日 12：00" />
+
+        <ImageView
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_subject_name"
+            android:layout_toRightOf="@+id/tv_subject_describe"
+            android:background="@drawable/huifang" />
+
+</RelativeLayout>

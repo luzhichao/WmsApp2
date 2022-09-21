@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".student.activity.MineBillsActivity">
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/toolbar" />
+    <RelativeLayout
+        android:layout_below="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/mine_bills_top_filter"
+            android:background="@color/login_under_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:text="@string/label_dfk"
+                android:background="@drawable/selector_btn_click_bg"
+                android:textColor="@drawable/selector_btn_click_text_color"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:text="@string/label_qbdd"
+                android:background="@drawable/selector_btn_click_bg"
+                android:textColor="@drawable/selector_btn_click_text_color"
+                />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_bill_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mine_bills_top_filter"
+            android:divider="@color/global_bg_color"
+            android:dividerHeight="5dp"
+            android:scrollbars="none"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

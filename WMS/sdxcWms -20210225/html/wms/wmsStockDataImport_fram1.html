@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>库存录入（序列号扫描）</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/custom.css" />
+    <style>
+        .confrim-btn{
+			height: 2rem;
+			line-height: 1.6rem;
+			width: 120px;
+			margin: 15px 25px;
+		}
+		.level-radio{
+			padding: 1px 0;
+		}
+		.level-radio input{
+			display: none;
+		}
+		.level-radio input:checked+.aui-btn{
+			background-color: #03a9f4;
+			color: #fff;
+		}
+		.level-radio .aui-btn{
+			height: 40px;
+			line-height: 40px;
+			min-width:85px;
+			width: auto;
+			padding: 0 20px;
+			border-radius: 8px;
+			overflow: hidden;
+			margin: 5px;
+		}
+	</style>
+</head>
+
+<body>
+    <section id="formSection">
+        <form class="aui-content aui-margin-t-10 aui-margin-b-10">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">等级</div>
+                        <!-- <div class="aui-list-item-input level-radio" id="gradeSelect">
+                            <input type="radio" name="mrlGrade" id="A++" value="A++" class="aui-checkbox" checked><label
+                                for="A++" class="aui-btn">A++</label>
+                            <input type="radio" name="mrlGrade" id="A+" value="A+" class="aui-checkbox"><label for="A+"
+                                class="aui-btn">A+</label>
+                            <input type="radio" name="mrlGrade" id="A" value="A" class="aui-checkbox"><label for="A"
+                                class="aui-btn">A</label>
+                            <input type="radio" name="mrlGrade" id="B" value="B" class="aui-checkbox"><label for="B"
+                                class="aui-btn">B</label>
+                        </div> -->
+                        <div class="aui-list-item-input">
+                            <select id="gradeSelect" name="mrlGrade">
+                                <option value="">-</option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">库位条码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="workCellCode" name="workCellCode" value="20181223001" placeholder="扫描库位条码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">栈板条码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="packageCode" name="packageCode" value="qwe-123" placeholder="扫描栈板条码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">序列号</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="sn" name="sn" placeholder="扫描序列号">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料编码</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="mrlCode" name="mrlCode" value="" readonly placeholder="物料编码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">物料名称</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="mrlName" name="mrlName" value="" disabled placeholder="物料名称">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">数量</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" id="qty" name="qty" value="1" disabled placeholder="输入盘点数量">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">仓库</div>
+                        <div class="aui-list-item-input">
+                            <select id="workCenterGid" name="workCenterGid">
+                                <option value="">仓库</option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">已扫描：<span id="scaned">0</span>件</div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </section>
+    <table id="table"></table>
+    <footer class="aui-bar aui-bar-tab" id="footer">
+        <div class="aui-btn aui-col-xs-6" tapmode onclick="api.closeWin();">取消</div>
+        <!-- <div class="aui-btn aui-col-xs-4 aui-btn-success" tapmode onclick="openRepo();">库位选择</div> -->
+        <div class="aui-btn aui-col-xs-6 aui-btn-primary" tapmode onclick="createSubmit();">提交</div>
+    </footer>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+<!-- <script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/aui-tab.js"></script> -->
+<script src="../../script/aui-toast.js"></script>
+<script src="../../script/jquery-1.8.2.min.js"></script>
+<script src="../../script/bootstrap-table.min.js"></script>
+<script src="../../script/bootstrap-table-zh-CN.js"></script>
+<script>
+    var state = {}
+</script>
+<script type="text/javascript" src="../../script/business_frame1.js"></script>
+<script type="text/javascript">
+    var $table = $('#table');
+	var toast = new auiToast({})
+    tableField = [{
+        field: 'workCellCode',
+        title: '库位条码',
+        align: 'center'
+    }, {
+        field: 'mrlCode',
+        title: '物料编码',
+        align: 'center'
+    }, {
+        field: 'mrlGrade',
+        title: '等级',
+        align: 'center'
+    }, {
+        field: 'sn',
+        title: '序列号',
+        align: 'center'
+    }]
+
+    // function getFocus1(){
+    // 	//alert(1);
+    // 	$('#packageCode').focus();
+    // }
+    // function getFocus2(){
+    // 	//alert(2);
+    // 	$('#sn').focus();
+    // }
+
+    // 扫码回车事件
+    //$('#workCellCode').on('keypress', function(event) {
+    //	alert(1);
+    //	if (event.keyCode == 13) {
+    //		
+    //	}
+    //});
+    // 扫码回车事件
+    //$('#packageCode').on('keypress', function(event) {
+    //	alert(2);
+    //	if (event.keyCode == 13) {
+    //		$('#sn').focus();
+    //	}
+    //});
+
+
+    $(function () {
+        $("#workCellCode,#packageCode").on('focus', function () {
+            $(this).val('')
+        })
+        $("#workCellCode").on('input', function () {
+            if (!$.trim($(this).val())) {
+                return
+            }
+            $("#packageCode").focus()
+        })
+        $("#packageCode").on('input', function () {
+            if (!$.trim($(this).val())) {
+                return
+            }
+            $("#mrlCode").val($(this).val().split('-')[0])
+            $("#sn").focus()
+        })
+        $("#sn").on('input', function () {
+            var snCode = $(this).val()
+            var tableData = $table.bootstrapTable('getData')
+            var checkTable = $.grep(tableData, function (item) {
+                return item.sn == snCode
+            })
+            if (!$.trim(snCode)) {
+                return
+            } else if (checkTable.length > 0) {
+                api.alert({
+                    title: '提示', 
+                    msg: '序列号已存在，请勿重复添加'
+                });
+                $("#sn").val('')
+            }else{
+                addFormData()
+            }
+            
+            // setTimeout(function () {
+                
+            // }, 500);
+        })
+    })
+
+    // 扫码回车事件
+    // $('#sn').on('keypress', function (event) {
+    //     //alert(3);
+    //     if (event.keyCode == 13) {
+    //         var mrlCode = $.trim($.trim($('#packageCode').val()).split('_')[0]);
+    //         //$('#mrlCode').val(mrlCode);
+    //         getMrlByCode(mrlCode);
+    //     }
+    // });
+    // apiready = function () {
+    // 	$table.bootstrapTable({
+    // 		columns: [{
+    // 			field: 'seatCode',
+    // 			title: '库位条码',
+    // 			align: 'center'
+    // 		},{
+    // 			field: 'level',
+    // 			title: '等级',
+    // 			align: 'center'
+    // 		}, {
+    // 			field: 'qty',
+    // 			title: '数量',
+    // 			align: 'center'
+    // 		}],
+    // 		data: [],
+    // 	});
+    // }
+
+    // function openRepo(){
+    //     $("#scaned").click()
+    // }
+
+    // var workCellId = '';
+    // var workCellName = '';
+    function addFormData() {
+        var formData = $('form').serializeArray()
+        // api.alert({
+        //     title: 'title',
+        //     msg: JSON.stringify(formData)
+        // });
+
+        var formObj = {
+            workCenterGid: '',
+            workCenterName: localStorage.getItem('workcenterName'),
+            workCenterCode: localStorage.getItem('workcenterCode'),
+            workCellGid: '',
+            workCellCode: '',
+            workCellName: '',
+            mrlCode: '',
+            mrlName: '',
+            mrlGrade: '',
+            packageCode: '',
+            lotCode: '',
+            barcode: '',
+            sn: '',
+            qty: $("#qty").val(),
+            operator: '',
+            remark: ''
+        }
+        var emptyMsg = ''
+        $.each(formData, function (i, v) {
+            if (!$.trim(v.value)) {
+                emptyMsg = $(":input[name=" + v.name + "]").attr('placeholder')
+                return false
+            }
+            formObj[v.name] = $.trim(v.value)
+        })
+        if (emptyMsg) {
+            api.toast({
+                msg: '请' + emptyMsg,
+                duration: 2000,
+                location: 'middle'
+            });
+            return
+        }
+        // formObj.workCenterCode = localStorage.getItem('workcenterCode')
+        // formObj.workCenterName = localStorage.getItem('workcenterName')
+        // formObj.workCellGid = workCellId
+        // formObj.workCellName = workCellName
+        // formObj.mrlCode = formObj.packageCode.split('_')[0]
+        // formObj.qty = 1
+
+        var tableData = $table.bootstrapTable('getData')
+        tableData.push(formObj)
+        initTable(null, tableData, function () {
+            return
+        })
+        $("#scaned").text(tableData.length)
+        $("#sn").val("").focus();
+
+        // api.toast({
+        //     msg: '物料已添加',
+        //     duration: 1000,
+        //     location: 'middle'
+        // });
+        //$.each(formData, function (idx, val) {
+        //    $(":input[name=" + val.name + "]").val('')
+        //})
+    }
+
+    function createSubmit() {
+        var submitData = $table.bootstrapTable('getData')
+        // var formData = $('form').serializeArray()
+        // $.each(formData, function (i, v) {
+        //     submitData[v.name] = v.value
+
+        // })
+        // api.alert({
+        //     title: 'submit', 
+        //     msg: JSON.stringify(submitData)
+        // });
+        // return false
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '提交中...',
+            modal: true
+        });
+        api.ajax({
+            url: getUrl("padWmsController!saveStockData.m"),
+            method: 'post',
+            data: {
+                values: {
+                    data: submitData
+                }
+            }
+        }, function (res, err) {
+            api.hideProgress();
+            if (res.errCode == 0) {
+                //var res = JSON.parse(res);
+                toast.success({
+                    title: '提交成功!',
+                    duration: 2000
+                });
+                //window.location.reload();
+                $("#workCellCode,#packageCode,#sn,#mrlName,#mrlCode").val('')
+                $("#scaned").text('0')
+                $table.bootstrapTable('removeAll')
+
+            } else {
+                api.toast({
+                    msg: res.msg,
+                    duration: 3000,
+                    location: 'middle'
+                });
+            }
+        })
+    }
+
+    /*
+     * 库位查询
+     */
+    function openRepo() {
+        api.openWin({
+            name: 'wmsWorkCell_Query',
+            url: 'wmsWorkCell_Query.html',
+            pageParam: {
+
+            }
+        });
+    }
+
+    //通过物料编码获取物料信息
+    function getMrlByCode(mrlCode) {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '物料加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: getUrl("padWmsController!getMrlByMrlcode.m"),
+            method: 'post',
+            data: {
+                values: {
+                    mrlCode: mrlCode
+                }
+            }
+        }, function (res, err) {
+            api.hideProgress();
+            if (res) {
+                var myobj = eval(res);
+                if (myobj.errCode == 0 && myobj.data != null && myobj.data != "") {
+                    var mrl = myobj.data;
+                    $('#mrlCode').val(mrlCode);
+                    $('#mrlName').val(mrl.mrlName || '');
+                    addFormData();
+                } else {
+                    $('#mrlCode').val(mrlCode);
+                    $('#mrlName').val('');
+                    addFormData();
+                    //	                api.toast({
+                    //	                    msg: '未找到当前物料，请检查栈板条码!',
+                    //	                    duration: 3000,
+                    //	                    location: 'middle'
+                    //              	});
+                    //              	$('#packageCode').val('').focus();
+                    //              	$('#mrlCode').val('');
+                    //	                $('#mrlName').val('');
+                }
+            } else {
+                api.toast({
+                    msg: err.msg,
+                    duration: 3000,
+                    location: 'middle'
+                });
+            }
+        })
+    }
+
+    //库位查找带回
+    function setDataBack(workCellCode) {
+        if (workCellCode) {
+            $('#workCellCode').val(workCellCode);
+        }
+    }
+
+    apiready = function () {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '仓库加载中...',
+            text: '请稍后...',
+            modal: true
+        });
+        api.ajax({
+            url: getUrl("padCommController!getWareHouseBySiteGid.m"),
+            method: 'post',
+            data: {
+                values: {
+                    loginName: localStorage.getItem("un"),
+                    siteGid: localStorage.getItem("siteGid")
+                }
+            }
+        }, function (ret, err) {
+            if (ret && ret.erroCode == 0 && ret.data) {
+                var workCenterGid = localStorage.getItem('workCenterGid')
+                var optionStr = ''
+                $.each(ret.data, function (i, v) {
+                    optionStr += '<option value="' + v.workCenterGid + '" ' + (v.workCenterGid ==
+                        workCenterGid ? 'selected' : '') + '>' + v.workCenterName + '</option>'
+                })
+                $("#workCenterGid").html(optionStr)
+            } else {
+                api.toast({
+                    msg: err.msg,
+                    duration: 2000,
+                    location: 'middle'
+                });
+                return;
+            }
+            api.hideProgress();
+        });
+        api.ajax({
+            url: getUrl("padWmsController!getAppMbbUdiByCode.m"),
+            method: 'post',
+            data: {
+                values: {
+                    udiCode: 'APP_STORAGE_GRADE'
+                }
+            }
+        }, function (ret, err) {
+            if (ret && ret.erroCode == 0 && ret.data) {
+                var optionStr = ''
+                //var checkd = 'checked';
+                $.each(ret.data, function (i, v) {
+                    // optionStr += '<input type="radio" name="mrlGrade" id="' + v.udiCode +
+                    //     '" value="' + v.udiCode + '" ' +
+                    //     'class="aui-checkbox" ' + checkd + '><label for="' + v.udiCode +
+                    //     '" class="aui-btn">' + v.udiName + '</label>';
+                    // checkd = '';
+                    optionStr += '<option value="' + v.udiCode + '" ' + (i ==
+                        0 ? 'selected' : '') + '>' + v.udiName + '</option>'
+                })
+                $("#gradeSelect").html(optionStr)
+            } else {
+                api.toast({
+                    msg: err.msg,
+                    duration: 2000,
+                    location: 'middle'
+                });
+                return;
+            }
+            api.hideProgress();
+        });
+
+        api.addEventListener({
+            name: 'workCell_Query'
+        }, function (ret, err) {
+            if (ret.value.type == 'query') {
+                setDataBack(ret.value.code);
+                if (ret.value.id) {
+                    workCellId = ret.value.id;
+                    workCellName = ret.value.name;
+                }
+            }
+        });
+
+        initTable(tableField)
+        $('#workCellCode').focus();
+    }
+</script>
+
+</html>

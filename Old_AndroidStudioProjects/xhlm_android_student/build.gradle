@@ -1,0 +1,44 @@
+buildscript {
+    
+    repositories {
+
+        maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
+        maven { url 'http://git.baijiashilian.com/open-android/maven/raw/master/' }
+
+        maven { url "https://maven.aliyun.com/repository/apache-snapshots"}
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin"}
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+allprojects {
+    repositories {
+        maven {url "https://maven.google.com"}
+        mavenCentral()
+        jcenter()
+        google()
+        maven {url "https://jitpack.io"}
+
+
+        maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
+        maven { url 'http://git.baijiashilian.com/open-android/maven/raw/master/' }
+
+        maven { url "https://maven.aliyun.com/repository/apache-snapshots"}
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin"}
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

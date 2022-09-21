@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>批次码补码</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content">
+        <ul class="aui-list aui-form-list">
+          <li class="aui-list-item aui-margin-b-10">
+              <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">托盘条码</div>
+                <div class="aui-list-item-input">
+                    <input id="tab1-scan-barcode1" type="text" @keyup.enter="onEnterPBarCode"
+                           v-model.trim="tab1ScanCode"
+                           placeholder="扫描容器条码">
+                </div>
+              </div>
+          </li>
+          <li class="aui-list-item" v-if="vueData1.lotCodeList.length != 0">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">选择批次</div>
+                  <div class="aui-list-item-input">
+                    <select @change="getSubArea($event)" id="sub-area">
+                        <option v-for="(item,index) in lotCodeList" :value="item">{{item}}</option>
+                    </select>
+                  </div>
+              </div>
+          </li>
+        </ul>
+    </form>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="printLotCode">生成</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+
+    var dialog = new auiDialog({});
+
+    apiready = function () {
+        $('#tab1-scan-barcode1').focus();
+    };
+
+    /*--------------vue1--------------*/
+    var vueData1 = {
+        lotCodeList:[],//库位数组
+        tab1ScanCode: '',
+        lotCode:"",
+    };
+    var app1 = new Vue({
+        el: '#aui-tab-1',
+        data: vueData1,
+        methods: {
+          //  下拉框
+          getSubArea: function (event) {
+              // 保存所选库区的值gid name
+              var subAreaGid = event.target.value;
+              this.lotCode = subAreaGid;
+          },
+          //扫描托盘条码
+          onEnterPBarCode: function () {
+              //step 1.校验：是否有内容输入；
+              if (!this.tab1ScanCode) {
+                  return false
+              }
+              //step 2.取值
+              var barCode = this.tab1ScanCode;
+              api.showProgress({
+                  style: 'default',
+                  animationType: 'fade',
+                  title: '努力加载中...',
+                  text: '请稍后...',
+                  modal: true
+              });
+              $.ajax({
+                  type: "POST",
+                  url: getUrl('padWmsController!getCtContent.m'),
+                  dataType: "json",
+                  data: {
+                    ctBarCode: barCode
+                  },
+                  async: false,
+                  success: function (res) {
+                      if (res.errCode === 0) {
+                        if(!!res.data[0].lotCode){
+                          for (var i = 0; i < res.data.length; i++) {
+                            vueData1.lotCodeList.push(res.data[i].lotCode);
+                          }
+                          vueData1.lotCode = vueData1.lotCodeList[0];
+                        }
+                      } else {
+                          this.tab1ScanCode = "";
+                          api.hideProgress();
+                          api.toast({msg: res.msg, duration: 3000, location: 'middle'});
+                      }
+                  },
+                  error: function (e) {
+                      api.hideProgress();
+                  }
+
+              });
+              api.hideProgress();
+          },
+          printLotCode(){
+            // printToJiaBo("2018050120200304");
+          }
+        }
+    });
+</script>
+
+</html>

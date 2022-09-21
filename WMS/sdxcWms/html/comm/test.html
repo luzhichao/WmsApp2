@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>测试页面</title>
+	<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/icons.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/bootstrap-table.min.css" />
+	<style>
+		thead tr:first-child {
+			background-color: #DCE9F2;
+			border-top: 1px solid #CBD6DE;
+			border-bottom: 1px solid #ADBECB;
+			color: #467aa7;
+			font-size: 13px;
+			font-weight: bold;
+		}
+		.table {
+			margin-bottom: 15px;
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 13px;
+			margin-bottom: 15px;
+			width: 100%;
+			border-collapse: collapse;
+		}
+		.table td {
+			height: 40px;
+			text-align: center;
+			border: 1px solid #CBD6DE;
+			padding: 0;
+			margin: 0;
+			word-break: break-all;
+			vertical-align: middle !important;
+		}
+	</style>
+</head>
+<body>
+<table id="table" ></table>
+<iframe class="jasper_htmlView_iframe" id="fr" width=200% height=1600 src=""></iframe>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script src="../../script/jquery-1.8.2.min.js"></script>
+<script src="../../script/bootstrap-table.min.js"></script>
+<script src="../../script/ping.js"></script>
+<script type="text/javascript">
+/* var myobj=[
+	 { "equipName":"总装台",
+		 "gid":"402881106304e2c5016304edfa4d0d0e",
+		 "equipCode":"150901007502",
+		 "frequency":"每班",
+		 "toolName":"扫帚",
+		 "labourGroupCode":"ZZB",
+		 "checkItem":"清理总装台设备及角件定位的卫生",
+		 "desc1":"清理总装台设备及角件定位的卫生",
+		 "desc2":"工作台面清洁，工具摆放整齐。角件定位工装表面无杂物。"
+	 },
+	 { "equipName":"总装台",
+		 "gid":"402881106304e2c5016304edfa4d0d0e",
+		 "equipCode":"150901007502",
+		 "frequency":"每班",
+		 "toolName":"扫帚",
+		 "labourGroupCode":"ZZB",
+		 "checkItem":"清理总装台设备及角件定位的卫生",
+		 "desc1":"清理总装台设备及角件定位的卫生",
+		 "desc2":"工作台面清洁，工具摆放整齐。角件定位工装表面无杂物。"
+	 }
+ ];
+	apiready = function() {
+
+	};
+	$('#table').bootstrapTable({
+		columns: [
+		{
+			field: 'select',
+	    title: '序号',
+	    align:"center",
+	    valign:"middle",
+			striped: false,                      //是否显示行间隔色
+			cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+			clickToSelect: true,
+			formatter : function(value, row, index){
+					return '<input class="aui-checkbox" type="checkbox" name="chk">';
+			},
+    }, {
+				field: 'gid',
+				title: '主键',
+				align:'center',
+				visible:false
+		}, {
+				field: 'equipCode',
+				title: '设备编码',
+				align:'center'
+		}, {
+				field: 'equipName',
+				title: '设备名称',
+				align:'center'
+		}, {
+				field: 'toolName',
+				title: '工具',
+				align:'center'
+		}, {
+				field: 'labourGroupCode',
+				title: '班组编码',
+				align:'center'
+		}, {
+				field: 'checkItem',
+				title: '检测项名称',
+				align:'center'
+		}, {
+				field: 'desc1',
+				title: '描述1',
+				align:'center'
+		}, {
+				field: 'desc2',
+				title: '描述2',
+				align:'center',
+				formatter : function(value, row, index){
+		      	 var operates = '<select  style="width:120px;" name="operateStyle">'+
+															   '<option value="0">部分提交</option>'+
+															   '<option value="1">全部合格提交</option>'+
+															   '<option value="3">剩余合格提交</option>'+
+				   										'</select>'
+			      	  return operates;
+			        },
+		},],
+		data:myobj,
+		rowStyle: function (row, index) {
+        if (index % 2) {
+            //return { classes: "bg-info" };
+            return { css: { "background-color": "#ddd" } };
+        }
+        return { classes: "" };
+    },
+
+	});
+
+	// 处理选中或者不选中的冒泡事件
+	$(function () {
+		$('#table').on('click-row.bs.table', function (e, row, obj) {
+			//$(obj).css({"color":"blue","font-size":"16px;"});
+			console.log(row);
+			var t = $(obj).find(".aui-checkbox");
+			$(t).prop("checked", !$(t).prop("checked"));
+			$(obj).find("[type='checkbox']").click(function(e) {
+					var e = e || window.event;
+					e.stopPropagation();
+			});
+		});
+  });
+
+		// 网络测试
+	function do_ping () {
+      ping("http://192.168.1.111:8080/qdCIMC-web").then(function(delta) {
+					console.log(delta);
+        }).catch(function(error) {
+					console.log(error);
+        });
+    };*/
+//$("#fr").attr("src","http://10.130.7.39:8080/mestar-rs-7.0/autoLoginController!login.m?_u=2230&_p=MdYkh6KFDkw&_to=ReportServer?reportlet=twoBarCode.cpt");
+//$("#fr").attr("src","http://10.130.7.31:8180/mestar-rs-7.0/autoLoginController!login.m?_u=2230&_p=MdYkh6KFDkw&_to=ReportServer?reportlet=DSDP2018.cpt");
+$("#fr").attr("src","http://192.168.1.103:8075/WebReport/ReportServer?reportlet=CIMI%2FDSDP2018.cpt");
+
+
+</script>
+
+</html>

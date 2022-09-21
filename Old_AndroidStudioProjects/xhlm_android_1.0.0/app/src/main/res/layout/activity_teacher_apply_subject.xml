@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.TeacherApplySubject">
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_apply_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--content-->
+    <ScrollView
+        android:id="@+id/sc_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_apply_subject">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="实名认证" />
+                <RelativeLayout
+                    android:id="@+id/rl_school"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/apply_tv_realyname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:hint="尚未提供认证材料" />
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="我的认证" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/apply_tv_otherauth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:hint="尚未提供认证材料" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <LinearLayout
+                android:id="@+id/ll_about_me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="个人资料" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/apply_tv_personRes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="学部学科" />
+                <RelativeLayout
+                    android:id="@+id/rl_teach_exp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/apply_tv_gradeSubject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:hint="请填学部学科" />
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="授课时间" />
+                <RelativeLayout
+                    android:id="@+id/rl_teach_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/apply_tv_subjectTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="基本服务准则" />
+                <RelativeLayout
+                    android:id="@+id/rl_basic_service"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_apply_baserule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="学习平台规则" />
+                <RelativeLayout
+                    android:id="@+id/rl_platform_rule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_apply_studyplatformrule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor"
+                android:visibility="gone"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="学观看培训视频" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_apply_studyvideo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5" />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:background="@color/backgroundColor" />
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_margin="@dimen/top_margin"
+        android:layout_below="@id/sc_view"
+        android:text="填写的信息可在申请成功后再“我的”页面修改"/>
+    <Button
+        android:id="@+id/bt_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/btMargin50dp"
+        android:layout_marginRight="@dimen/btMargin50dp"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:textColor="@color/titleWhite"
+        android:background="@drawable/btn_blue_gradual"
+        android:text="开课" />
+</LinearLayout>

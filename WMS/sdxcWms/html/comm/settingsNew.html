@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>系统设置</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		p {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav" id="header" style="background-color: #03a9f4">
+		<div class="aui-title">服务IP设置</div>
+	</header>
+
+	<div class="aui-content-padded aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">内网IP</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="IP地址" id="serverIp" value="" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">内网端口号</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="如8080" id="serverPort" value="80" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">内网服务名</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="服务器访问名称" id="serverProject" value="wms" />
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content-padded aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">外网IP</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="IP地址" id="serverIpW" value="" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">外网端口号</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="如8080" id="serverPortW" value="" />
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">外网服务名</div>
+					<div class="aui-list-item-input">
+						<input type="text" placeholder="服务器访问名称" id="serverProjectW" value="wms" />
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content-padded aui-margin-b-15">
+		<ul class="aui-list aui-form-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">网络选择</div>
+					<div class="aui-list-item-input">
+						<label><input class="aui-radio" type="radio" id="inRadio" name="netRadio" checked
+								value="in">内网</label>
+						<label><input class="aui-radio" type="radio" id="outRadio" name="netRadio"
+								value="out">外网</label>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content-padded">
+		<p>
+			<div class="aui-btn aui-btn-info aui-btn-block" onclick='pingTest()'>网络检测</div>
+		</p>
+	</div>
+
+	<div class="aui-content-padded">
+		<p>
+			<div class="aui-btn aui-btn-info aui-btn-block" onclick='doSave()'>保存</div>
+		</p>
+	</div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+	apiready = function () {
+		$api.fixStatusBar(document.querySelector('#header'));
+
+		var serverIpN = localStorage.getItem('serverIpN');
+		var serverPortN = localStorage.getItem('serverPortN');
+		var serverProjectN = localStorage.getItem('serverProjectN');
+		var serverIpW = localStorage.getItem('serverIpW');
+		var serverPortW = localStorage.getItem('serverPortW');
+		var serverProjectW = localStorage.getItem('serverProjectW');
+
+		var netChoice = localStorage.getItem('netChoice');
+
+		if (serverIpN != null || serverPortN != null || serverProjectN != null) {
+			$("#serverIp").val(serverIpN);
+			$("#serverPort").val(serverPortN);
+			$("#serverProject").val(serverProjectN);
+		}
+
+		if (serverIpW != null || serverPortW != null || serverProjectW != null) {
+			$("#serverIpW").val(serverIpW);
+			$("#serverPortW").val(serverPortW);
+			$("#serverProjectW").val(serverProjectW);
+		}
+
+		if (netChoice != null && netChoice == "in") {
+			//内网
+			document.getElementById('inRadio').checked = true;
+		} else if (netChoice != null && netChoice == "out") {
+			//外网
+			document.getElementById('outRadio').checked = true;
+		}
+		var ipChoic = $('input:radio:checked').val();
+		if (ipChoic == "in") {
+			$("#serverIpW").css("disabled", "disabled");
+			$("#serverPortW").css("disabled", "disabled");
+			$("#serverProjectW").css("disabled", "disabled");
+			$("#serverIp").css("disabled", "");
+			$("#serverPort").css("disabled", "");
+			$("#serverProject").css("disabled", "");
+		} else {
+			$("#serverIpW").css("disabled", "");
+			$("#serverPortW").css("disabled", "");
+			$("#serverProjectW").css("disabled", "");
+			$("#serverIp").css("disabled", "disabled");
+			$("#serverPort").css("disabled", "disabled");
+			$("#serverProject").css("disabled", "disabled");
+		}
+	};
+
+	$("input:radio").on("click", function () {
+		var ipChoic = $('input:radio:checked').val();
+		if (ipChoic == "in") {
+			$("#serverIpW").attr("disabled", "disabled");
+			$("#serverPortW").attr("disabled", "disabled");
+			$("#serverProjectW").attr("disabled", "disabled");
+			$("#serverIp").removeAttr("disabled");
+			$("#serverPort").removeAttr("disabled");
+			$("#serverProject").removeAttr("disabled");
+		} else {
+			$("#serverIpW").removeAttr("disabled");
+			$("#serverPortW").removeAttr("disabled");
+			$("#serverProjectW").removeAttr("disabled");
+			$("#serverIp").attr("disabled", "disabled");
+			$("#serverPort").attr("disabled", "disabled");
+			$("#serverProject").attr("disabled", "disabled");
+		}
+	});
+
+	function pingTest() {
+		//获取当前选择网络，并检测网络连接是否成功
+		var obj = document.getElementsByName('netRadio');
+		var serverIp = "";
+		for (var i = 0; i < obj.length; i++) {
+			if (obj[i].checked == true) {
+				if (obj[i].value == 'in') {
+					serverIp = $("#serverIp").val();
+				} else if (obj[i].value == 'out') {
+					serverIp = $("#serverIpW").val();
+				}
+			}
+		}
+		var modulePing = api.require('modulePing');
+		api.showProgress({
+			style: 'default',
+			animationType: 'fade',
+			title: '网络检测中...',
+			text: '请稍后...',
+			modal: true
+		});
+		modulePing.pingtest({
+			ip: serverIp
+		}, function (ret, err) {
+			api.hideProgress();
+			if (ret) {
+				if (ret.okNum > 0) {
+					api.toast({
+						msg: '网络通畅'
+					});
+				} else {
+					api.toast({
+						msg: '网络不通'
+					});
+				}
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	function doSave() {
+		var serverIpNO = localStorage.getItem('serverIpN');
+		var serverPortNO = localStorage.getItem('serverPortN');
+		var serverProjectNO = localStorage.getItem('serverProjectN');
+		var serverIpWO = localStorage.getItem('serverIpW');
+		var serverPortWO = localStorage.getItem('serverPortW');
+		var serverProjectWO = localStorage.getItem('serverProjectW');
+		var netRadioObj = document.getElementsByName("netRadio"); //这个是以标签的name来取控件
+		var netRadioStr = "";
+		for (j = 0; j < netRadioObj.length; j++) {
+			if (netRadioObj[j].checked) {
+				netRadioStr = netRadioObj[j].value;
+			}
+		}
+		var serverIp = "";
+		var serverPort = "";
+		var serverProject = "";
+		localStorage.setItem('netChoice', netRadioStr);
+		//保存内网配置信息
+		serverIp = $("#serverIp").val();
+		serverPort = $("#serverPort").val();
+		serverProject = $("#serverProject").val();
+		localStorage.setItem('serverIpN', serverIp);
+		localStorage.setItem('serverPortN', serverPort);
+		localStorage.setItem('serverProjectN', serverProject);
+		//保存外网配置信息
+		serverIp = $("#serverIpW").val();
+		serverPort = $("#serverPortW").val();
+		serverProject = $("#serverProjectW").val();
+		localStorage.setItem('serverIpW', serverIp);
+		localStorage.setItem('serverPortW', serverPort);
+		localStorage.setItem('serverProjectW', serverProject);
+		var clearFlag = 'N';
+		//判断网络设置是否修改有修改则清空工作中心缓存
+		if ($("#serverIp").val() != serverIpNO) {
+			clearFlag = 'Y';
+		}
+		if ($("#serverPort").val() != serverPortNO) {
+			clearFlag = 'Y';
+		}
+		if ($("#serverProject").val() != serverProjectNO) {
+			clearFlag = 'Y';
+		}
+		if ($("#serverIpW").val() != serverIpWO) {
+			clearFlag = 'Y';
+		}
+		if ($("#serverPortW").val() != serverPortWO) {
+			clearFlag = 'Y';
+		}
+		if ($("#serverProjectW").val() != serverProjectWO) {
+			clearFlag = 'Y';
+		}
+		if (clearFlag == 'Y') {
+			localStorage.removeItem('workCenterGid');
+			localStorage.removeItem('workCenterCode');
+			localStorage.removeItem('workCenterName');
+		}
+		api.rebootApp();
+	}
+</script>
+
+</html>

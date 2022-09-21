@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.MySudentActivity">
+
+    <!--头部基本信息 title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/tv_student_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- 在授学生、完课学生页签-->
+    <LinearLayout
+        android:id="@+id/ll_my_student"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!-- 在授学生 -->
+        <RelativeLayout
+            android:id="@+id/rl_teaching_student"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_teaching_student"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/wide_line"
+                android:paddingBottom="@dimen/wide_line"
+                android:text="在授学生"
+                android:textAlignment="center"
+                android:background="@color/backgroundColor"/>
+            <TextView
+                android:id="@+id/tv_line_teaching_student"
+                android:layout_width="match_parent"
+                android:layout_alignBottom="@id/tv_teaching_student"
+                android:layout_height="@dimen/hairer_line"
+                android:background="@color/blue"/>
+        </RelativeLayout>
+        <!-- 完课学生 -->
+        <RelativeLayout
+            android:id="@+id/rl_finish_student"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_finish_student"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/wide_line"
+                android:paddingBottom="@dimen/wide_line"
+                android:text="完课学生"
+                android:textAlignment="center"
+                android:background="@color/backgroundColor"/>
+            <TextView
+                android:id="@+id/tv_line_finish_student"
+                android:layout_width="match_parent"
+                android:layout_alignBottom="@id/tv_finish_student"
+                android:layout_height="@dimen/hairer_line"
+                android:visibility="gone"
+                android:background="@color/blue"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--内容-->
+    <ListView
+        android:id="@+id/lv_my_student"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <!--展示提示信息-->
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAlignment="center"
+        android:text="没有信息"
+        android:visibility="gone"/>
+
+</LinearLayout>

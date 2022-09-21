@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>库存解冻</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div id="aui-tab" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-t-10" id="formSection">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">解冻类型</div>
+                    <select @change="getType($event)" :disabled="isDisabled">
+                        <option value="0">--请选择--</option>
+                        <option value="UWM_FREEZE_TYPE_01">库位</option>
+                        <option value="UWM_FREEZE_TYPE_02">容器</option>
+                        <!-- <option value="3">物料</option> -->
+                    </select>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">{{labelName}}</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="workCellBarCode" @keyup.enter="onEnterWorkCell"
+                               v-model="tab2ScanWorkCell" placeholder="扫描条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item" style="display:none">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">神奇的bug</div>
+                    <div class="aui-list-item-input">
+                        <input type="text">
+                    </div>
+                </div>
+            </li>
+            <!-- <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">库位编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="workCellCode" v-model="formData.workCellCode" readonly="readonly">
+                    </div>
+                </div>
+            </li> -->
+            <!-- <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="mrlBarCode" @keyup.enter="onEnterBarCode" v-model.trim="tab2ScanBarcode"
+                               placeholder="扫描条码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">物料编码</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="mrlCode" v-model="formData.mrlCode" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">批次</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="lotCode" v-model="formData.lotCode" readonly="readonly">
+                    </div>
+                </div>
+            </li> -->
+        </ul>
+    </form>
+    <table id="bootstrap-tab"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+
+
+<script type="text/javascript">
+    /**
+     * 功能流程
+     *
+     */
+
+    /**
+     * 页面配置参数
+     */
+    var pageConfig = {
+        sourceBusinessType: "",   //无
+        targetBusinessType: TYPE.FRZ_BILL,   //目标-单据类型--解冻单
+        isTaskFromBarCode: false,           //任务是否来源于条码
+        isSplitBarCode: false,               //条码带的信息是解析还是从后台获取
+        isDialogToConfirmQty: false,         //是否弹框输入数量
+        isScanWorkCellCode: false             //是否需要扫货位 false则扫条码时带出
+    };
+
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+
+    var tableField = [
+        {name: 'mrlCode', title: '物料编码'},
+        {name: 'lotCode', title: '批次'},
+        {name:'uda1',title:"容器"},
+        {name: 'workCellCode', title: '库位'},
+        {name: 'qty', title: '数量'},
+    ];
+
+    apiready = function () {
+        initTable(0, tableField, null, function (row, $element) {
+            dialog.alert({
+                title: "确认删除吗?",
+                buttons: ['取消', '确定']
+            }, function (ret) {
+                if (ret.buttonIndex === 2) {
+                    updateTableByDeleteForFreeze(row, $element.data('index'), $element);
+                }
+            })
+        });
+        //3.设置监听(查询页面数据的回传)
+        setQueryListener(api)
+    };
+
+    /*--------------vue2--------------*/
+    var vueData = {
+        tab2ScanWorkCell: '',        //扫描货位
+        tab2ScanBarcode: '',
+        type: '0',
+        extendCode: '',
+        isScanWorkCellCode: pageConfig.isScanWorkCellCode,
+        locationData: {
+            workCellGid: '',    //库位
+            workCellCode: ''
+        },
+        labelName:"库位",
+        isDisabled:false,
+        formData: {
+            workCellCode: '',    //库位编码
+            mrlCode: '',        //物料编码
+            lotCode: '',            //批次
+            // qty: ''             //条码数量
+        }
+    };
+    var app2 = new Vue({
+        el: '#aui-tab',
+        data: vueData,
+        methods: {
+            onEnterWorkCell: function () {
+                if(vueData.type == "0"){
+                  vueData.tab2ScanWorkCell = "";
+                  $('#workCellBarCode').focus();
+                  return api.toast({msg: '请选择解冻类型后再次扫描', location: 'middle'});
+                }
+                //step1 是否重复扫描
+                api.confirm({
+                    title: '提示',
+                    msg: "是否解冻"+vueData.labelName+":"+vueData.tab2ScanWorkCell+"?",
+                    buttons: ['确定', '取消']
+                }, function (ret, err) {
+                    if (ret.buttonIndex == 1) {
+                      var obj = {};
+                      if(vueData.type == "UWM_FREEZE_TYPE_01"){
+                        obj.workCellCode = vueData.tab2ScanWorkCell;
+                        obj.mrlCode = "";
+                        obj.lotCode = "";
+                        obj.qty = "";
+                        obj.uda1 = "";
+                      }else if(vueData.type == "UWM_FREEZE_TYPE_02"){
+                        obj.workCellCode = "";
+                        obj.mrlCode = "";
+                        obj.lotCode = "";
+                        obj.qty = "";
+                        obj.containerCode = vueData.tab2ScanWorkCell;
+                      }
+                      removeAllAtTable(0);
+                      insertDateAtTable(0, 'prepend', [obj]);
+                    //   app2.submit();
+                    }else {
+                      vueData.tab2ScanWorkCell = "";
+                      $('#workCellBarCode').focus();
+                    }
+                });
+            },
+            getType: function (event) {
+                vueData.type = event.target.value;
+                if(vueData.type == "UWM_FREEZE_TYPE_01"){
+                  vueData.labelName = "库位";
+                }else if (vueData.type == "UWM_FREEZE_TYPE_02") {
+                  vueData.labelName = "容器";
+                }
+            },
+            // onEnterBarCode: function () {
+            //     //step 1.条件判断
+            //     if (!this.tab2ScanBarcode) {
+            //         return false
+            //     }
+            //     if (this.type == '0') {
+            //         api.toast({msg: '请先选择解冻类型！', location: 'middle'});
+            //         this.tab2ScanBarcode = '';
+            //         return false
+            //     }
+            //     var barCode = this.tab2ScanBarcode;
+            //     var tableData3 = $("#bootstrap-tab-3").bootstrapTable('getData');
+            //     if (tableData3.length >= 1 && checkIsInBarCodeArr(barCode, tableData3)) {
+            //         this.tab2ScanBarcode = '';
+            //         return false
+            //     }
+            //     if (this.isScanWorkCellCode) {
+            //         if (!this.locationData.workCellCode) {
+            //             api.toast({msg: '请先扫描库位！', location: 'middle'});
+            //             this.tab2ScanBarcode = '';
+            //             $("#workCellBarCode").focus();
+            //             return false
+            //         }
+            //     } else {
+            //         var ret = getBarStockInfoByBarCodeForFrz(barCode, vueData.type, this.extendCode);
+            //         vueData.formData['mrlCode'] = ret[0].mrlCode;
+            //         vueData.formData['lotCode'] = ret[0].lotCode;
+            //
+            //         for (var i = 0; i < ret.length; i++) {
+            //             var newDate = {};
+            //             for (var name in ret[i]) {
+            //                 newDate[name] = ret[i][name];
+            //             }
+            //             updateTableByInsert(newDate, tableField2, tableField3);
+            //         }
+            //         vueData.formData['extendCode'] = vueData.extendCode;
+            //         api.hideProgress();
+            //     }
+            //     vueData.isDisabled = true;
+            //     this.tab2ScanBarcode = '';
+            // },
+            //提交
+            submit(){
+              var bill = {};
+              bill.workCenterGid = WCEN_GID;
+              bill.operType = 2; //操作类型：1-冻结，2-解冻
+              bill.freezeTypeCode = vueData.type;
+
+              var details = $("#bootstrap-tab").bootstrapTable('getData');
+              if(details.length == 0){
+                return api.toast({msg: '请扫描后再次提交', location: 'middle'});
+              }
+              var barCodes = null ;
+
+              api.showProgress();
+              $.ajax({
+                  type: "POST",
+                  url: getUrl('padWmsController!createStockFreeze.m'),
+                  dataType: "json",
+                  data: {
+                      bill: JSON.stringify(bill),
+                      details: JSON.stringify(details),
+                      barCodes: JSON.stringify(barCodes),
+                      un: localStorage.getItem("un")
+                  },
+                  async: false,
+                  success: function (ret) {
+                    if(ret.errCode == 0){
+                      api.toast({msg: '提交成功', location: 'middle'});
+                      window.location.reload();
+                    }else {
+                      api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                      api.hideProgress();
+                    }
+                  },
+                  error: function (e) {
+                      api.hideProgress();
+                      api.toast({msg: ret.msg, duration: 3000, location: 'middle'});
+                  }
+              });
+            }
+        }
+    });
+</script>
+
+</html>

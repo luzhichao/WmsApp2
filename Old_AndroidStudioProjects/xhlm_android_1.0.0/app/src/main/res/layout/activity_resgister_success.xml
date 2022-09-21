@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".teacher.activities.RegisterSuccess"
+    android:orientation="vertical"
+    android:gravity="center">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/success"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="恭喜您注册成功！"
+        android:textSize="@dimen/titleSize"
+        android:textColor="@color/blue"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="您还需要申请开课，审核后才能开始接单"
+        android:textSize="@dimen/sp12"
+        />
+    <Button
+        android:id="@+id/bt_apply_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp50"
+        android:text="申请开课"
+        android:textColor="@color/titleWhite"
+        android:background="@drawable/btn_blue_solid"/>
+    <TextView
+        android:id="@+id/tv_to_homepage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我先逛逛"/>
+</LinearLayout>

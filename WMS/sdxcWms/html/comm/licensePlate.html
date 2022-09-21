@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>车牌键盘</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/outBound.css" />
+	<style>
+		.allTop{
+		  z-index: 1999;
+      width: 100%;
+      height: 8.5rem;
+			background-color: rgb(255,248,220);
+			padding: .25rem .3rem;
+			box-sizing: border-box;
+		}
+
+		.allTop>div{
+			width: 100%;
+			height: 2rem;
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+		}
+
+		.allTop .secondPlate{
+			box-sizing: border-box;
+			padding: .1rem;
+		}
+
+		div.plateStyle{
+			width: 1.3rem;
+			height: 1.3rem;
+			background-color: white;
+			color: black;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 16px;
+			font-weight: bolder;
+		}
+
+		.functionPlate{
+			width: 100%;
+			height: 2rem;
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+		}
+
+		.changePlate , .deletePlate{
+			width: 4rem;
+			height: 1.5rem;
+			background-color: white;
+			color: rgb(0,255,255);
+			font-size: 16px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-weight: bolder lighter;
+		}
+	</style>
+</head>
+
+<body>
+  <div class="allTop" id="app1" v-if="pageValue == 1">
+  	<div class="firstPlate">
+			<div v-for="(item,index) in (plate.value == 0 ? plate.province.firstRow : plate.province.forthRow)" :key="index" class="plateStyle"
+			@click="getProvinceName(item.value)">
+				{{item.value}}
+			</div>
+  	</div>
+  	<div class="secondPlate">
+			<div v-for="(item,index) in (plate.value == 0 ? plate.province.secondRow : plate.province.fifthRow)" :key="index" class="plateStyle"
+			@click="getProvinceName(item.value)">
+				{{item.value}}
+			</div>
+  	</div>
+  	<div class="threePlate">
+			<div v-for="(item,index) in (plate.value == 0 ? plate.province.thirdRow : plate.province.sixRow)" :key="index" class="plateStyle"
+			@click="getProvinceName(item.value)">
+				{{item.value}}
+			</div>
+  	</div>
+		<div class="functionPlate">
+			<div class="changePlate" @click="changePlate">
+				切换
+			</div>
+			<div class="deletePlate" @click="deletePlate">
+				删除
+			</div>
+		</div>
+  </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript">
+		apiready = function(){
+
+		}
+
+		var vueData2 = {
+			pageValue:1,
+			plate:{
+				value:0,
+				province:{
+					firstRow:[{
+						value:'京',
+						class:'1'
+					},{
+						value:'津'
+					},{
+						value:'沪'
+					},{
+						value:'渝'
+					},{
+						value:'黑'
+					},{
+						value:'吉'
+					},{
+						value:'辽'
+					},{
+						value:'蒙'
+					},{
+						value:'冀'
+					},{
+						value:'新'
+					},{
+						value:'甘'
+					},{
+						value:'青'
+					}],
+					secondRow:[{
+						value:'陕',
+						class:'1'
+					},{
+						value:'宁'
+					},{
+						value:'豫'
+					},{
+						value:'鲁'
+					},{
+						value:'晋'
+					},{
+						value:'皖'
+					},{
+						value:'鄂'
+					},{
+						value:'湘'
+					},{
+						value:'苏'
+					},{
+						value:'川'
+					}],
+					thirdRow:[{
+						value:'黔',
+						class:'1'
+					},{
+						value:'滇'
+					},{
+						value:'桂'
+					},{
+						value:'藏'
+					},{
+						value:'浙'
+					},{
+						value:'赣'
+					},{
+						value:'粤'
+					},{
+						value:'闽'
+					},{
+						value:'琼'
+					},{
+						value:'港'
+					},{
+						value:'澳'
+					},{
+						value:'台'
+					}],
+					forthRow:[{
+						value:'0'
+					},{
+						value:'1'
+					},{
+						value:'2'
+					},{
+						value:'3'
+					},{
+						value:'4'
+					},{
+						value:'5'
+					},{
+						value:'6'
+					},{
+						value:'7'
+					},{
+						value:'8'
+					},{
+						value:'9'
+					}],
+					fifthRow:[{
+						value:'A'
+					},{
+						value:'B'
+					},{
+						value:'C'
+					},{
+						value:'D'
+					},{
+						value:'E'
+					},{
+						value:'F'
+					},{
+						value:'G'
+					},{
+						value:'H'
+					},{
+						value:'I'
+					},{
+						value:'J'
+					},{
+						value:'K'
+					},{
+						value:'L'
+					},{
+						value:'M'
+					},{
+						value:'N'
+					}],
+					sixRow:[{
+						value:'O'
+					},{
+						value:'P'
+					},{
+						value:'Q'
+					},{
+						value:'R'
+					},{
+						value:'S'
+					},{
+						value:'T'
+					},{
+						value:'U'
+					},{
+						value:'V'
+					},{
+						value:'W'
+					},{
+						value:'X'
+					},{
+						value:'Y'
+					},{
+						value:'Z'
+					}],
+				}
+			}
+		}
+
+		var app1 = new Vue({
+			el:'#app1',
+			data:vueData2,
+			mounted:function(){
+				api.addEventListener({
+						name: 'closePlate'
+				}, function(ret, err){
+						if( ret ){
+							vueData2.pageValue = 0;
+						}
+				});
+			},
+			methods:{
+				getProvinceName(item){
+					api.sendEvent({
+					    name:'triggerPlate',
+							extra:{
+								'plate':item
+							}
+					});
+				},
+				deletePlate(){
+					api.sendEvent({
+					    name:'deletePlate',
+							extra:{
+								'plate':1
+							}
+					});
+				},
+				changePlate(){
+					if(vueData2.plate.value == 1){
+						vueData2.plate.value = 0;
+					}else {
+						vueData2.plate.value = 1;
+					}
+				}
+			}
+		})
+</script>
+
+</html>

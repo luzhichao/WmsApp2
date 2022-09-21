@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>转移作业</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+    <style media="screen">
+      .chooseButton{
+        width: 100%;
+        height: 4rem;
+        line-height: 4rem;
+        text-align: center;
+        font-size: 1rem;
+        box-sizing: border-box;
+        border: 1px solid black;
+      }
+      .chooseButton.Top{
+        margin-bottom:.3rem;
+      }
+      .divBackColor{
+        background-color: rgb(255,239,213);
+      }
+    </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- <div v-if="workType == ''">
+      <div class="chooseButton Top divBackColor" @click="changeWorkType('1')">
+        容器转移
+      </div>
+      <div class="chooseButton divBackColor" @click="changeWorkType('2')">
+        零拣转移
+      </div>
+      <div class="chooseButton divBackColor" @click="changeWorkType('3')">
+        样品转移
+      </div>
+    </div> -->
+    <div> <!-- v-if="workType == 1" -->
+      <form class="aui-content aui-margin-b-10">
+        <ul class="aui-list aui-form-list">
+          <li class="aui-list-item aui-margin-b-10">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">容器扫描</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab1-scan-ctBarcode" @keyup.enter="onEnterTypeOneCtBarcode"
+                      v-model="typeOne.ctBarcode"
+                             placeholder="扫描容器编码">
+                  </div>
+              </div>
+          </li>
+          <li class="aui-list-item">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">目标库位</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab1-scan-workCell" @keyup.enter="onEnterTypeOneTargetWorkCellCode"
+                      v-model="typeOne.targetWorkCellCode"
+                             placeholder="扫描目标库位编码">
+                  </div>
+              </div>
+          </li>
+        </ul>
+      </form>
+    </div>
+    <div v-if="workType == 2">
+      <form class="aui-content aui-margin-b-10">
+        <ul class="aui-list aui-form-list">
+          <li class="aui-list-item aui-margin-b-10">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">零拣库位</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab2-scan-workCell" @keyup.enter="onEnterTypeTwoWorkCellCode"
+                      v-model="typeTwo.workCellCode"placeholder="扫描零拣库位编码">
+                  </div>
+              </div>
+          </li>
+          <li class="aui-list-item aui-margin-b-10">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">盛放容器</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab2-scan-ctBarcode" @keyup.enter="onEnterTypeTwoCtBarcode"
+                      v-model="typeTwo.ctBarcode" placeholder="扫描容器编码">
+                  </div>
+              </div>
+          </li>
+          <li class="aui-list-item">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">目标库位</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab2-scan-targetWorkCell" disabled
+                      v-model="typeTwo.targetWorkCellCode" placeholder="扫描目标库位">
+                  </div>
+              </div>
+          </li>
+        </ul>
+      </form>
+    </div>
+    <div v-if="workType == 3">
+      <form class="aui-content aui-margin-b-10">
+        <ul class="aui-list aui-form-list">
+          <li class="aui-list-item aui-margin-b-10">
+              <div class="aui-list-item-inner">
+                  <div class="aui-list-item-label">样品容器</div>
+                  <div class="aui-list-item-input">
+                      <input type="text" id="tab3-inputer-sourceCtBarcodeCode" @keyup.enter="onEnter3BarCode"
+                          v-model="typeThree.sourceCtBarcodeCode" placeholder="扫描样品容器编码">
+                  </div>
+              </div>
+          </li>
+          <li class="aui-list-item aui-margin-t-10">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">目标库位编码</div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="tab3-inputer-targetWorkCellCode"  @keyup.enter="onEnter3WorkCell"
+                      v-model="typeThree.targetWorkCellCode" placeholder="扫描库位条码">
+                </div>
+            </div>
+          </li>
+          <li class="aui-list-item aui-margin-t-10">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">目标容器条码</div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="tab3-inputer-targetCtBarcodeCode" @keyup.enter="onEnter3WorkCell"
+                      v-model="typeThree.targetCtBarcodeCode" placeholder="扫描容器条码">
+                </div>
+            </div>
+          </li>
+          <li class="aui-list-item aui-margin-t-10">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">推荐库位</div>
+                <div class="aui-list-item-input">
+                  <table id="bootstrapTable2"></table>
+                </div>
+            </div>
+          </li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/apicloud-debug.js"></script>
+<script type="text/javascript">
+
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    var tableField1 = [
+        {radio: true},
+        {name: 'mrlCode', title: '物料编码', width: 120},
+        {name: 'mrlName', title: '物料名称'},
+        {name: 'lotCode', title: '批次码'},
+        {name: 'serialNum', title: '序列码', visible: false},
+        {name:"qty",title:"数量",visible:false},
+    ];
+
+    var table2Fields = [
+      {field: 'workCellCode', title: '库位编码'},
+      {field: 'ctBarcodeCode', title: '容器编码'},
+      {field: 'mrlCode', title: '物料编码', width: 120},
+      {field: 'mrlName', title: '物料名称'},
+      {field: 'lotCode', title: '批次码'},
+      {field: 'serialNum', title: '序列码'},
+      {field:"qty",title:"数量"},
+    ];
+
+    apiready = function () {
+        initTable(1, tableField1, null, null);
+        // $("#bootstrap-tab-2").bootstrapTable({
+        //   striped: true,
+        //   columns: table2Fields
+        // });
+        $.ajax({
+            type: "POST",
+            url: getUrl('padWmsController!getCtPackWorCellList.m'),
+            dataType: "json",
+            data: {},
+            async: false,
+            success: function (res) {
+              console.log(JSON.stringify(res));
+              if (res.errCode === 0) {
+                  if(res.data.length != 0){
+                    vueData.subAreaItems = res.data;
+                    vueData.subAreaItems.unshift({'WORKCELLCODE':'0','WORKCELLNAME':'请选择'});
+                    vueData.workCellCode = res.data[0].WORKCELLCODE;
+                    vueData.workCellName = res.data[0].WORKCELLNAME;
+                  }
+              }
+            }
+        });
+    };
+    var vueData = {
+      workType:"",
+      subAreaItems:[],//区域集合
+      typeOne:{
+        workCellCode:"",
+        ctBarcode:"",
+        fromType:"",
+        fromTypeName:"",
+        targetWorkCellCode:"",
+        toType:"",
+        toTypeName:"",
+      },
+      typeTwo:{
+        workCellCode:"",
+        ctBarcode:"",
+        targetWorkCellCode:"",
+        toType:"",
+        toTypeName:"",
+      },
+      typeThree: {
+        workCenterCode: "",
+        sourceWorkCellCode: "",
+        sourceCtBarcodeCode: "20200825134458",    //扫描-容器码
+        mrlCode: "",
+        lotCode: "",
+        serialNum: "",
+        qty: 0,
+        targetWorkCellCode: "",
+        targetCtBarcodeCode: "",
+        columns:[{
+                field: 'workCellCode',
+                title: '库位编码'
+            }, {
+                field: 'workCellName',
+                title: '库位名称'
+            }, {
+                field: 'ctBarcodeCode',
+                title: '容器编码'
+            }, {
+                field: 'qty',
+                title: '当前数量'
+            }],
+        tableData:[]
+      }
+    };
+    var app = new Vue({
+      el: '#app',
+      data: vueData,
+      methods: {
+        changeWorkType(val){
+          vueData.workType = val;
+          if(val == 1){
+            $("#tab1-scan-ctBarcode").focus();
+          }else if (val == 2) {
+            for (var i = 0; i < vueData.subAreaItems.length; i++) {
+              if(vueData.subAreaItems[i].WORKCELLNAME.indexOf("理货") != -1) {
+                vueData.typeTwo.targetWorkCellCode = vueData.subAreaItems[i].WORKCELLCODE;
+              }
+            }
+            $("#tab2-scan-workCell").focus();
+          }else if (val == 3) {
+
+          }
+        },
+        //扫描来源容器
+        onEnterTypeOneCtBarcode(){
+          console.log(vueData.typeOne.ctBarcode);
+          var retObj =  getCtUwmInfoByCtBarCode(vueData.typeOne.ctBarcode);
+          console.log(JSON.stringify(retObj));
+          if(JSON.stringify(retObj) != {}){
+            if(retObj.workCellCode == ""){
+              vueData.typeOne.ctBarcode = "";
+              $("#tab1-scan-ctBarcode").focus();
+              return api.toast({msg: '该容器与库位无绑定关系，请检查后重新扫描!', location: 'middle'});
+            }else{
+              vueData.typeOne.workCellCode = retObj.workCellCode;
+              console.log(vueData.typeOne.workCellCode);
+              var isAlive = false;
+              for (var i = 0; i < vueData.subAreaItems.length; i++) {
+                if(vueData.subAreaItems[i].WORKCELLCODE == vueData.typeOne.workCellCode){
+                  if(vueData.subAreaItems[i].WORKCELLNAME.indexOf("发货") != -1){
+                    vueData.typeOne.fromType = 1;
+                    vueData.typeOne.fromTypeName = "发货区"
+                  }else if (vueData.subAreaItems[i].WORKCELLNAME.indexOf("理货") != -1) {
+                    vueData.typeOne.fromType = 2;
+                    vueData.typeOne.fromTypeName = "理货区"
+                  }else {
+                    vueData.typeOne.fromType = 0;
+                  }
+                  isAlive = true
+                }
+              }
+              if(isAlive && vueData.typeOne.fromType == 0){
+                vueData.typeOne.workCellCode = "";
+                vueData.typeOne.ctBarcode = "";
+                $("#tab1-scan-ctBarcode").focus();
+                return api.toast({msg: '不符合转移规则，请重新检查后扫描！', location: 'middle'});
+              }else if(!isAlive){
+                vueData.typeOne.fromType = 3;
+                vueData.typeOne.fromTypeName = "存储区";
+              }
+              $("#tab1-scan-workCell").focus();
+            }
+          }
+        },
+        //扫描目标库位
+        onEnterTypeOneTargetWorkCellCode(){
+          if(vueData.typeOne.ctBarcode == ""){
+            vueData.typeOne.targetWorkCellCode = "";
+            $("#tab1-scan-ctBarcode").focus();
+            return api.toast({msg: '请先扫描容器编码！', location: 'middle'});
+          }
+          var isAlive = false;
+          for (var i = 0; i < vueData.subAreaItems.length; i++) {
+            if(vueData.subAreaItems[i].WORKCELLCODE == vueData.typeOne.targetWorkCellCode){
+              if(vueData.subAreaItems[i].WORKCELLNAME.indexOf("发货") != -1){
+                vueData.typeOne.toType = 1;
+                vueData.typeOne.toTypeName = "发货区"
+              }else if (vueData.subAreaItems[i].WORKCELLNAME.indexOf("理货") != -1) {
+                vueData.typeOne.toType = 2;
+                vueData.typeOne.toTypeName = "理货区"
+              }else {
+                vueData.typeOne.toType = 0;
+              }
+              isAlive = true
+            }
+          }
+          if(isAlive && vueData.typeOne.toType == 0){
+            vueData.typeOne.targetWorkCellCode = "";
+            $("#tab1-scan-workCell").focus();
+            return api.toast({msg: '不符合转移规则，请重新检查后扫描！', location: 'middle'});
+          }else if(!isAlive){
+            var retObj = getWorkCellByWorkCellCode(vueData.typeOne.targetWorkCellCode);
+            if(JSON.stringify(retObj) != {}){
+              if(retObj.isPickUp == 1){
+                vueData.typeOne.targetWorkCellCode = "";
+                $("#tab1-scan-workCell").focus();
+                return api.toast({msg: '零拣库位不能作为目标库位！', location: 'middle'});
+              }
+            }
+            vueData.typeOne.toType = 3;
+            vueData.typeOne.toTypeName = "存储区"
+          }
+          if(vueData.typeOne.workCellCode == vueData.typeOne.targetWorkCellCode){
+            vueData.typeOne.targetWorkCellCode = "";
+            $("#tab1-scan-workCell").focus();
+            return api.toast({msg: '来源库位与目标库位一致，不符合转移规则', location: 'middle'});
+          }else if(vueData.typeOne.fromType == 1 && vueData.typeOne.toType == 3){
+            vueData.typeOne.targetWorkCellCode = "";
+            $("#tab1-scan-workCell").focus();
+            return api.toast({msg: '发货缓冲区请先到理货区理货！', location: 'middle'});
+          }else if(vueData.typeOne.fromType == 2 && vueData.typeOne.toType == 1){
+            vueData.typeOne.targetWorkCellCode = "";
+            $("#tab1-scan-workCell").focus();
+            return api.toast({msg: '理货区到发货缓冲区，请走出货流程', location: 'middle'});
+          }else if (vueData.typeOne.fromType == 3 && vueData.typeOne.toType == 1) {
+            vueData.typeOne.targetWorkCellCode = "";
+            $("#tab1-scan-workCell").focus();
+            return api.toast({msg: '存储区到发货缓冲区，请走出货流程', location: 'middle'});
+          }else if (vueData.typeOne.toType == 3) {
+            var retObj = getCtByWorkCellCode(vueData.typeOne.targetWorkCellCode);
+            if(retObj.length != 0){
+              vueData.typeOne.targetWorkCellCode = "";
+              $("#tab1-scan-workCell").focus();
+              return api.toast({msg: '目标库位已有容器，请找空库位进行扫描!', location: 'middle'});
+            }
+          }
+          dialog.alert({
+              title: '是否将容器:' + vueData.typeOne.ctBarcode + '从'+ vueData.typeOne.fromTypeName + '转移到' + vueData.typeOne.toTypeName,
+              buttons: ['取消', '确定']
+          }, function (ret) {
+              if (ret.buttonIndex == 2) {
+                var arr = [{
+                  'source' : "",
+                  'sourceWorkCellCode':vueData.typeOne.workCellCode,
+                  'ctBarcode':vueData.typeOne.ctBarcode,
+                  'targetWorkCellCode':vueData.typeOne.targetWorkCellCode,
+                  'targetCtBarcode':"",
+                }];
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                $.ajax({
+                    type: "POST",
+                    url: getUrl("padWmsController!createShiftBill.m"),
+                    dataType: "json",
+                    data: {
+                        workCenterCode: localStorage.getItem('workCenterCode'),
+                        details:JSON.stringify(arr)
+                    },
+                    async: false,
+                    success: function (ret) {
+                        if (ret.errCode == 0) {
+                            api.toast({msg: '提交成功!', location: 'middle'});
+                            window.location.reload();
+                            api.hideProgress();
+                        } else {
+                            api.hideProgress();
+                            api.alert({title:'操作失败', msg:JSON.stringify(ret.msg)});
+                        }
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+              }else {
+                vueData.typeOne.targetWorkCellCode = "";
+                $("#tab1-scan-workCell").focus();
+              }
+          })
+        },
+        //扫描零拣库位
+        onEnterTypeTwoWorkCellCode(){
+          if(vueData.typeTwo.workCellCode == ""){
+            vueData.typeTwo.workCellCode = "";
+            $("#tab2-scan-workCell").focus();
+            return api.toast({msg: '请扫描正确的零拣库位！', location: 'middle'});
+          }
+          var retObj = getWorkCellByWorkCellCode(vueData.typeTwo.workCellCode);
+          if(JSON.stringify(retObj) != {}){
+            if(retObj.isPickUp == 1){
+              $("#tab2-scan-ctBarcode").focus();
+            }else {
+              vueData.typeTwo.workCellCode = "";
+              $("#tab2-scan-workCell").focus();
+              return api.toast({msg: '请扫描零拣库位', location: 'middle'});
+            }
+          }
+        },
+        //扫描盛放容器
+        onEnterTypeTwoCtBarcode(){
+          if(vueData.typeTwo.workCellCode == ""){
+            vueData.typeTwo.ctBarcode = "";
+            $("#tab2-scan-workCell").focus();
+            return api.toast({msg: '请先扫描来源零拣库位', location: 'middle'});
+          }
+          if(vueData.typeTwo.ctBarcode == ""){
+            vueData.typeTwo.ctBarcode = "";
+            $("#tab2-scan-ctBarcode").focus();
+            return api.toast({msg: '请扫描正确的容器编码', location: 'middle'});
+          }
+          var retObj1 = getNextChildContent(vueData.typeTwo.ctBarcode);
+          if(retObj1.length != 0){
+            vueData.typeTwo.ctBarcode = "";
+            $("#tab2-scan-ctBarcode").focus();
+            return api.toast({msg: '该容器内已有其他容器或物料，请扫描空容器!', location: 'middle'});
+          }
+          var retObj2 = getCtUwmInfoByCtBarCode(vueData.typeTwo.ctBarcode);
+          if(JSON.stringify(retObj2) != {}){
+            if(retObj2.workCellCode == ""){
+              app.onEnterTypeTwoTargetWorkCellCode();
+            }else {
+              dialog.alert({
+                  title: "该容器与其他库位有绑定关系，是否取消绑定关系？",
+                  buttons: ['取消', '确定']
+              }, function (ret) {
+                  if (ret.buttonIndex == 2) {
+                    splitCtAndDelTask(vueData2.typeTwo.ctBarcode);
+                    app.onEnterTypeTwoTargetWorkCellCode();
+                  }else {
+                    vueData.typeTwo.ctBarcode = "";
+                    $("#tab2-scan-ctBarcode").focus();
+                  }
+              })
+            }
+          }
+        },
+        //扫描目标库位
+        onEnterTypeTwoTargetWorkCellCode(){
+          // if(vueData.typeTwo.ctBarcode == ""){
+          //   vueData.typeTwo.targetWorkCellCode = "";
+          //   $("#tab2-scan-ctBarcode").focus();
+          //   return api.toast({msg: '请先扫描容器编码！', location: 'middle'});
+          // }
+          // var isAlive = false;
+          // for (var i = 0; i < vueData.subAreaItems.length; i++) {
+          //   if(vueData.subAreaItems[i].WORKCELLCODE == vueData.typeTwo.targetWorkCellCode){
+          //     if(vueData.subAreaItems[i].WORKCELLNAME.indexOf("发货") != -1){
+          //       vueData.typeTwo.toType = 1;
+          //       vueData.typeTwo.toTypeName = "发货区"
+          //     }else if (vueData.subAreaItems[i].WORKCELLNAME.indexOf("理货") != -1) {
+          //       vueData.typeTwo.toType = 2;
+          //       vueData.typeTwo.toTypeName = "理货区"
+          //     }else {
+          //       vueData.typeTwo.toType = 0;
+          //     }
+          //     isAlive = true
+          //   }
+          // }
+          // if(isAlive && vueData.typeTwo.toType == 0){
+          //   vueData.typeTwo.targetWorkCellCode = "";
+          //   $("#tab2-scan-targetWorkCell").focus();
+          //   return api.toast({msg: '不符合转移规则，请重新检查后扫描！', location: 'middle'});
+          // }else {
+          //   var retObj = getWorkCellByWorkCellCode(vueData.typeTwo.targetWorkCellCode);
+          //   if(JSON.stringify(retObj) != {}){
+          //     if(retObj.isPickUp == 1){
+          //       vueData.typeTwo.targetWorkCellCode = "";
+          //       $("#tab2-scan-targetWorkCell").focus();
+          //       return api.toast({msg: '零拣库位不能作为目标库位！', location: 'middle'});
+          //     }
+          //   }
+          //   vueData.typeTwo.toType = 3;
+          //   vueData.typeTwo.toTypeName = "存储区"
+          // }
+          // if(vueData.typeTwo.workCellCode == vueData.typeTwo.targetWorkCellCode){
+          //   vueData.typeTwo.targetWorkCellCode = "";
+          //   $("#tab2-scan-targetWorkCell").focus();
+          //   return api.toast({msg: '来源库位与目标库位一致，不符合转移规则', location: 'middle'});
+          // }else if (vueData.typeTwo.toType == 1) {
+          //   vueData.typeTwo.targetWorkCellCode = "";
+          //   $("#tab2-scan-targetWorkCell").focus();
+          //   return api.toast({msg: '零拣库位到发货缓冲区，请走出库流程', location: 'middle'});
+          // }else if(vueData.typeTwo.toType == 3) {
+          //   var retObj = getCtByWorkCellCode(vueData.typeTwo.targetWorkCellCode);
+          //   if(!!retObj.ctBarcode){
+          //     vueData.typeTwo.targetWorkCellCode = "";
+          //     $("#tab2-scan-targetWorkCell").focus();
+          //     return api.toast({msg: '目标库位已有容器，请找空库位进行扫描!', location: 'middle'});
+          //   }
+          // }
+          dialog.alert({
+              title: '是否将容器:' + vueData.typeTwo.ctBarcode + '携带零拣库位内所有物料转移到理货区',
+              buttons: ['取消', '确定']
+          }, function (ret) {
+              if (ret.buttonIndex == 2) {
+                var arr = [{
+                  'source' : "",
+                  'sourceWorkCellCode':vueData.typeTwo.workCellCode,
+                  'ctBarcode':"",
+                  'targetWorkCellCode':vueData.typeTwo.targetWorkCellCode,
+                  'targetCtBarcode':vueData.typeTwo.ctBarcode,
+                }];
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                $.ajax({
+                    type: "POST",
+                    url: getUrl("padWmsController!createShiftBill.m"),
+                    dataType: "json",
+                    data: {
+                        workCenterCode: localStorage.getItem('workCenterCode'),
+                        details:JSON.stringify(arr)
+                    },
+                    async: false,
+                    success: function (ret) {
+                        if (ret.errCode == 0) {
+                            api.toast({msg: '提交成功!', location: 'middle'});
+                            window.location.reload();
+                            api.hideProgress();
+                        } else {
+                            api.hideProgress();
+                            api.alert({title:'操作失败', msg:JSON.stringify(ret.msg)});
+                        }
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+              }
+          })
+        },
+        onEnter3BarCode: function() {
+          var self = this;
+          if (!this.typeThree.sourceCtBarcodeCode) {
+            return api.alert({ itle: '警告', msg: '请输入正确的容器编码' });
+          }
+          if (isExistInTab3(this.typeThree.sourceCtBarcodeCode)) {
+              this.typeThree.sourceCtBarcodeCode = '';
+              return false
+          }
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '努力加载中...',
+              text: '请稍后...',
+              modal: true
+          });
+          //获取容器包含的物料信息
+          $.ajax({
+                type: "POST",
+                url: getUrl('bogePadWmsController!materielRefluxSuggest.m'),
+                dataType: "json",
+                data: {
+                  ctBarCode: self.typeThree.sourceCtBarcodeCode,
+                  workCenterCode: localStorage.getItem('workCenterCode')
+                },
+                async: false,
+                success: function (ret2) {
+                    api.hideProgress();
+                    if (ret2.errCode === 0) {
+                        var data = ret2.data;
+                        this.workCellCode = '';
+                        $("#bootstrap-tab-3").bootstrapTable('removeAll');
+                        var currStore = data.currStore;
+                        if (!currStore) {
+                          return api.alert({title: '警告', msg: '请扫描正确的容器!'});
+                        }
+                        if(currStore.qty == 0 || currStore.qty < 0) {
+                          return api.toast({msg: '该容器为空!', location: 'middle'});
+                        }
+                        vueData.typeThree.sourceWorkCellCode =  currStore.workCellCode,
+                        vueData.typeThree.sourceCtBarcodeCode = currStore.ctBarcodeCode;
+                        vueData.typeThree.mrlCode = currStore.mrlCode;
+                        vueData.typeThree.lotCode = currStore.lotCode;
+                        vueData.typeThree.serialNum = currStore.serialNum;
+                        vueData.typeThree.qty = currStore.qty;
+                        if (data.availableStores.length > 0) {
+                          $("#bootstrapTable2").bootstrapTable({
+                              columns: vueData.typeThree.columns,
+                              data: data.availableStores,
+                              onClickRow: function(row, el) {
+                                vueData.typeThree.targetWorkCellCode=row.workCellCode;
+                                vueData.typeThree.targetCtBarcodeCode=row.ctBarcodeCode;
+                                $("#tab3-inputer-targetWorkCellCode").val(row.workCellCode);
+                                $("#tab3-inputer-targetCtBarcodeCode").val(row.ctBarcodeCode);
+                                self.threeAction_createTransferTask();
+                              }
+                          });
+                        } else {
+                          return api.alert({title: '警告', msg: '无推荐库位!'});
+                        }
+                    } else {
+                        api.toast({msg: ret2.msg, duration: 3000, location: 'middle'});
+                    }
+                },
+                error: function (e) {
+                    api.hideProgress();
+                }
+            });
+        },
+        onEnter3WorkCell: function() {
+          if (!this.typeThree.sourceCtBarcodeCode) {
+            $("#tab3-inputer-sourceCtBarcodeCode").focus();
+            return api.alert({ itle: '警告', msg: '请输入正确的容器编码' });
+          }
+          if (isExistInTab3(this.typeThree.sourceCtBarcodeCode)) {
+              this.typeThree.sourceCtBarcodeCode = '';
+              $("#tab3-inputer-sourceCtBarcodeCode").focus();
+              return false
+          }
+          if (!this.typeThree.targetCtBarcodeCode) {
+            $("#tab3-inputer-sourceCtBarcodeCode").val(this.typeThree.sourceCtBarcodeCode);
+            this.typeThree.targetCtBarcodeCode = this.typeThree.sourceCtBarcodeCode;
+          }
+          if (!this.typeThree.targetWorkCellCode) {
+            $("#tab3-inputer-targetWorkCellCode").focus();
+            return api.alert({ itle: '警告', msg: '请输入正确的目标库位编码' });
+          }
+          this.threeAction_createTransferTask();
+        },
+        threeAction_createTransferTask() {
+          api.confirm({
+              title: '提示',
+              title: '是否将容器:' + vueData.typeThree.sourceCtBarcodeCode + '所有物料转移到存储区的库位' + vueData.typeThree.targetWorkCellCode,
+              buttons: ['确定', '取消']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                $.ajax({
+                    type: "POST",
+                    url: getUrl("bogePadWmsController!createMaterielMoveTask.m"),
+                    dataType: "json",
+                    data: {
+                      workCenterCode: localStorage.getItem('workCenterCode'),
+                      sourceWorkCellCode: vueData.typeThree.sourceWorkCellCode,
+                      sourceCtBarcodeCode: vueData.typeThree.sourceCtBarcodeCode,
+                      mrlCode:  vueData.typeThree.mrlCode,
+                      lotCode:  vueData.typeThree.lotCode,
+                      serialNum:  vueData.typeThree.serialNum,
+                      qty:  vueData.typeThree.qty,
+                      targetWorkCellCode:  vueData.typeThree.targetWorkCellCode,
+                      targetCtBarcodeCode:  vueData.typeThree.targetCtBarcodeCode,
+                    },
+                    async: false,
+                    success: function (ret) {
+                        api.hideProgress();
+                        if (ret.errCode == 0) {
+                            api.toast({msg: '提交成功!', location: 'middle'});
+                        } else {
+                            api.alert({title:'操作失败', msg:JSON.stringify(ret.msg)});
+                        }
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+              }
+          });
+        }
+      },
+    });
+</script>
+
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,aItemress=no">
+    <title>消息</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui-list-swipe.css" />
+    <style type="text/css">
+        .epichust-list-item-text {
+            font-size: 0.7rem;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: justify;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .epichust-icon-img {
+            width: 2.8rem;
+            height: 2.8rem;
+            padding: 0.7rem;
+            position: relative;
+            text-align: center;
+            font: arial;
+            font-size: 1rem;
+            -webkit-border-radius: 2.8rem;
+            -moz-border-radius: 2.8rem;
+            border-radius: 2.8rem;
+        }
+
+        .epichust-icon-color {
+            color: #3e5706;
+            border: 1px solid #a5cd4e;
+        }
+
+        .epichust-list-item-inner {
+            width: 100%;
+            display: block;
+        }
+
+        .epichust-name-color {
+            color: #070707
+        }
+
+        .epichust-title-color {
+            color: #31353B
+        }
+
+        .epichust-content-color {
+            color: #888C91
+        }
+    </style>
+
+</head>
+
+<body>
+    <script id="sendMsglistTemp" type="text/x-dot-template">
+        {{~ it:value:index}}
+        <li class="aui-list-item aui-list-item-middle">
+            <div class="aui-list-item-inner">
+                <div class="aui-swipe-handle aui-media-list-item-inner" onclick="openSendMsg('{{= it[index].createId }}', '{{= it[index].title }}', '{{= index }}');">
+                    <div class="aui-list-item-media" style="width:3.5rem">
+                        <div id="image" class="epichust-icon-img epichust-icon-color"></div>
+                    </div>
+                    <div class="epichust-list-item-inner">
+                        <div class="aui-list-item-text">
+                            <div class="aui-list-item-title aui-font-size-18 epichust-name-color" id="sender">{{= it[index].createId}}</div>
+                            <div class="aui-list-item-right" id="date"></div>
+                        </div>
+                        <div class="aui-list-item-text aui-list-item-title epichust-list-item-text epichust-title-color" id="title">{{= it[index].title}}</div>
+                        <div class="epichust-list-item-text epichust-content-color" id="text">{{= it[index].content}}</div>
+                    </div>
+                </div>
+                <div class="aui-swipe-right-btn aui-bg-danger" onclick="doDelete('{{= it[index].id }}');">删除</div>
+            </div>
+        </li>
+        {{~}}
+    </script>
+
+    <script id="receiveMsglistTemp" type="text/x-dot-template">
+        {{~ it:value:index}}
+        <li class="aui-list-item aui-list-item-middle">
+            <div class="aui-list-item-inner">
+                <div class="aui-swipe-handle aui-media-list-item-inner" onclick="openSendMsg('{{= it[index].receiveId }}', '{{= it[index].title }}', '{{= index }}');">
+                    <div class="aui-list-item-media" style="width:3.5rem">
+                        <div id="image" class="epichust-icon-img epichust-icon-color"></div>
+                    </div>
+                    <div class="epichust-list-item-inner">
+                        <div class="aui-list-item-text">
+                            <div class="aui-list-item-title aui-font-size-18 epichust-name-color" id="sender">{{= it[index].receiveId}}</div>
+                            <div class="aui-list-item-right" id="date"></div>
+                        </div>
+                        <div class="aui-list-item-text aui-list-item-title epichust-list-item-text epichust-title-color" id="title">{{= it[index].title}}</div>
+                        <div class="epichust-list-item-text epichust-content-color" id="text">{{= it[index].content}}</div>
+                    </div>
+                </div>
+                <div class="aui-swipe-right-btn aui-bg-danger" onclick="doDelete('{{= it[index].id }}');">删除</div>
+            </div>
+        </li>
+        {{~}}
+    </script>
+
+    <div class="aui-content">
+        <ul class="aui-list aui-list-in aui-media-list" id="msglist">
+
+        </ul>
+    </div>
+
+    <div class="aui-popup aui-popup-top-left" id="top-left">
+        <div class="aui-popup-arrow"></div>
+        <div class="aui-popup-content">
+            <ul class="aui-list aui-list-noborder">
+                <li class="aui-list-item" onclick="hidePopupGetMessageList('T')">
+                    <div class="aui-list-item-label-icon">
+                        <i class="aui-iconfont aui-icon-back aui-text-warning"></i>
+                    </div>
+                    <div class="aui-list-item-inner aui-list-item-middle" id="rctext">收件箱</div>
+                </li>
+                <li class="aui-list-item" onclick="hidePopupGetMessageList('F')">
+                    <div class="aui-list-item-label-icon">
+                        <i class="aui-iconfont aui-icon-forward aui-text-info"></i>
+                    </div>
+                    <div class="aui-list-item-inner" id="sdtext">我的发起</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/aui-list-swipe.js"></script>
+<script type="text/javascript" src="../../script/aui-popup.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+    var listret;
+    var currentFlag = 'F';
+    var popup = new auiPopup();
+    var swipe = new auiListSwipe(function(ret) {});
+
+    function showPopup() {
+        popup.show(document.getElementById("top-left"))
+    }
+
+    apiready = function() {
+        api.parseTapmode();
+        api.addEventListener({
+            name: 'refreshMsg'
+        }, function(ret, err) {
+            refreshMessageList();
+        });
+
+        getMessageList(currentFlag, true);
+    }
+
+    function doDelete(msgId) {
+        //获取相关账户信息
+        var usrname = localStorage.getItem('un');
+        var serverUrl = localStorage.getItem('serverUrl');
+        var msgUrl = serverUrl + "padCommController!deletMyMsg.m";
+
+        var params = new Object();
+        params.url = msgUrl;
+        params.dataType = 'json';
+        params.method = 'post';
+        var data = {
+            values: { ////以表单方式提交参数（JSON对象）
+                un: usrname,
+                id: msgId
+            }
+        };
+
+
+        ajaxForData(params, data, false, function(ret, err) {
+            if (ret) {
+                refreshMessageList();
+            }
+        });
+
+    }
+
+    function refreshMessageList() {
+        getMessageList(currentFlag, false);
+    }
+
+    function hidePopupGetMessageList(flag) {
+        currentFlag = flag;
+        popup.hide(document.getElementById("top-left"));
+        getMessageList(currentFlag, true);
+    }
+
+    function getMessageList(msgFlag, showPrg) {
+        //获取相关账户信息
+        var usrname = localStorage.getItem('un');
+        var serverUrl = localStorage.getItem('serverUrl');
+        var msgUrl = serverUrl + "padCommController!getMyMsg.m";
+
+        var params = new Object();
+        params.url = msgUrl;
+        params.dataType = 'json';
+        params.method = 'post';
+        var data = {
+            values: {
+                un: usrname,
+                flag: msgFlag,
+                conStr: ''
+            }
+        };
+        ajaxForData(params, data, showPrg, function(ret, err) {
+            if (ret) {
+                listret = eval(ret.data);
+                if (msgFlag == 'T') {
+                    setTitle($("#rctext").html());
+                    var evaluation = doT.template($api.dom('#sendMsglistTemp').innerHTML);
+                    $api.dom('#msglist').innerHTML = evaluation(listret);
+                } else {
+                    setTitle($("#sdtext").html());
+                    var evaluation = doT.template($api.dom('#receiveMsglistTemp').innerHTML);
+                    $api.dom('#msglist').innerHTML = evaluation(listret);
+                }
+                formatDate(listret);
+                setUserImageIcon(listret);
+            }
+        });
+    }
+
+    function setUserImageIcon(ret) {
+        var msglis = $("#msglist li");
+        var images = $("#msglist li #image");
+
+        for (var i = 0; i < msglis.length; i++) {
+            var sender = "";
+            if (currentFlag == 'T') {
+                sender = ret[i].createId;
+            } else {
+                sender = ret[i].receiveId;
+            }
+
+            images[i].innerHTML = sender.substr(0, 1);
+        }
+    }
+
+    function formatDate(ret) {
+        var msglis = $("#msglist li");
+        var msgdts = $("#msglist li #date");
+
+        for (var i = 0; i < msglis.length; i++) {
+            var dateStr = ret[i].createDate;
+            var dateNow = new Date();
+            msgdts[i].innerHTML = timeFormat(dateStr, dateNow);
+        }
+    }
+
+    function timeFormat(dateStr, dateNow) {
+        var showDate = dateStr;
+        if (dateStr.substr(0, 4) != dateNow.getFullYear()) { //不是当前年份
+            showDate = dateStr.substr(0, 10); //显示年/月/日
+        } else {
+            if (parseInt(dateStr.substr(5, 2)) == dateNow.getMonth() + 1 &&
+                parseInt(dateStr.substr(8, 2)) == dateNow.getDate()) { //当天
+                showDate = dateStr.substr(11, 5); //显示时:分
+            } else {
+                showDate = dateStr.substr(5, 5); //显示月/日
+            }
+        }
+
+        return showDate;
+    }
+
+    function setTitle(title) {
+        api.sendEvent({
+            name: 'upTitle',
+            extra: {
+                tl: title
+            }
+        });
+    }
+
+    function openSendMsg(sender, title, index) {
+        var dateNow = new Date();
+        var message = listret[index].content;
+        var dateStr = listret[index].createDate;
+        var dateFm = timeFormat(dateStr, dateNow);
+        api.openWin({
+            name: "msgdetail_win",
+            url: "msgdetail_win.html",
+            pageParam: {
+                sn: sender,
+                tl: title,
+                mg: message,
+                dt: dateFm,
+                fg: currentFlag,
+            }
+        });
+    }
+</script>
+
+</html>

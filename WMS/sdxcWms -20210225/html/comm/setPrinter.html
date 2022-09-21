@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>选择打印机IP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/icons.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/custom.css">
+    <link rel="stylesheet" type="text/css" href=".../../css/LCalendar.css">
+    <style>
+        .aui-btn-info {
+            width: 100%;
+            line-height: 2.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="aui-header" style="background-color: #03a9f4">
+        <a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">
+            <span class="aui-iconfont aui-icon-left"></span> </a>
+        <div class="aui-title">设置打印机</div>
+    </header>
+
+    <div id="vue-app" class="tab-content-item app tab-content-item-active">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">MAC地址</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="uuid" placeholder="扫描或手工输入打印机蓝牙MAC地址">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">请选择蓝牙</div>
+                    <select @change="getPrint($event)" id="selectUuid">
+                        <option value="" key="" readonly>--请选择--</option>
+                        <option v-for="(item,index) in printItems" :value="item.uuid" :key="item.uuid">{{item.name}}</option>
+                    </select>
+                </div>
+            </li>
+        </ul>
+        <footer class="aui-bar aui-bar-tab aui-row">
+            <div class="aui-btn aui-col-xs-12 aui-btn-success" @click="doSave">保存并测试</div>
+        </footer>
+    </div>
+
+    <!-- <section class="aui-content-padded" id="vue-app">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item" style="display:none">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label" style="width: 25%;">请选择蓝牙</div>
+                    <select @change="getPrint($event)" id="selectUuid">
+                        <option v-for="(item,index) in printItems" :value="item.uuid" :key="item.uuid">{{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </li>
+            <li class="aui-list-item" style="display:none">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label" style="width: 25%;">绑定蓝牙名称</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" name="printName" v-model="printName" readonly="readonly">
+                    </div>
+                </div>
+            </li>
+
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">MAC地址</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="macCode" id="tab1-scan-macCode" placeholder="扫描或手工输入打印机蓝牙MAC地址">
+                    </div>
+                </div>
+            </li>
+            -- <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label" style="width: 35%;">uuid</div>
+                <div class="aui-list-item-input">
+                    <input type="text" name="uuid" v-model="uuid" readonly="readonly">
+                </div>
+            </div>
+        </li> -->
+    </ul>
+    </section>
+
+    <!-- <section class="aui-content-padded" id="vue-app-2">
+    <ul class="aui-list aui-form-list">
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label" style="width: 25%;">选择模板</div>
+                <select @change="getTemplet($event)">
+                    <option v-for="(item,index) in templetItems"
+                            :value="item.val + '|||' + item.code + '|||' + item.name">{{item.name}}
+                    </option>
+                </select>
+            </div>
+        </li>
+        <li class="aui-list-item aui-hide">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label" style="width: 35%;">Gid</div>
+                <div class="aui-list-item-input">
+                    <input type="text" name="templetGid" v-model="templetGid" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label" style="width: 20%;">名称</div>
+                <div class="aui-list-item-input">
+                    <input type="text" name="templetName" v-model="templetName" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label" style="width: 35%;">编码</div>
+                <div class="aui-list-item-input">
+                    <input type="text" name="templetCode" v-model="templetCode" readonly="readonly">
+                </div>
+            </div>
+        </li>
+    </ul>
+</section> --
+
+    <div class="aui-content-padded" onclick="doSave()">
+        <p>
+            <div class="aui-btn aui-btn-info"><i class="aui-input-addon aui-iconfont"></i>保存</div>
+        </p>
+    </div> -->
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+<script type="text/javascript" src="../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../script/public/print.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        $api.fixStatusBar(document.querySelector('#aui-header'));
+        var clearly;
+        new Vue({
+            el: '#vue-app',
+            data: {
+                uuid: "",
+                printName: "",
+                printItems: []
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    this.uuid = localStorage.getItem('hgzyUuid');
+                    this.initBluetooth();
+                },
+                initBluetooth: function() {
+                    var that = this;
+                    var bluetooth = api.require("ble");
+                    bluetooth.initManager(function(ret) {
+                        if (ret.state == "poweredOn") {
+                            bluetooth.scan({ serviceUUIDs: [] }, function(ret, err) {
+                                if (ret.status) {
+                                    clearly = setInterval(function() {
+                                        bluetooth.getPeripheral(function(ret) {
+                                            if (ret.peripherals.length != 0) {
+                                                var bths = [];
+                                                ret.peripherals.forEach(function(ph) {
+                                                    if (ph.name && ph.uuid) {
+                                                        bths.push(ph);
+                                                    }
+                                                });
+                                                console.log("可用蓝牙===>" + JSON.stringify(bths));
+                                                that.printItems = bths;
+                                            }
+                                        });
+                                    }, 3000);
+                                }
+                            });
+                        } else {
+                            api.toast({ msg: '请开启蓝牙!', location: 'middle' });
+                        }
+                    })
+                },
+                doSave: function() {
+                    var that = this;
+                    if (!!that.uuid && that.macFormCheck(that.uuid)) {
+                        localStorage.setItem('hgzyUuid', that.uuid);
+                        // localStorage.setItem('hgzyPrintName', that.printName);
+                        printToJiaBo("测试打印连接", "测试打印连接", "测试打印连接", 0, "测试打印连接");
+                        api.toast({ msg: '保存成功！', duration: 3000, location: 'middle' });
+                    } else {
+                        return api.toast({ msg: '请输入正确的mac地址', duration: 6000, location: 'middle' });
+                    }
+                },
+                getPrint: function(event) {
+                    if (event.target.value != "") {
+                        clearInterval(clearly);
+                        this.uuid = event.target.value;
+                        this.printName = $("#selectUuid option:selected").text();
+                    }
+                },
+                macFormCheck: function(macCode) {
+                    var macs = new Array();
+                    macs = macCode.split(":");
+                    if (macs.length != 6) {
+                        api.alert({
+                            title: '提示',
+                            msg: "输入的mac地址格式不正确，请以xx:xx:xx:xx:xx:xx的形式输入（xx为16进制数字）!"
+                        });
+                        return false;
+                    }
+                    for (var s = 0; s < 6; s++) {
+                        var temp = parseInt(macs[s], 16);
+
+                        if (isNaN(temp)) {
+                            api.alert({
+                                title: '提示',
+                                msg: "输入的mac地址格式不正确，请以xx:xx:xx:xx:xx:xx的形式输入（xx为16进制数字）!"
+                            });
+                            return false;
+                        }
+                        if (temp < 0 || temp > 255) {
+                            api.alert({
+                                title: '提示',
+                                msg: "输入的mac地址格式不正确，请以xx:xx:xx:xx:xx:xx的形式输入（xx为16进制数字）!"
+                            });
+                            return false;
+                        }
+                    }
+                    return true;
+                },
+            }
+        });
+
+    };
+</script>
+
+</html>

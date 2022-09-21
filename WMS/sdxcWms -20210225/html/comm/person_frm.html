@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<title>个人中心</title>
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+	<style>
+		body {}
+
+		.epichust-list-header {
+			background-color: #f1f1f1;
+			position: relative;
+			font-size: 0.6rem;
+			padding: 0.3rem 0.75rem;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-box-pack: justify;
+			-webkit-justify-content: space-between;
+			justify-content: space-between;
+			-webkit-box-align: center;
+			-webkit-align-items: center;
+			align-items: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="aui-content">
+		<ul class="aui-list aui-media-list">
+			<li class="aui-list-item aui-list-item-middle">
+				<div class="aui-media-list-item-inner">
+					<div class="aui-list-item-media" style="width: 3rem;">
+						<img src="../../image/login_username_icon@2x.png" class="aui-img-round aui-list-img-sm">
+					</div>
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-text">
+							<div class="aui-list-item-title aui-font-size-18" id="username">请登录</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!--<div class="aui-content">-->
+		<!--<ul class="aui-list aui-list-in">-->
+			<!--<li class="aui-list-item">-->
+				<!--<div class="aui-list-item-label-icon">-->
+					<!--<i class="aui-iconfont aui-icon-voice"></i>-->
+				<!--</div>-->
+				<!--<div class="aui-list-item-inner">-->
+					<!--<div class="aui-list-item-title">语音播报</div>-->
+					<!--<div class="aui-list-item-right">-->
+						<!--<input type="checkbox" class="aui-switch" id="voiceId">-->
+					<!--</div>-->
+				<!--</div>-->
+			<!--</li>-->
+
+			<!--<li class="aui-list-item">-->
+				<!--<div class="aui-list-item-label-icon">-->
+					<!--<i class="aui-iconfont aui-icon-voice"></i>-->
+				<!--</div>-->
+				<!--<div class="aui-list-item-inner">-->
+					<!--<div class="aui-list-item-title">声音提示</div>-->
+					<!--<div class="aui-list-item-right">-->
+						<!--<input type="checkbox" class="aui-switch" id="speechId">-->
+					<!--</div>-->
+				<!--</div>-->
+			<!--</li>-->
+		<!--</ul>-->
+	<!--</div>-->
+	<div class="aui-content">
+		<ul class="aui-list aui-list-in">
+			<li class="epichust-list-header"></li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-label-icon">
+					<i class="aui-iconfont aui-icon-voice"></i>
+				</div>
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">自动登陆</div>
+					<div class="aui-list-item-right">
+						<input type="checkbox" class="aui-switch" id="autoLoginId">
+					</div>
+				</div>
+			</li>
+			<!--<li class="aui-list-item aui-list-item-middle" onclick='bindCell();'>-->
+				<!--<div class="aui-list-item-label-icon">-->
+					<!--<i class="aui-iconfont aui-icon-gear"></i>-->
+				<!--</div>-->
+				<!--<div class="aui-list-item-inner">绑定工位</div>-->
+				<!--<div class="aui-list-item-inner aui-list-item-arrow"></div>-->
+			<!--</li>-->
+			<li class="aui-list-item aui-list-item-middle" onclick='setPrinter();'>
+				<div class="aui-list-item-label-icon">
+					<i class="aui-iconfont aui-icon-gear"></i>
+				</div>
+				<div class="aui-list-item-inner">选择打印机IP</div>
+				<div class="aui-list-item-inner aui-list-item-arrow"></div>
+			</li>
+			<li class="aui-list-item aui-list-item-middle" onclick='updatePassworld();'>
+				<div class="aui-list-item-label-icon">
+					<i class="aui-iconfont aui-icon-gear"></i>
+				</div>
+				<div class="aui-list-item-inner">修改密码</div>
+				<div class="aui-list-item-inner aui-list-item-arrow"></div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="aui-content">
+		<ul class="aui-list aui-list-in">
+			<li class="epichust-list-header"></li>
+			<li class="aui-list-item aui-list-item-middle" onclick='openAbout();'>
+				<div class="aui-list-item-label-icon">
+					<i class="aui-iconfont aui-icon-info"></i>
+				</div>
+				<div class="aui-list-item-inner">关于</div>
+				<div class="aui-list-item-inner aui-list-item-arrow"></div>
+			</li>
+		</ul>
+	</div>
+	<div class="aui-content aui-padded-t-10">
+		<div class="aui-card-list" onclick='logout();'>
+			<div class="aui-card-list-footer aui-text-center aui-font-size-18">
+				退出登录
+			</div>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		//获取相关账户信息
+		var usrname = localStorage.getItem('un');
+		var passwd = localStorage.getItem('pw');
+		var serverIp = localStorage.getItem('serverIp');
+		var serverPort = localStorage.getItem('serverPort');
+		var serverProject = localStorage.getItem('serverProject');
+
+		var accountUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject +
+			"/autoLoginController!login.m?_u=" + usrname + "&_p=" + passwd + "&_to=padCommController!getUserInfo.m";
+		var params = new Object();
+		params.url = accountUrl;
+		params.dataType = 'json';
+		params.method = 'post';
+		var data = {
+			values: { //以表单方式提交参数（JSON对象）
+				un: usrname,
+			}
+		};
+
+		ajaxForData(params, data, false, function(ret, err) {
+			if (ret) {
+				var myData = eval("(" + ret.data + ")")
+				$("#username").html("欢迎用户:"+myData.userName);
+			}
+		});
+
+		setSwitchFlag("#voiceId", 'speakFlag');
+		setSwitchFlag("#speechId", 'notifyFlag');
+		setSwitchFlag("#autoLoginId", 'autoLoginFlag');
+	};
+
+	function setSwitchFlag(id, key) {
+		if (localStorage.getItem(key) == 'Y') {
+			$(id).prop("checked", true);
+		} else {
+			$(id).prop("checked", false);
+		}
+
+		$(id).on('click', function() {
+			if ($(id).is(":checked")) {
+				localStorage.setItem(key, 'Y');
+			} else {
+				localStorage.setItem(key, 'N');
+			}
+		});
+	}
+
+	function speechBD() {
+		var audioModule = api.require('AudioModule');
+		audioModule.speak({
+			text: '我们支持离线语音合成',
+			speaker: 0
+		}, function(ret, err) {
+			if (err) {
+				alert(JSON.stringify(err));
+			}
+		});
+
+	}
+
+	function speechYZS() {
+		var audioModule = api.require('OtherOffLineSpeakModule');
+
+		var voicelist = [];
+		var newdata = new Object();
+		newdata.id = '0';
+		newdata.text = '语音合成离线支持';
+		voicelist.push(newdata);
+		audioModule.speak({
+			data: voicelist
+		}, function(ret, err) {
+			if (err) {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	function push() {
+		api.openWin({
+			name: "pushDemo",
+			url: "pushDemo.html"
+		});
+	};
+
+	function setting() {
+		api.openWin({
+			name: "settings",
+			url: "settings.html"
+		});
+	};
+
+	function telnetApp() {
+		//appKey 请登录或注册CaiHongSDK企业用户后，添加新应用获取APPKEY后，进行相关配置。
+		var app_key = "ciro1989#EpichustApp";
+		//该参数为应用注册用户账号或者id，主要用于后台标识具体用户的服务数据，无需则可以直接传空
+		var user_id = "ciro1989";
+		//该参数为指定客服的工号，如果想找指定的客服服务，否则可以传空
+		var worknum = "";
+		//为第三方集成应用用户自己定义传递的数据，该数据可以传递给客服端，客服端可以显示解析显示这些自定义数据，否则传空
+		var custom_data = {
+			"公司名称": "艾普工华科技(武汉)有限公司",
+			"地址": "武汉市华工科技大学科技园"
+		};
+
+		var param = {
+			appkey: app_key,
+			userId: user_id,
+			worknum: worknum,
+			custom_data: custom_data,
+		};
+		var resultCallback = function(ret, err) {
+			alert(JSON.stringify(ret) + "" + JSON.stringify(err));
+		}
+		var cchelper = api.require('cchelperModule');
+		cchelper.start(param, resultCallback);
+	}
+
+	function openTelnetApp() {
+		api.openApp({
+			//androidPkg: 'com.teamviewer.teamviewer.market.mobile',
+			androidPkg: 'com.realvnc.viewer.android',
+			mimeType: 'text/html'
+		}, function(ret, err) {
+			if (ret) {
+				alert(JSON.stringify(ret));
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	function openPrintApp() {
+		api.openApp({
+			androidPkg: 'com.lenovo.cloudPrint',
+			mimeType: 'text/html'
+		}, function(ret, err) {
+			if (ret) {
+				alert(JSON.stringify(ret));
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	var alarmId = "";
+
+	function openAlarm() {
+		var alarmNotification = api.require('alarmNotification');
+		alarmNotification.setAlarm({
+			isLed: true
+		}, function(ret, err) {
+			if (ret) {
+				alert(ret.id);
+				alarmId = ret.id;
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	function cancelAlarm() {
+		var alarmNotification = api.require('alarmNotification');
+		alarmNotification.cancelAlarm({
+			id: alarmId
+		}, function(ret, err) {
+			if (ret) {
+				alert(JSON.stringify(ret));
+			} else {
+				alert(JSON.stringify(err));
+			}
+		});
+	}
+
+	function setMenu() {
+		api.openWin({
+			name: "setMenu",
+			url: "setMenu.html"
+		});
+	}
+
+	function checkUpdate(ver) {
+
+		var msg = "版本号：" + ver;
+		api.confirm({
+			title: '更新APP',
+			msg: msg,
+			buttons: ['确定', '取消']
+		}, function(ret, err) {
+			var index = ret.buttonIndex;
+			if (index == 1) {
+				var serverIp = localStorage.getItem('serverIp');
+				var serverPort = localStorage.getItem('serverPort');
+				var serverProject = localStorage.getItem('serverProject');
+				//var downloadUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/" + "excel_temp/EpichustApp_"+ver+".apk";
+				var downloadUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/" + "ext/download/EpichustApp_" + ver + ".apk";
+
+				alert(downloadUrl);
+				api.download({
+					url: downloadUrl,
+					report: true,
+					savePath: 'fs://EpichustApp.apk',
+				}, function(ret, err) {
+					if (ret && 0 == ret.state) { /* 下载进度 */
+						api.toast({
+							msg: "正在下载应用" + ret.percent + "%",
+							duration: 10000
+						});
+					}
+					//alert(ret.state);
+					//alert(ret.savePath);
+
+					if (ret && 1 == ret.state) { /* 下载完成 */
+						var savePath = ret.savePath;
+						//alert(ret.savePath);
+						api.installApp({
+							appUri: savePath
+						});
+					}
+
+					if (ret && 2 == ret.state) {
+						api.toast({
+							msg: "下载失败",
+							duration: 10000
+						});
+					}
+				});
+			} else {
+				api.toast({
+					msg: "取消更新",
+					duration: 3000
+				});
+			}
+		});
+
+
+
+
+
+	}
+
+	function cancelAuto() {
+		//			localStorage.setItem('autoLoginFlag', 'n');
+		//			api.toast({
+		//              msg: "自动登陆取消成功",
+		//              duration: 3000
+		//          });
+		//          api.rebootApp();
+		api.openWin({
+			name: "setAutoLogin",
+			url: "setAutoLogin.html"
+		});
+	}
+
+	function setPrinter() {
+		api.openWin({
+			name: "setPrinter",
+			url: "setPrinter.html"
+		});
+	}
+
+	function bindCell() {
+		api.openFrame({
+			name: 'selWorkCellListToBind',
+			url: 'selWorkCellListToBind.html'
+		});
+	}
+
+	function startRecord() {
+		api.startRecord({
+			path: 'fs://a.amr'
+		});
+	}
+
+	function stopRecord() {
+		api.stopRecord(function(ret, err) {
+			if (ret) {
+				var path = ret.path;
+				var duration = ret.duration;
+			}
+		});
+	}
+
+	function getAppVer() {
+		var serverUrl = localStorage.getItem('serverUrl');
+		var url = serverUrl + "padCommController!getAppVer.m";
+		var un = localStorage.getItem('un');
+		var pw = localStorage.getItem('pw');
+		var serverIp = localStorage.getItem('serverIp');
+		var serverPort = localStorage.getItem('serverPort');
+		var serverProject = localStorage.getItem('serverProject');
+		var url1 = serverIp + ":" + serverPort + "/" + serverProject;
+
+		var oldVer = api.appVersion; //应用版本号
+
+		var params = new Object();
+		params.url = url;
+		params.dataType = 'json';
+		params.method = 'post';
+		params.timeout = 60;
+		var data = {
+			values: { ////以表单方式提交参数（JSON对象）
+				un: un,
+				pw: pw,
+				url: url1,
+				ver: oldVer
+			}
+		};
+
+
+		ajaxForData(params, data, false, function(ret, err) {
+			if (ret) {
+				var retData = ret.data.split(":");
+				if (retData[0] == "S") {
+					var ver = retData[1]; //版本号
+					//alert("APP最新版本："+ver);
+					checkUpdate(ver);
+				} else {
+					alert(retData[1]);
+				}
+			}
+		});
+
+	}
+
+	function openPDF() {
+		//以列表信息展示
+		api.openWin({
+			name: "pdfTest",
+			url: "pdfTest.html"
+		});
+	}
+
+	function openFile() {
+		api.openWin({
+			name: "fileView",
+			url: "fileView.html"
+		});
+	}
+
+	function openAbout() {
+		api.openWin({
+			name: "appInfo",
+			url: "appInfo.html"
+		});
+	}
+
+	function logout() {
+		api.closeToWin({
+			name: "root"
+		});
+	}
+
+	// 修改密码
+	function updatePassworld(){
+		api.openWin({
+			name: "updatePassworld",
+			url: "updatePassworld.html"
+		});
+	}
+
+</script>
+
+</html>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.AuthCentre">
+
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_real_centre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--title-->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 实名认证 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="实名认证" />
+                <RelativeLayout
+                    android:id="@+id/rl_to_real_auth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:hint="请填写实名认证信息" />
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <!-- 实名认证 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hair_line"
+                android:background="@color/backgroundColor" />
+            <!-- 我的认证 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/left_margin"
+                android:layout_marginTop="@dimen/top_margin"
+                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginBottom="@dimen/bottom_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="我的认证" />
+                <RelativeLayout
+                    android:id="@+id/rl_to_other_auth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/icon_right_size"
+                        android:layout_centerVertical="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:hint="请填写我的认证信息" />
+                    <ImageView
+                        android:layout_width="@dimen/icon_right_size"
+                        android:layout_height="@dimen/icon_right_size"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/arrows_right" />
+                </RelativeLayout>
+            </LinearLayout>
+            <!-- 我的认证 -->
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

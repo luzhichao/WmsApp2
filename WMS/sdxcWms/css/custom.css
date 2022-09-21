@@ -1,0 +1,76 @@
+/* xieqiyuan default */
+body{
+    padding-bottom: 3rem;;
+}
+.table {
+    margin-bottom: 15px;
+    width: 500px;
+    border-collapse: collapse;
+    font-size: 13px;
+    background-color: #fff;
+}
+.table td {
+    height: 40px;
+    text-align: center;
+    border: 1px solid #CBD6DE;
+    padding: 0;
+    margin: 0;
+    word-break: break-all;
+    vertical-align: middle !important;
+}
+
+
+
+button,
+.aui-btn {
+    font-size: 0.8rem;
+    /* width: 6rem; */
+    border-radius: 0;
+    height: 3rem;
+    line-height: 2.5rem;
+}
+.aui-bg-green {
+    background-color: #dcfbd9 !important;
+}
+
+/* 2018-11 - lizezhou */
+.bootstrap-table .fixed-table-container,.bootstrap-table table,.bootstrap-table tr,.bootstrap-table td{
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+/*.fixed-table-body{*/
+    /*overflow: hidden;*/
+/*}*/
+.fixed-table-container{
+    height: auto !important;
+    padding: 0 !important;
+}
+.bootstrap-table tr:active{
+    background-color: rgba(0, 0, 0, 0.13)
+}
+
+.aui-list-item .aui-icon-scan{
+    position: absolute;
+    right: 0.8rem;
+}
+.aui-dialog-body{
+    word-break: break-all;
+}
+.aui-list-item-input input{
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    
+    /* -webkit-transition: 0.2s; */
+}
+.aui-list-item-input input[type="text"]:focus{
+    border-top: 2px solid rgba(255, 255, 255, 0);
+    border-bottom: 2px solid #009688;
+}
+
+/*重写auitab样式*/
+.tab-content-item{
+    display: none;
+}
+.tab-content-item.tab-content-item-active{
+    display: block;
+}

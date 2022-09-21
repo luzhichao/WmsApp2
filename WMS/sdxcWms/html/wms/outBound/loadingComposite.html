@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>波次发货</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div id="aui-tab-1" class="tab-content-item app tab-content-item-active">
+    <form class="aui-content aui-margin-b-10 aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">容器</div>
+                    <div class="aui-list-item-input">
+                        <input id="tab1-scan-barcode1" type="text" @keyup.enter="onEnterPBarCode"
+                               v-model.trim="tab1ScanCode"
+                               placeholder="扫描待发货的容器"> 
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item aui-hide">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">神奇的BUG,不加会自动刷新</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" readonly="readonly"></input>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    </form>
+    <table id="bootstrap-tab-1"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="doSubmit">提交</div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript">
+    var toast = new auiToast({});
+    var dialog = new auiDialog({});
+    var tableField1 = [
+        {
+            name: 'no', title: '', width: 40, formatter: function (value, row, index) {
+                return index + 1;
+            }
+        },
+        {name:'ctCode',title:"容器"},
+        {name:'mrlName',title:"物料名称"},
+        {name:'mrlCode',title:"物料编码"},
+        {name:'qty',title:'数量'}
+    ];
+
+    apiready = function () {
+        $('#tab1-scan-barcode1').focus();
+        initTable(1, tableField1);
+    };
+
+    /*--------------vue1--------------*/
+    var vueData = {
+        tab1ScanCode: '',   //扫描-托盘码
+        ctInfos:[]         //容器信息
+    };
+    var app = new Vue({
+        el: '#aui-tab-1',
+        data: vueData,
+        methods: {
+            /** 唤醒车牌号键盘  博戈不需要 **/ 
+            // 唤醒键盘
+            // wakeUpKeyBoard(){
+            //     $('#footer-1').load("../../comm/licensePlate.html");
+            // },
+
+            // 关闭键盘
+            // closePlate(){
+            //     api.sendEvent({
+            //         name:'closePlate'
+            //     });
+            //     if($('.aui-col-xs-12').length == 0){
+            //         $('#footer-1').append('<div class="aui-btn aui-col-xs-12 aui-btn-primary" @click="doSubmit">提交</div>');
+            //         $('.aui-col-xs-12').on('click',this.doSubmit);
+            //     }
+            // }
+
+            //扫描待发货的托盘条码，获取同波次的所有容器信息
+            onEnterPBarCode: function () {
+                //校验是否扫描了内容
+                if(!vueData.tab1ScanCode){
+                    return api.toast({msg: '请扫描容器编码', duration: 3000, location: 'middle'});
+                }
+
+                var barCode = vueData.tab1ScanCode;
+                // 判断是否已有信息，是否覆盖
+                if($("#bootstrap-tab-1").bootstrapTable('getData').length > 0){
+                    dialog.alert({
+                        title: "是否覆盖当前数据",
+                        buttons: ['取消', '确定']
+                    }, function (ret) {
+                        if (ret.buttonIndex === 2) {
+                            $("#bootstrap-tab-1").bootstrapTable('removeAll');
+                            app.getData(barCode);
+                        }
+                    })
+                }else {
+                    app.getData(barCode);
+                }
+            },
+
+            //获取波次下所有容器信息的Ajax请求
+            getData: function(barCode){
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                var tempArr = [];
+                $.ajax({
+                    type: "POST",
+                    url: getUrl('bogePadWmsController!getWaveCtInfosByCtCode.m'),
+                    dataType: "json",
+                    data: {
+                        ctCode: barCode
+                    },
+                    async: false,
+                    success: function (res) {
+                        api.hideProgress();
+                        if (res.errCode == 0) {
+                            vueData.ctInfos = res.data;
+                            tempArr = [];
+                            for (var i=0; i<vueData.ctInfos.length; i++) {
+                                var ctInfo = vueData.ctInfos[i];
+                                var newObj = {};
+                                newObj.ctCode= ctInfo.sourceCtBarcodeCode,
+                                newObj.qty=ctInfo.qty,
+                                newObj.mrlName=ctInfo.mrlName,
+                                newObj.mrlCode=ctInfo.mrlCode,
+                                tempArr.push(newObj);
+                            }
+                        } else {
+                            api.toast({msg: res.msg, duration: 3000, location: 'middle'});
+                        }
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+                $("#bootstrap-tab-1").bootstrapTable('prepend', tempArr);
+                return false;
+            },
+            
+            //提交装车发货的信息
+            doSubmit: function () {
+                var tableData = $('#bootstrap-tab-1').bootstrapTable('getData');
+                if(tableData.length == 0){
+                    return api.toast({msg: '暂无可提交内容', duration: 3000, location: 'middle'});
+                }
+                // var cts = [];
+                // for (var i=0; i<tableData.length; i++) {
+                //     cts.push(tableData[i].ctCode);
+                // }
+                // console.log(JSON.stringify(cts));
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                $.ajax({
+                    type: "POST",
+                    url: getUrl('bogePadWmsController!confirmWaveOutBill.m'),
+                    dataType: "json",
+                    data: {
+                        ctCodes: JSON.stringify(vueData.ctInfos),
+                        workCenterGid: WCEN_GID
+                    },
+                    async: false,
+                    success: function (res) {
+                        if (res.errCode === 0) {
+                            api.toast({msg: '提交成功！', duration: 3000, location: 'middle'});
+                            
+                            window.location.reload();
+                        }else {
+                            api.toast({msg: res.msg, duration: 3000, location: 'middle'});
+                        }
+                        api.hideProgress();
+                    },
+                    error: function (e) {
+                        api.hideProgress();
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+</html>

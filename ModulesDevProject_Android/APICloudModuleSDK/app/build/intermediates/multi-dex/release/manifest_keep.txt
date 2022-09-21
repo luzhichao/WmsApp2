@@ -1,0 +1,2 @@
+# Referenced at C:\Users\crazy24\Desktop\ModulesDevProject_1.1.44\ModulesDevProject\ModulesDevProject_Android\androidstudio\APICloudModuleSDK\app\build\intermediates\manifests\full\release\AndroidManifest.xml:28
+-keep class com.uzmap.pkg.uzapp.UZApplication { <init>(...); }

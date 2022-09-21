@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>工厂</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" style="background-color: #03a9f4" id="header">
+				<a class="aui-btn aui-btn-epichust aui-pull-left" tapmode onclick="api.closeWin();">
+						<span class="aui-iconfont aui-icon-left"></span> </a>
+				<div class="aui-title" id='title'>工厂列表</div>
+		</header>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in" id="dataList"></ul>
+			<script id="showData" type="text/x-dot-template">
+					{{~ it:value:index}}
+							<li class="aui-list-item" onclick="saveWC('{{= it[index].siteGid }}','{{= it[index].siteCode }}','{{= it[index].siteName }}','{{= it[index].workCenterGid }}','{{= it[index].workCenterCode }}','{{= it[index].workCenterName }}');" >
+									<div class="aui-list-item-inner">
+											<div class="aui-list-item-title">{{= it[index].siteCode }}({{= it[index].siteName }})</div>
+									</div>
+							</li>
+					{{~}}
+			</script>
+		</div>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../script/pda.js"></script>
+		<script type="text/javascript" src="../../script/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+			$api.fixStatusBar(document.querySelector('#header'));
+			api.showProgress({
+				style: 'default',
+				animationType: 'fade',
+				title: '努力加载中...',
+				text: '请稍后...',
+				modal: true
+			});
+			if(localStorage.getItem('mWCFlag') != "0"){
+			    $api.dom('.aui-title').innerHTML = "仓库列表";
+			}
+			api.ajax({
+				url: getUrl("padCommController!getFactory.m"),
+				method: 'post',
+				data: {
+					values: {
+						loginName : localStorage.getItem("un")
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret) {
+					if(eval(ret).erroCode==0){
+						var myobj = eval(ret.data);
+						$("#dataList").children().remove();
+						var evaluation = doT.template($api.dom('#showData').innerHTML);
+						$api.dom('#dataList').innerHTML = evaluation(myobj);
+					}
+				} else {
+					console.log(JSON.stringify(err));
+					api.toast({
+						msg: err.msg,
+						duration: 3000,
+						location: 'middle'
+					});
+					return;
+				}
+			});
+			api.addEventListener({
+			    name: 'cancelSelect'  //用户取消选择工作中心
+			}, function(ret, err){
+			    $('#title').text('工厂列表');
+			});
+		}
+
+
+		function saveWC(siteGid, siteCode, siteName,workCenterGid,workCenterCode,workCenterName) {
+			api.confirm({
+			    title: '提示',
+			    msg: '确定选择：'+siteCode+":"+siteName+"?",
+			    buttons: ['确定', '取消']
+			}, function(ret, err) {
+			    if(ret.buttonIndex == 1){
+			        localStorage.setItem('siteGid', siteGid);
+							localStorage.setItem('siteCode', siteCode);
+							localStorage.setItem('siteName', siteName);
+							localStorage.setItem('workCenterGid', workCenterGid);
+							localStorage.setItem('workCenterCode', workCenterCode);
+							localStorage.setItem('workCenterName', workCenterName);
+					//判断是否启用多工厂,或者多工作中心，已启用则修改缓存的serverUrl
+					if(localStorage.getItem('mWCFlag') != "-1"){
+						var datarole = workCenterGid;
+						var serverIp = localStorage.getItem('serverIpN');
+						var serverPort = localStorage.getItem('serverPortN');;
+						var serverProject = localStorage.getItem('serverProjectN');
+						var username = localStorage.getItem('un');
+						var pw = localStorage.getItem('pw');
+						serverUrl = "http://" + serverIp + ":" + serverPort + "/" + serverProject + "/autoLoginController!login.m?_u=" + username + "&_p=" + pw + "&_dr=" + datarole +"&_to=";
+						localStorage.setItem('serverUrl', serverUrl);
+						console.log("启用多工厂,多工作中心的情况下切换工作中心,serverUrl:"+serverUrl);
+					}
+					// 多工厂
+					if(localStorage.getItem('mWCFlag') == "0"){
+							$('#title').text('仓库列表');
+					   api.openFrame({
+                        name: 'warehouseFram',
+                        url: 'warehouseFram.html',
+                        bounces: true,
+                        rect: { // 推荐使用Margin布局，用于适配屏幕的动态变化
+                            x : 0,
+                            y : localStorage.getItem('winY'),
+                            w : 'auto',
+                            h : localStorage.getItem('winH')
+                        },
+                        reload: true
+                      });
+					}else{
+					   api.closeWin();
+					}
+
+
+				}
+			});
+
+		}
+	</script>
+</html>

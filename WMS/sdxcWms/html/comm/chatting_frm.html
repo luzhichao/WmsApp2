@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,aItemress=no">
+    <title>发送消息</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.2.0.css" />
+
+    <style type="text/css">
+        .aui-list textarea {
+            overflow: auto;
+            margin: 0.5rem 0;
+            height: 15rem;
+            line-height: 1rem;
+            resize: none;
+        }
+
+        .epichust-list-header {
+            background-color: #f1f1f1;
+            position: relative;
+            font-size: 0.6rem;
+            padding: 0.3rem 0.75rem;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: justify;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .epichust-icon-img {
+            width: 2.8rem;
+            height: 2.8rem;
+            padding: 0.7rem;
+            color: #3e5706;
+            position: relative;
+            text-align: center;
+            font: arial;
+            font-size: 1rem;
+            -webkit-border-radius: 2.8rem;
+            -moz-border-radius: 2.8rem;
+            border-radius: 2.8rem;
+            border: 1px solid #a5cd4e;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+        <div class="aui-info-item">
+            <div class="aui-list-item-media" style="width: 3rem;">
+                <div class="epichust-icon-img" id="image"></div>
+            </div>
+            <div class="aui-margin-l-10" id="sender"></div>
+        </div>
+        <div class="aui-btn aui-btn-info aui-info-item" onclick="sendMessage();">发送</div>
+    </div>
+
+    <div class="aui-content aui-margin-b-15">
+        <ul class="aui-list aui-list-in">
+            <li class="epichust-list-header"></li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">收件人</div>
+                    <div class="aui-list-item-input" onclick="toChooseContact();">
+                        <input type="text" placeholder="请输入收件人" id="receiver">
+                    </div>
+                    <div class="aui-list-item-arrow" onclick="toChooseContact();"></div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">标题</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="请输入标题" id="msgtitle">
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul class="aui-list aui-list-in">
+            <li class="epichust-list-header">消息内容</li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-input">
+                    <textarea placeholder="请输入消息内容" id="msgcontent"></textarea>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+    (function(window, undefined) {
+        "use strict";
+        var auiToast = function() {
+
+        };
+        var isShow = false;
+        auiToast.prototype = {
+            create: function(params, callback) {
+                var self = this;
+                var toastHtml = '';
+                switch (params.type) {
+                    case "success":
+                        var iconHtml = '<i class="aui-iconfont aui-icon-correct"></i>';
+                        break;
+                    case "fail":
+                        var iconHtml = '<i class="aui-iconfont aui-icon-close"></i>';
+                        break;
+                }
+
+                var titleHtml = params.title ? '<div class="aui-toast-content">' + params.title + '</div>' : '';
+                toastHtml = '<div class="aui-toast">' + iconHtml + titleHtml + '</div>';
+                if (document.querySelector(".aui-toast")) return;
+                document.body.insertAdjacentHTML('beforeend', toastHtml);
+                var duration = params.duration ? params.duration : "2000";
+                self.show();
+                if (callback) {
+                    callback({
+                        status: "success"
+                    });
+                };
+            },
+            show: function() {
+                var self = this;
+                document.querySelector(".aui-toast").style.display = "block";
+                document.querySelector(".aui-toast").style.marginTop = "-" + Math.round(document.querySelector(".aui-toast").offsetHeight / 2) + "px";
+                if (document.querySelector(".aui-toast")) return;
+            },
+            hide: function() {
+                var self = this;
+                if (document.querySelector(".aui-toast")) {
+                    document.querySelector(".aui-toast").parentNode.removeChild(document.querySelector(".aui-toast"));
+                }
+            },
+            success: function(params, callback) {
+                var self = this;
+                params.type = "success";
+                return self.create(params, callback);
+            },
+            fail: function(params, callback) {
+                var self = this;
+                params.type = "fail";
+                return self.create(params, callback);
+            },
+        };
+        window.auiToast = auiToast;
+    })(window);
+</script>
+
+<script type="text/javascript">
+    var toast = new auiToast({});
+
+    apiready = function() {
+        api.parseTapmode();
+        var chatName = api.pageParam.cName;
+        var usrname = localStorage.getItem('un');
+        $("#sender").html(usrname);
+        $("#receiver").attr("value", chatName);
+        $("#image").html(usrname.substr(0, 1));
+    }
+
+    function setReceiver(chatName) {
+        $("#receiver").attr("value", chatName);
+    }
+
+    function toChooseContact() {
+        api.openWin({
+            name: 'contacts_win',
+            url: 'contacts_win.html'
+        });
+    }
+
+    function sendMessage() {
+        var loginName = $("#receiver").val();
+        var msgTitle = $("#msgtitle").val();
+        var msgContent = $("#msgcontent").val();
+        var serverUrl = localStorage.getItem('serverUrl');
+        var usrname = localStorage.getItem('un');
+        var msgUrl = serverUrl + "padCommController!sendPageMsg.m";
+
+        if (loginName == '') {
+            toast.success({
+                title: "收件人不能为空",
+                duration: 2000
+            }, closeToast);
+            return;
+        }
+
+        if (msgTitle == '') {
+            toast.success({
+                title: "标题不能为空",
+                duration: 2000
+            }, closeToast);
+            return;
+        }
+
+        if (msgContent == '') {
+            toast.success({
+                title: "内容不能为空",
+                duration: 2000
+            }, closeToast);
+            return;
+        }
+
+        var params = new Object();
+        params.url = msgUrl;
+        params.dataType = 'json';
+        params.method = 'post';
+        var data = {
+            values: { ////以表单方式提交参数（JSON对象）
+                title: msgTitle,
+                content: msgContent,
+                sender: usrname,
+                recevier: loginName
+            }
+        };
+
+
+        ajaxForData(params, data, false, function(ret, err) {
+            if (ret) {
+                toast.success({
+                    title: "发送成功",
+                    duration: 800
+                }, closeWinToast);
+            }
+        });
+    }
+
+    function closeWinToast(ret) {
+        setTimeout(function() {
+            toast.hide();
+            api.closeWin();
+            api.sendEvent({
+                name: 'refreshMsg',
+            });
+        }, 1000)
+    }
+
+    function closeToast(ret) {
+        setTimeout(function() {
+            toast.hide();
+        }, 1000)
+    }
+</script>
+
+</html>

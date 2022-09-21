@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>菜单设置</title>
+
+	<link rel="stylesheet" type="text/css" href="../../css/aui.2.1.css" />
+	<style>
+	body {}
+
+	p {
+		margin-bottom: 15px;
+	}
+
+	#menuList img {
+		width: 50%;
+	}
+
+	#menuList .aui-col-xs-3 {
+		text-align: center;
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+	}
+
+	.aui-grid [class*=aui-col-] {
+		padding: 0.3rem 0;
+	}
+	</style>
+</head>
+
+<body>
+
+	<div class="aui-card-list" id="menuList"> </div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript">
+	var menuKeyItem = '';
+	var arrayMenuKeyItem;
+	apiready = function() {
+
+		getAllMenu();
+
+	};
+
+	var fDivId = "";
+
+	function getAllMenu() {
+		var serverUrl = localStorage.getItem('serverUrl');
+		var url = serverUrl + "padController!getAppMenu.m";
+		var un = localStorage.getItem('un');
+		var pw = localStorage.getItem('pw');
+		var serverIp = localStorage.getItem('serverIp');
+		var serverPort = localStorage.getItem('serverPort');
+		var serverProject = localStorage.getItem('serverProject');
+		var url1 = serverIp + ":" + serverPort + "/" + serverProject;
+		var workCenterGid = localStorage.getItem('workCenterGid');
+		if (!workCenterGid) {
+			api.toast({
+				msg: '请选择工作中心',
+				duration: 3000,
+				location: 'top'
+			});
+			api.closeWin();
+			return false;
+		}
+
+		var menuStr = localStorage.getItem(un + ":menu");
+
+		var params = new Object();
+		params.url = url;
+		params.method = 'post';
+		params.dataType = 'json';
+		params.returnAll = 'false';
+		params.timeout = 60;
+
+		var data = {
+			values: {
+				un: un,
+				pw: pw,
+				url: url1,
+				workCenterGid:workCenterGid
+			}
+		};
+
+		ajaxForData(params, data, false, function(ret, err) {
+			var myobj = eval("(" + ret.data + ")");;
+
+
+
+			//console.log('-------myobj :'+JSON.stringify(myobj));
+			$("#menuList").children().remove();
+			for (var i = 0; i < myobj.length; i++) {
+				var menuTitle = myobj[i].title;
+				var iconColor = myobj[i].iconColor;
+				//			        	var id = myobj[i].id;                  //##################
+				var icon = myobj[i].images; //#########
+				var level = myobj[i].menuLevel; //#########
+				var rel = myobj[i].rel;
+				//console.log('-------icon :'+myobj[i].icon);
+				if (menuStr != null) {
+
+					if (myobj[i].menuLevel == "1") {
+						//一级菜单
+						fDivId = "#" + myobj[i].id;
+						$("#menuList").append("<div class='aui-card-list-header'><label class=\"aui-input-addon " + iconColor + " \" >" + menuTitle +
+							"</label></div><div class='aui-card-list-content-padded aui-border-b aui-border-t'><div class='aui-grid' ><div class='aui-row' id='" + myobj[i].id + "'></div></div></div>");
+					} else {
+						//*************后续需要判断un是否勾选
+						//二级菜单
+						//
+						if (menuStr.indexOf(rel) != -1) {
+							menuKeyItem = menuKeyItem + rel + ",";
+							$(fDivId).append("<div class=\"aui-col-xs-3 aui-text-center\" tapmode onclick='select(\"" +
+								myobj[i].id + "\",\"" + rel + "\");'><div class='aui-badge' id='" + myobj[i].id +
+								"'  name='true' style='display:block'>√</div><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>" + myobj[i].title + "</p></div>");
+
+						} else {
+							$(fDivId).append("<div class=\"aui-col-xs-3 aui-text-center\" tapmode onclick='select(\"" +
+								myobj[i].id + "\",\"" + rel + "\");'><div class='aui-badge' id='" + myobj[i].id +
+								"'  name='false' style='display:none'>√</div><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>" + myobj[i].title + "</p></div>");
+
+						}
+
+					}
+				} else {
+					if (myobj[i].menuLevel == "1") {
+						//一级菜单
+						fDivId = "#" + myobj[i].id;
+						$("#menuList").append("<div class='aui-card-list-header'><label class=\"aui-input-addon " + iconColor + " \" >" + menuTitle +
+							"</label></div><div class='aui-card-list-content-padded aui-border-b aui-border-t'><div class='aui-grid' ><div class='aui-row' id='" + myobj[i].id + "'></div></div></div>");
+					} else {
+						//二级菜单
+
+						$(fDivId).append("<div class=\"aui-col-xs-3 aui-text-center\" tapmode onclick='select(\"" +
+							myobj[i].id + "\",\"" + rel + "\");'><div class='aui-badge' id='" + myobj[i].id +
+							"'  name='false' style='display:none'>√</div><i class=\"aui-iconfont " + myobj[i].icon +"\"></i><p class='aui-grid-label'>" + myobj[i].title + "</p></div>");
+					}
+				}
+
+
+			}
+		});
+	}
+
+	function select(title, rel) {
+
+		var obj = document.getElementById(title);
+		var value = $('#' + title + '').attr("name");
+
+		if (value == 'true') {
+			value = 'false';
+		} else {
+			value = 'true';
+		}
+		$('#' + title + '').attr("name", '' + value + ''); //改变name
+		if (value == 'true') {
+			obj.style = 'display:block';
+			$('#' + title + '').show();
+			menuKeyItem = menuKeyItem + rel + ",";
+		} else {
+			$('#' + title + '').hide();
+			arrayMenuKeyItem = menuKeyItem.split(",");
+			removeByValue(arrayMenuKeyItem, rel);
+			menuKeyItem = arrayMenuKeyItemToString(arrayMenuKeyItem);
+			menuKeyItem = menuKeyItem.substr(0, menuKeyItem.length - 1);
+		}
+		console.log("menuKeyItem+++++" + menuKeyItem);
+	}
+
+	function removeByValue(arr, val) {
+		for (var i = 0; i < arr.length; i++) {
+			if (arr[i] == val) {
+				arr.splice(i, 1);
+				break;
+			}
+		}
+	}
+
+	function arrayMenuKeyItemToString(arr) {
+		var str = '';
+		for (var i = 0; i < arr.length; i++) {
+			str += arr[i] + ',';
+		}
+		return str;
+	};
+
+	function doSave() {
+		var un = localStorage.getItem('un');
+		console.log(menuKeyItem);
+		if (menuKeyItem != "") {
+			menuKeyItem = menuKeyItem.substr(0, menuKeyItem.length - 1);
+
+			localStorage.setItem(un + ":menu", menuKeyItem);
+		} else {
+			localStorage.removeItem(un + ":menu");
+		}
+
+		api.rebootApp();
+	}
+</script>
+
+</html>

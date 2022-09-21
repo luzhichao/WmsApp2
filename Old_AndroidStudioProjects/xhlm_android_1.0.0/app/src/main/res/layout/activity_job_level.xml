@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.JobLevel">
+
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--title-->
+
+    <!--职称Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginRight="@dimen/right_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="职称" />
+        <RelativeLayout
+            android:id="@+id/rl_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/icon_right_size"
+                android:layout_centerVertical="true"
+                android:gravity="right"
+                android:layout_marginLeft="@dimen/dp5"
+                android:hint="请选择职称" />
+            <ImageView
+                android:layout_width="@dimen/icon_right_size"
+                android:layout_height="@dimen/icon_right_size"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/arrows_right" />
+        </RelativeLayout>
+    </LinearLayout>
+    <!--职称End-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/left_margin"
+        android:text="教师职称证书图片上传"
+        android:background="@color/backgroundColor"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/blue">
+    <ImageView
+        android:id="@+id/iv_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/top_steep_margin"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/btn_white_solid"/>
+     <ImageView
+         android:id="@+id/iv_level"
+         android:layout_width="@dimen/icon_biger_thumb_size"
+         android:layout_height="@dimen/icon_biger_thumb_size"
+         android:layout_centerInParent="true"
+         android:src="@drawable/photo_icon"/>
+    </RelativeLayout>
+</LinearLayout>

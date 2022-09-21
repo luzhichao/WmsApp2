@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".teacher.activities.TeachTime">
+    <!--title-->
+    <com.linkingwin.elearn.common.widget.TitleView
+        android:id="@+id/title_teach_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--title-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/angel_blue_gradual"
+        android:gravity="right">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/right_margin"
+            android:layout_marginLeft="@dimen/left_margin"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="时间"
+                android:textColor="@color/titleWhite" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/left_margin"
+            android:layout_marginRight="@dimen/right_margin"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="上午\n06:00"
+                android:textColor="@color/titleWhite" />
+            <TextView
+                android:layout_width="@dimen/hair_line"
+                android:layout_height="@dimen/wide_line"
+                android:background="@color/titleWhite" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="12:00"
+                android:textColor="@color/titleWhite" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/left_margin"
+            android:layout_marginRight="@dimen/right_margin"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="上午\n06:00"
+                android:textColor="@color/titleWhite" />
+            <TextView
+                android:layout_width="@dimen/hair_line"
+                android:layout_height="@dimen/wide_line"
+                android:background="@color/titleWhite" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="12:00"
+                android:textColor="@color/titleWhite" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/left_margin"
+            android:layout_marginRight="@dimen/right_margin"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="上午\n06:00"
+                android:textColor="@color/titleWhite" />
+            <TextView
+                android:layout_width="@dimen/hair_line"
+                android:layout_height="@dimen/wide_line"
+                android:background="@color/titleWhite" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="12:00"
+                android:textColor="@color/titleWhite" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/gv_teach_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:clickable="false"
+        android:numColumns="4"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hair_line"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:background="@color/backgroundColor"/>
+
+    <Button
+        android:id="@+id/bt_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/btMargin50dp"
+        android:layout_marginRight="@dimen/btMargin50dp"
+        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
+        android:text="保存"
+        android:textColor="@color/titleWhite"
+        android:background="@drawable/btn_blue_solid"/>
+</LinearLayout>

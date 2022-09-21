@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>库存冻结解冻</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.2.0.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-table.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/custom.css">
+</head>
+
+<body>
+<div id="freeze" class="tab-content-item app tab-content-item-active">
+    <form id="form" class="aui-content aui-margin-t-10">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">操作类型</div>
+                    <select @change="getOptionType($event)">
+                        <option value="">--请选择--</option>
+                        <option value="1">冻结</option>
+                        <option value="2">解冻</option>
+                    </select>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">范围</div>
+                    <select @change="getFreezeType($event)">
+                        <option value="">--请选择--</option>
+                        <option value="UWM_FREEZE_TYPE_01">库位</option>
+                        <option value="UWM_FREEZE_TYPE_02">容器</option>
+                    </select>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">{{labelName}}</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" @keyup.enter="onEnter" v-model="workCellBarCode" placeholder="扫描条码">
+                    </div>
+                    <div class="aui-list-item-right">
+                        <div class="aui-btn aui-btn-info" style="height:2.2rem;line-height: 1.6rem; margin-right: 2px; float:right" @click="onEnter">
+                             查询
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">备注</div>
+                    <div class="aui-list-item-input">
+                        <input type="text" v-model="remark" placeholder="请输入备注">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item" style="display:none">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">神奇的bug</div>
+                    <div class="aui-list-item-input">
+                        <input type="text">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+    <table id="bootstrap-tab"></table>
+    <footer class="aui-bar aui-bar-tab aui-row" id="footer-1">
+        <button class="aui-btn aui-col-xs-12 aui-btn-primary" @click="submit">提交</button>
+    </footer>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/aui-tab.js"></script>
+<script type="text/javascript" src="../../../script/aui-toast.js"></script>
+<script type="text/javascript" src="../../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../../script/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="../../../script/vue.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="../../../script/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../../../script/public/constant.js"></script>
+<script type="text/javascript" src="../../../script/public/utils.js"></script>
+<script type="text/javascript" src="../../../script/public/commons.js"></script>
+<script type="text/javascript" src="../../../script/public/boge-api.js"></script>
+
+
+<script type="text/javascript">
+
+apiready = function(){
+   new Vue({
+        el: '#freeze',
+        data: {
+            optionType:"",
+            operType:"",
+            labelName: "库位",
+            cellOrBar: "",
+            workCellBarCode:"",
+            remark: "",
+            tableField: [
+                    {field: 'mrlCode', title: '物料编码'},
+                    {field: 'mrlName', title: '物料名称'},
+                    {field: 'lotCode', title: '批次'},
+                    {field: 'qty', title: '合格数量'},
+                    // {field: 'unqualifiedQty', title: '不合格数量'},
+                    // {field: 'unqcQty', title: '待检数量'},
+                    // {field: 'allQty', title: '总数量'},
+                    {field: 'workCellCode', title: '库位编码'},
+                    {field: 'containerCode', title: '容器编码'},
+                    {field: 'statusKey', title: '锁定标识'},
+            ],
+            tableDate: [],
+
+        },
+        mounted() {
+            this.init();
+        },
+        methods: {
+            init: function(){
+                this.initTable();
+            },
+            initTable: function() {
+                var that = this;
+                $("#bootstrap-tab").bootstrapTable('destroy');
+                $("#bootstrap-tab").bootstrapTable({
+                    columns: that.tableField,
+                    data: that.tableDate,
+                });
+            },
+            onEnter: function () {
+                var that = this;
+                if(that.optionType == ''){
+                    that.workCellBarCode = "";
+                    return api.toast({msg: '类型为空，不能展示数据，请选择操作类型后再次扫描', location: 'middle'});
+                }
+                var ret = getStockByCodeFn(that.workCellBarCode, that.optionType);
+                var stocks = [];
+                console.log(JSON.stringify(ret))
+                if(ret && ret.length > 0){
+                    ret.forEach(function(r) {
+                        if(r.status == '1'){
+                            r.statusKey = "冻结";
+                        }
+                        var stock = {
+                            'mrlCode': r.mrlCode,
+                            'mrlName': r.mrlName,
+                            'lotCode': r.lotCode,
+                            'qty': r.qty,
+                            // 'unqualifiedQty': r.unqualifiedQty,
+                            // 'unqcQty': r.unqcQty,
+                            // 'allQty': r.allQty,
+                            'workCellCode': r.workCellCode,
+                            'containerCode': r.containCode,
+                            'statusKey': r.statusKey,
+                        }
+                        stocks.push(stock);
+                    });
+                }
+                that.tableDate = stocks;
+                that.initTable();
+
+            },
+            //冻结类型：冻结、解冻
+            getOptionType: function (event) {
+                var that = this;
+                that.operType = event.target.value;
+            },
+            //范围：容器、库位
+            getFreezeType: function (event) {
+                var that = this;
+                that.cellOrBar = event.target.value;
+                if(that.cellOrBar == "UWM_FREEZE_TYPE_01"){
+                    that.optionType = "1";
+                    that.labelName = "库位";
+                }else if(that.cellOrBar == "UWM_FREEZE_TYPE_02"){
+                    that.optionType = "2";
+                    that.labelName = "容器";
+                } else {
+                    that.optionType = "";
+                }
+            },
+            //提交
+            submit(){
+                var that = this;
+                if(that.cellOrBar == ''){
+                    return api.toast({msg: '请选择库位或容器并扫描条码再提交', location: 'middle'});
+                }
+                if(that.workCellBarCode == ''){
+                    return api.toast({msg: '请选择库位或容器并扫描条码再提交', location: 'middle'});
+                }
+                if(that.operType == ''){
+                    return api.toast({msg: '请选冻结解冻类型再提交', location: 'middle'});
+                }
+
+                var bill = {
+                    workCenterGid: WCEN_GID,
+                    operType: that.operType,//冻结或解冻
+                    freezeTypeCode: that.cellOrBar,//容器或库位
+                };
+                var details = $("#bootstrap-tab").bootstrapTable('getData');
+                if(details.length == 0){
+                    return api.toast({msg: '库存为空', location: 'middle'});
+                }
+                var details_req = [];
+                details.forEach(function(d){
+                    var temp = {
+                        mrlCode: d.mrlCode,
+                        qty: d.qty,
+                        lotCode: d.lotCode,
+                        containerCode: d.containerCode,
+                        workCellCode: d.workCellCode,
+                    };
+                    details_req.push(temp);
+                });
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '努力加载中...',
+                    text: '请稍后...',
+                    modal: true
+                });
+                $.ajax({
+                  type: "POST",
+                  url: getUrl('bogePadWmsController!createStockFreeze.p'),
+                  dataType: "json",
+                  data: {
+                    workCenterCode: localStorage.getItem('workCenterCode'),
+                    bill: JSON.stringify(bill),
+                    details: JSON.stringify(details_req),
+                    remark: that.remark
+                  },
+                  async: false,
+                  success: function (ret) {
+                    api.hideProgress();
+                    if(ret.errCode == 0){
+                      api.toast({msg: '提交成功', location: 'middle'});
+                      window.location.reload();
+                    }else {
+                      api.alert({msg: ret.msg, buttons: ["确定"]});
+                    }
+                  },
+                  error: function (e) {
+                      api.hideProgress();
+                      api.alert({msg: ret.msg, buttons: ["确定"]});
+                  }
+              });
+
+              
+            }
+        }
+    });
+};
+
+</script>
+
+</html>
